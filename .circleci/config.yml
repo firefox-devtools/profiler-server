@@ -17,3 +17,4 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
       - run: yarn lint
       - run: yarn flow:ci
+      - run: yarn build:clean build
