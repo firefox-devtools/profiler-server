@@ -6,5 +6,31 @@
   "repository": "https://github.com/firefox-devtools/profiler",
   "author": "Mozilla",
   "license": "MPL2",
-  "private": true
+  "private": true,
+  "scripts": {
+    "flow": "flow --max-warnings 0",
+    "flow:ci": "flow check --max-warnings 0",
+    "flow-stop": "flow stop",
+    "flow-coverage": "flow-coverage-report -i '**/*.js' -t html -t text",
+    "flow-generate-libdefs": "flow-typed install --libdefDir src/types/libdef",
+    "lint": "eslint .",
+    "lint-fix": "yarn lint-js --fix"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.6.2",
+    "@babel/core": "^7.6.2",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "@babel/preset-flow": "^7.0.0",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.4.0",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-flowtype": "^4.3.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-prettier": "^3.1.1",
+    "flow-bin": "^0.108.0",
+    "prettier": "^1.18.2"
+  }
 }
