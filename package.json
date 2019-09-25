@@ -1,0 +1,10 @@
+{
+  "name": "profiler-server",
+  "version": "1.0.0",
+  "description": "This is the server-side part of the Firefox Profiler.",
+  "main": "index.js",
+  "repository": "https://github.com/firefox-devtools/profiler",
+  "author": "Mozilla",
+  "license": "MPL2",
+  "private": true
+}
