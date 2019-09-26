@@ -1,0 +1,10 @@
+[options]
+suppress_comment=\\(.\\|\n\\)*\\$FlowExpectError
+suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe
+include_warnings=true
+
+[ignore]
+.*node_modules/.*
+
+[libs]
+src/types/libdef
