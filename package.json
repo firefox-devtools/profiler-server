@@ -54,5 +54,10 @@
       "post-rewrite": "node bin/post-rewrite.js",
       "pre-push": "yarn test-all"
     }
+  },
+  "dependencies": {
+    "@koa/router": "^8.0.1",
+    "convict": "^5.1.0",
+    "koa": "^2.8.1"
   }
 }
