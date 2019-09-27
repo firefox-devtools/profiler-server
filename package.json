@@ -13,7 +13,7 @@
     "flow-stop": "flow stop",
     "flow-coverage": "flow-coverage-report -i '**/*.js' -t html -t text",
     "flow-generate-libdefs": "flow-typed install --libdefDir src/types/libdef",
-    "lint": "eslint .",
+    "lint": "eslint src bin",
     "lint-fix": "yarn lint-js --fix",
     "preinstall": "node bin/pre-install.js",
     "build:clean": "rimraf dist && mkdirp dist",
@@ -54,5 +54,10 @@
       "post-rewrite": "node bin/post-rewrite.js",
       "pre-push": "yarn test-all"
     }
+  },
+  "dependencies": {
+    "@koa/router": "^8.0.1",
+    "convict": "^5.1.0",
+    "koa": "^2.8.1"
   }
 }
