@@ -13,7 +13,7 @@
     "flow-stop": "flow stop",
     "flow-coverage": "flow-coverage-report -i '**/*.js' -t html -t text",
     "flow-generate-libdefs": "flow-typed install --libdefDir src/types/libdef",
-    "lint": "eslint src bin",
+    "lint": "eslint src bin test",
     "lint-fix": "yarn lint-js --fix",
     "preinstall": "node bin/pre-install.js",
     "build:clean": "rimraf dist && mkdirp dist",
