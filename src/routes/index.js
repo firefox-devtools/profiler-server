@@ -4,11 +4,14 @@
 // @flow
 
 import Router from '@koa/router';
+import { dockerFlowRoutes } from './dockerflow';
 
 export default function() {
   const router = new Router();
   router.get('/', ctx => {
     ctx.body = 'Hello world!';
   });
+
+  router.use(dockerFlowRoutes().routes());
   return router;
 }
