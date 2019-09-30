@@ -9,5 +9,6 @@ module.exports = {
     '!**/node_modules/**',
     '!src/types/libdef/**',
   ],
+  setupFilesAfterEnv: ['./test/setup.js'],
   verbose: false,
 };
