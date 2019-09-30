@@ -21,7 +21,8 @@
     "serve": "node dist/index.js",
     "start": "nodemon --exec babel-node -w src src/index.js",
     "start:prod": "run-s build:clean build serve",
-    "test-all": "run-p flow lint"
+    "test": "jest",
+    "test-all": "run-p flow lint test"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.2",
