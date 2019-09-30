@@ -6,16 +6,25 @@
 import convict from 'convict';
 
 const conf = convict({
+  env: {
+    doc: 'The application environment.',
+    format: ['production', 'development', 'test'],
+    default: 'development',
+    env: 'NODE_ENV',
+  },
   httpPort: {
-    format: Number,
+    format: 'port',
     default: 4243,
-    env: 'HTTP_PORT',
+    // The environment variable's name is required by Dockerflow.
+    // see https://github.com/mozilla-services/Dockerflow#containerized-app-requirements
+    env: 'PORT',
   },
 });
 
 conf.validate();
 
 type Config = {|
+  +env: string,
   +httpPort: number,
 |};
 
