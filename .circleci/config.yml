@@ -18,3 +18,4 @@ jobs:
       - run: yarn lint
       - run: yarn flow:ci
       - run: yarn build:clean build
+      - run: node bin/generate-version-file.js
