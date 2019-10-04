@@ -3,9 +3,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 // @flow
 
-import { createApp } from './app';
-import config from './config';
-
-const app = createApp();
-app.listen(config.httpPort);
-console.log('The HTTP server is listening on port %s.', config.httpPort);
+module.exports = {
+  collectCoverageFrom: [
+    'src/**/*.js',
+    '!**/node_modules/**',
+    '!src/types/libdef/**',
+  ],
+  setupFilesAfterEnv: ['./test/setup.js'],
+  verbose: false,
+};

@@ -1,0 +1,6 @@
+{
+  "source": "https://github.com/firefox-devtools/profiler-server",
+  "version": "1.0",
+  "commit": "ababf0c58db9e8760a2320c57ac404ce0f9c2d78",
+  "build": "https://circleci.com/gh/firefox-devtools/profiler-server/12"
+}
