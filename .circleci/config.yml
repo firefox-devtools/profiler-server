@@ -70,7 +70,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: "Build the Docker image"
-          command: yarn docker:build --pull
+          command: yarn docker:build --pull --build-arg circle_build_url=$CIRCLE_BUILD_URL
       - run:
           name: "Start the docker image in a container and check it's running"
           command: |
