@@ -10,5 +10,18 @@ import { getLogger } from './log';
 const log = getLogger('index');
 const app = createApp();
 
-app.listen(config.httpPort);
+const server = app.listen(config.httpPort);
 log.info('server_started', { port: config.httpPort });
+
+function gracefulExit() {
+  console.log('Received exit request. Closing app...');
+
+  server.close(err => {
+    if (err) {
+      console.error('Error while closing the app', err);
+    }
+  });
+}
+
+process.on('SIGINT', gracefulExit);
+process.on('SIGTERM', gracefulExit);
