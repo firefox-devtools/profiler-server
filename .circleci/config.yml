@@ -1,22 +1,65 @@
-version: 2
-jobs:
-  build:
+version: 2.1
+
+executors:
+  node:
     docker:
       - image: circleci/node:10.15
+
+commands:
+  checkout-and-dependencies:
+    description: "Checkout and install dependencies, managing a cache"
     steps:
       - checkout
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
-          - v1-dependencies-{{ checksum "package.json" }}
-          - v1-dependencies-
-      - run: yarn install
+            - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      # With --frozen-lockfile, the installation will fail if the lockfile is
+      # outdated compared to package.json.
+      - run: yarn install --frozen-lockfile
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+
+workflows:
+  version: 2
+  master:
+    jobs:
+      - tests
+      - lint
+      - build
+      - flow
+      - generate-version-file
+
+jobs:
+  lint:
+    executor: node
+    steps:
+      - checkout-and-dependencies
       - run: yarn lint
-      - run: yarn flow:ci
+
+  tests:
+    executor: node
+    steps:
+      - checkout-and-dependencies
       - run: yarn test --runInBand
+
+  flow:
+    executor: node
+    steps:
+      - checkout-and-dependencies
+      - run: yarn flow:ci
+
+  build:
+    executor: node
+    steps:
+      - checkout-and-dependencies
       - run: yarn build:clean build
+
+  generate-version-file:
+    executor: node
+    steps:
+      - checkout-and-dependencies
       - run: node bin/generate-version-file.js
