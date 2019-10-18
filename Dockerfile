@@ -8,12 +8,13 @@
 # directory. The command `yarn docker:build` will build a tagged image.
 # Then the command `yarn docker:run` will conveniently execute the image. It's
 # possible to pass extra arguments to this command to execute another program
-# instead of the default.
+# instead of the default. See docs-developer/docker.md for more information.
 
 # Setup a container and build the project in it
 # We set up a node 10 running in latest Debian stable called buster, in the
 # "slim" flavor because we don't need the big version.
 FROM node:10-buster-slim AS builder
+
 ENV NODE_ENV="production"
 ENV PORT=8000
 
