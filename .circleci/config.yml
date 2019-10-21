@@ -31,7 +31,7 @@ workflows:
       - lint
       - build
       - flow
-      - generate-version-file
+      - docker
 
 jobs:
   lint:
@@ -56,10 +56,29 @@ jobs:
     executor: node
     steps:
       - checkout-and-dependencies
-      - run: yarn build:clean build
+      - run: |
+          yarn build:clean
+          yarn build
 
-  generate-version-file:
+  docker:
     executor: node
     steps:
-      - checkout-and-dependencies
-      - run: node bin/generate-version-file.js
+      # This job doesn't need the cached node_modules because they'll be
+      # redownloaded when building the docker image.
+      - checkout
+      # This sets up a remote environment that's necessary to run docker commands.
+      - setup_remote_docker
+      - run:
+          name: "Build the Docker image"
+          command: yarn docker:build --pull
+      - run:
+          name: "Start the docker image in a container and check it's running"
+          command: |
+            yarn docker:run:detached
+            # Wait up to 10 seconds that the server is launched.
+            timeout 10s sh \<<'EOF'
+            while ! docker exec profiler-server curl --silent --show-error --fail http://localhost:8000/__version__ ; do
+              sleep 1
+            done
+            EOF
+            yarn docker:stop
