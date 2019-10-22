@@ -28,6 +28,4 @@ type Config = {|
   +httpPort: number,
 |};
 
-const config: Config = conf.getProperties();
-
-export default config;
+export const config: Config = conf.getProperties();

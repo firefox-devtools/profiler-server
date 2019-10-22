@@ -6,7 +6,7 @@
 import Router from '@koa/router';
 import { dockerFlowRoutes } from './dockerflow';
 
-export default function() {
+export function routes() {
   const router = new Router();
   router.get('/', ctx => {
     ctx.body = 'Hello world!';

@@ -4,7 +4,7 @@
 // @flow
 
 import { createApp } from './app';
-import config from './config';
+import { config } from './config';
 
 const app = createApp();
 app.listen(config.httpPort);
