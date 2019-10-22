@@ -22,6 +22,7 @@ module.exports = {
     // Plugin rules:
     'import/no-duplicates': 'error',
     'import/no-unresolved': 'error',
+    'import/no-default-export': 'error',
     'import/named': 'error',
     'prettier/prettier': 'error',
     'flowtype/require-valid-file-annotation': [ 'error', 'always', { annotationStyle: 'line' } ],
