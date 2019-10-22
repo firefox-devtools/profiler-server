@@ -5,7 +5,7 @@
 
 import Koa from 'koa';
 
-import routes from './routes';
+import { routes } from './routes';
 
 export function createApp() {
   const app = new Koa();
