@@ -62,6 +62,7 @@
   "dependencies": {
     "@koa/router": "^8.0.1",
     "convict": "^5.1.0",
-    "koa": "^2.8.1"
+    "koa": "^2.8.1",
+    "mozlog": "^2.2.0"
   }
 }
