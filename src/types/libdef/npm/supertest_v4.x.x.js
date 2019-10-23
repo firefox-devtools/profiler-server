@@ -1,6 +1,5 @@
-// @flow
-// Contributed upstream in https://github.com/flow-typed/flow-typed/pull/3587.
-// Once it merges we could import it like a usual libdef.
+// flow-typed signature: 760cd445d9d1da9aa3fa675fd31f1708
+// flow-typed version: d37a8ea72b/supertest_v4.x.x/flow_>=v0.94.x
 
 declare module 'supertest' {
   import type { IncomingMessage, ServerResponse } from 'http';
