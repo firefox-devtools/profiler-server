@@ -27,10 +27,15 @@ describe('dockerflow endpoints', () => {
   it('answers to the version endpoint when the file is absent', async () => {
     const error = new Error("Can't find the requested file.");
     (error: any).code = 'ENOENT';
+
     jest.spyOn(fs.promises, 'readFile').mockRejectedValue(error);
+    // mozlog writes to stdout, let's catch it
+    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+
     const agent = setup();
-    const response = await agent.get('/__version__').expect(500);
-    expect(response.body).toHaveProperty('error', expect.any(String));
+    await agent.get('/__version__').expect(500);
+
+    expect(process.stdout.write).toHaveBeenCalled();
   });
 
   it('answers to the version endpoint when the file is present', async () => {

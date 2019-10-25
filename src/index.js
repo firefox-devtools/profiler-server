@@ -5,7 +5,10 @@
 
 import { createApp } from './app';
 import { config } from './config';
+import { getLogger } from './log';
 
+const log = getLogger('index');
 const app = createApp();
+
 app.listen(config.httpPort);
-console.log('The HTTP server is listening on port %s.', config.httpPort);
+log.info('server_started', { port: config.httpPort });

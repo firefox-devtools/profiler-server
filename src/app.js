@@ -5,10 +5,18 @@
 
 import Koa from 'koa';
 
+import { getLogger } from './log';
 import { routes } from './routes';
+
+const log = getLogger('app');
 
 export function createApp() {
   const app = new Koa();
+
+  // attach general utils.
+  app.on('error', err => {
+    log.error('server_error', { error: err, stack: err.stack });
+  });
 
   // Adding the main endpoints for this app.
   // koa-router exposes 2 middlewares:

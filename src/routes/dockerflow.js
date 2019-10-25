@@ -32,17 +32,11 @@ export function dockerFlowRoutes() {
     } catch (e) {
       if (e.code === 'ENOENT') {
         // ENOENT means "No such file or directory"
-        ctx.status = 500;
-        ctx.body = {
-          error: "The version file couldn't be found",
-        };
-      } else {
-        ctx.status = 500;
-        ctx.body = {
-          error: `Unexpected error while retrieving the version file: ${e.message}`,
-        };
-        console.error('Unexpected error while retrieving the version file.', e);
+        throw new Error('The version file could not be found.');
       }
+
+      // Rethrow the error otherwise.
+      throw e;
     }
   });
 
