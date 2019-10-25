@@ -5,6 +5,7 @@
 
 import Koa from 'koa';
 
+import { config } from './config';
 import { getLogger } from './log';
 import { routes } from './routes';
 
@@ -17,6 +18,13 @@ export function createApp() {
   app.on('error', err => {
     log.error('server_error', { error: err, stack: err.stack });
   });
+
+  if (config.env === 'development') {
+    // For now we use this logger only for development because it's a bit
+    // costly. In production we should be able to have the logs of requests from
+    // the server frontend instead.
+    app.use(require('koa-logger')());
+  }
 
   // Adding the main endpoints for this app.
   // koa-router exposes 2 middlewares:
