@@ -5,9 +5,11 @@
 
 import Router from '@koa/router';
 import { dockerFlowRoutes } from './dockerflow';
+import { publishRoutes } from './publish';
 
 export function routes() {
   const router = new Router();
   router.use(dockerFlowRoutes().routes());
+  router.use(publishRoutes().routes());
   return router;
 }
