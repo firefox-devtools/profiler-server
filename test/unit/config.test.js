@@ -10,10 +10,14 @@ describe('config.js', () => {
     expect(config).toEqual({
       env: 'test',
       httpPort: 4243,
+      gcsBucket: 'profile-store',
+      googleAuthenticationFilePath: '',
     });
     expect(loadConfig()).toEqual({
       env: 'test',
       httpPort: 4243,
+      gcsBucket: 'profile-store',
+      googleAuthenticationFilePath: '',
     });
   });
 

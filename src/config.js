@@ -23,6 +23,21 @@ function loadConfig() {
       // see https://github.com/mozilla-services/Dockerflow#containerized-app-requirements
       env: 'PORT',
     },
+    gcsBucket: {
+      doc: `The bucket in Google Cloud Storage we'll use to store files.`,
+      format: String,
+      default: 'profile-store',
+      env: 'GCS_BUCKET',
+    },
+    googleAuthenticationFilePath: {
+      // This holds the path to an authentication file, downloaded from the
+      // Google Cloud Console.
+      // Use the value "MOCKED" to use our mocked version of the service.
+      doc: 'Path to the authentication file for Google Services',
+      format: String,
+      default: '',
+      env: 'GCS_AUTHENTICATION_PATH',
+    },
   });
 
   if (conf.get('env') !== 'test') {
@@ -45,12 +60,15 @@ function loadConfig() {
   }
 
   conf.validate();
+
   return conf.getProperties();
 }
 
 type Config = {|
   +env: string,
   +httpPort: number,
+  +gcsBucket: string,
+  +googleAuthenticationFilePath: string,
 |};
 
 export const config: Config = loadConfig();
