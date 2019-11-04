@@ -17,3 +17,6 @@ export const getLogger = mozlog({
   fmt: isProduction ? 'heka' : 'pretty',
   debug: !isProduction, // This asserts a correct usage of the library
 });
+
+type ExtractReturnType = <T>((...rest: any) => T) => T;
+export type Logger = $Call<ExtractReturnType, typeof getLogger>;
