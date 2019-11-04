@@ -4,6 +4,9 @@
 // @flow
 
 import convict from 'convict';
+import { getLogger } from './log';
+
+const log = getLogger('config');
 
 const conf = convict({
   env: {
@@ -21,6 +24,25 @@ const conf = convict({
   },
 });
 
+if (conf.get('env') !== 'test') {
+  // We don't want to run a local configuration file for tests so that we
+  // ensure that they'll always run the same in all environments.
+  try {
+    // Load local configuration if present.
+    conf.loadFile('./local-config.json');
+    log.debug(
+      'local_configuration',
+      `Local configuration file 'local-config.json' was found and loaded.`
+    );
+  } catch (e) {
+    // But it's OK if it's absent.
+    log.debug(
+      'local_configuration',
+      `Local configuration file 'local-config.json' was not found, but it's OK.`
+    );
+  }
+}
+
 conf.validate();
 
 type Config = {|
@@ -29,3 +51,7 @@ type Config = {|
 |};
 
 export const config: Config = conf.getProperties();
+log.info(
+  'configuration_success',
+  'Configuration info has been loaded successfully.'
+);
