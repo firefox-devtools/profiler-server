@@ -11,37 +11,50 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
+const packageJson = require('../package.json');
 
 function checkEnvironment() {
-  const isRunningInCircleCi = process.env.CIRCLECI === 'true';
-  if (!isRunningInCircleCi) {
+  // Let's check that we have our needed environment variable.
+  if (!process.env.CIRCLE_BUILD_URL) {
     throw new Error(
-      'This script will not work correctly outside of a CircleCI environment.'
+      'The environment variable CIRCLE_BUILD_URL is missing. Are we running in CircleCI?'
     );
   }
+
+  console.log('All needed environment variables have been found, good!');
 
   const isAtGitRoot = fs.existsSync('.git');
   if (!isAtGitRoot) {
     throw new Error('This script must be run at the root of the repository.');
   }
+
+  console.log('We are in the root directory, good!');
+}
+
+function getGitCommitHash() /*: string */ {
+  const hash = execFileSync('git', ['rev-parse', 'HEAD'], {
+    encoding: 'utf8',
+  });
+  // Because execFileSync can return both a string or a buffer depending on the
+  // `encoding` option, Flow isn't happy about calling `trim` on it. But _we_
+  // know that it's a string.
+  // $FlowExpectError
+  return hash.trim();
 }
 
 function writeVersionFile() {
-  // Note: we don't use CIRCLE_REPOSITORY_URL directly, because this gives a ssh
-  // URL. That's why we compose the URL manually.
-  const projectUsername = process.env.CIRCLE_PROJECT_USERNAME || '';
-  const projectReponame = process.env.CIRCLE_PROJECT_REPONAME || '';
-  const repositoryUrl = `https://github.com/${projectUsername}/${projectReponame}`;
+  const repositoryUrl = packageJson.repository;
 
-  const commitHash = process.env.CIRCLE_SHA1;
+  const commitHash = getGitCommitHash();
   const buildUrl = process.env.CIRCLE_BUILD_URL;
-  const version = '';
+  const version = ''; // TODO: generate a proper version when we're on a tag
   const distDir = 'dist';
   const targetName = path.join(distDir, 'version.json');
 
   const versionObject = {
     source: repositoryUrl,
-    version: version,
+    version,
     commit: commitHash,
     build: buildUrl,
   };
