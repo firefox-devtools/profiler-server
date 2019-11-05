@@ -8,7 +8,6 @@
 
 import Router from '@koa/router';
 import fs from 'fs';
-import path from 'path';
 
 export function dockerFlowRoutes() {
   const router = new Router();
@@ -18,21 +17,18 @@ export function dockerFlowRoutes() {
   // time in CircleCI and lives in dist/version.json.
   // We serve it directly if present, otherwise returns a 404.
   router.get('/__version__', async ctx => {
-    // We use path.join with __dirname so that the path doesn't depend on the
-    // current working directory.
-    // And we prefer it over require.resolve or path.resolve because they're not
-    // easy to mock in tests (maybe impossible). Also path.join does no
-    // filesystem access so it's probably faster than them.
-    const fileName = path.join(__dirname, '../../dist/version.json');
-
+    // We try to get the version file in the current working directory.
+    const versionFilePath = 'version.json';
     try {
-      const content = await fs.promises.readFile(fileName);
+      const content = await fs.promises.readFile(versionFilePath);
       ctx.body = content;
       ctx.type = 'json';
     } catch (e) {
       if (e.code === 'ENOENT') {
         // ENOENT means "No such file or directory"
-        throw new Error('The version file could not be found.');
+        throw new Error(
+          `The version file (${versionFilePath}) could not be found.`
+        );
       }
 
       // Rethrow the error otherwise.

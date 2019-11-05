@@ -35,6 +35,7 @@ describe('dockerflow endpoints', () => {
     const agent = setup();
     await agent.get('/__version__').expect(500);
 
+    expect(fs.promises.readFile).toHaveBeenCalledWith('version.json');
     expect(process.stdout.write).toHaveBeenCalled();
   });
 
@@ -47,6 +48,7 @@ describe('dockerflow endpoints', () => {
       .expect('Content-Type', /^application\/json/)
       .expect(200);
 
+    expect(fs.promises.readFile).toHaveBeenCalledWith('version.json');
     expect(response.body).toEqual(fixture);
   });
 });
