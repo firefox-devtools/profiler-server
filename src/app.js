@@ -6,7 +6,7 @@
 import Koa from 'koa';
 
 import { config } from './config';
-import { getLogger } from './log';
+import { getLogger, logLevel } from './log';
 import { routes } from './routes';
 
 const log = getLogger('app');
@@ -19,9 +19,11 @@ export function createApp() {
     log.error('server_error', { error: err, stack: err.stack });
   });
 
-  if (config.env === 'development') {
+  if (config.env === 'development' || logLevel === 'verbose') {
     // For now we use this logger only for development because it's a bit
-    // costly. In production we should be able to have the logs of requests from
+    // costly. It's disabled in tests but can be enabled when configuring the
+    // environment variable LOG_LEVEL to "verbose".
+    // In production we should be able to have the logs of requests from
     // the server frontend instead.
     app.use(require('koa-logger')());
   }
