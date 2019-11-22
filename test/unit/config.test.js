@@ -3,16 +3,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 // @flow
 import fs from 'fs';
+import { config, loadConfigForTestsOnly as loadConfig } from '../../src/config';
 
 describe('config.js', () => {
-  beforeEach(() => {
-    // Reseting the modules forces Jest to fully reload the "config" module.
-    jest.resetModules();
-  });
-
   it('returns default values', () => {
-    const { config } = require('../../src/config');
     expect(config).toEqual({
+      env: 'test',
+      httpPort: 4243,
+    });
+    expect(loadConfig()).toEqual({
       env: 'test',
       httpPort: 4243,
     });
@@ -20,8 +19,7 @@ describe('config.js', () => {
 
   it('configures other values from environment variables', () => {
     process.env.PORT = '12345';
-    const { config } = require('../../src/config');
-    expect(config.httpPort).toEqual(12345);
+    expect(loadConfig().httpPort).toEqual(12345);
     delete process.env.PORT;
   });
 
@@ -32,8 +30,7 @@ describe('config.js', () => {
         httpPort: '12345',
       })
     );
-    const { config } = require('../../src/config');
-    expect(config.httpPort).toEqual(12345);
+    expect(loadConfig().httpPort).toEqual(12345);
     process.env.NODE_ENV = 'test';
   });
 });
