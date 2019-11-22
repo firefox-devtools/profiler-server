@@ -8,10 +8,6 @@ import { dockerFlowRoutes } from './dockerflow';
 
 export function routes() {
   const router = new Router();
-  router.get('/', ctx => {
-    ctx.body = 'Hello world!';
-  });
-
   router.use(dockerFlowRoutes().routes());
   return router;
 }
