@@ -8,7 +8,11 @@ afterEach(() => {
   // to be working correctly. Manually trigger this call here to ensure we
   // don't get intermittents from one test's mocks affecting another test's mocks.
   //
+  // We use `restoreAllMocks` over `resetAllMocks` because this restores the
+  // mocks to their initial value. `resetAllMocks` would keep the mock and make
+  // them return `undefined`.
+  //
   // See https://github.com/facebook/jest/issues/7654
-  jest.resetAllMocks();
+  jest.restoreAllMocks();
   jest.clearAllTimers();
 });
