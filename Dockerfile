@@ -15,9 +15,6 @@
 # "slim" flavor because we don't need the big version.
 FROM node:10-buster-slim AS builder
 
-ENV NODE_ENV="production"
-ENV PORT=8000
-
 # Create the user we'll run the build commands with. Its home is configured to
 # be the directory /app. It helps avoiding warnings when running tests and
 # building the app later.
@@ -61,7 +58,7 @@ ENV CIRCLE_BUILD_URL=${circle_build_url}
 # faster.
 RUN set -x \
 # Install the dependencies, including dev dependencies.
-  && yarn install --frozen-lockfile --production=false \
+  && yarn install --frozen-lockfile \
 # Run tests
 # Note we don't use test-all because we don't want to start the flow server. So
 # we run all test commands separately.
@@ -70,7 +67,7 @@ RUN set -x \
   && yarn test \
 # Actually build the project.
   && yarn build:clean \
-  && yarn build \
+  && NODE_ENV=production yarn build \
 # This script doesn't work outside of CircleCI
   && if [ -n "$CIRCLE_BUILD_URL" ] ; then yarn generate-version-file ; fi \
 # Then keep only prod dependencies, that we'll copy over to the runtime

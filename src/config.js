@@ -4,28 +4,63 @@
 // @flow
 
 import convict from 'convict';
+import { getLogger } from './log';
 
-const conf = convict({
-  env: {
-    doc: 'The application environment.',
-    format: ['production', 'development', 'test'],
-    default: 'development',
-    env: 'NODE_ENV',
-  },
-  httpPort: {
-    format: 'port',
-    default: 4243,
-    // The environment variable's name is required by Dockerflow.
-    // see https://github.com/mozilla-services/Dockerflow#containerized-app-requirements
-    env: 'PORT',
-  },
-});
+const log = getLogger('config');
 
-conf.validate();
+function loadConfig() {
+  const conf = convict({
+    env: {
+      doc: 'The application environment.',
+      format: ['production', 'development', 'test'],
+      default: 'development',
+      env: 'NODE_ENV',
+    },
+    httpPort: {
+      format: 'port',
+      default: 4243,
+      // The environment variable's name is required by Dockerflow.
+      // see https://github.com/mozilla-services/Dockerflow#containerized-app-requirements
+      env: 'PORT',
+    },
+  });
+
+  if (conf.get('env') !== 'test') {
+    // We don't want to run a local configuration file for tests so that we
+    // ensure that they'll always run the same in all environments.
+    try {
+      // Load local configuration if present.
+      conf.loadFile('./local-config.json');
+      log.debug(
+        'local_configuration',
+        `Local configuration file 'local-config.json' was found and loaded.`
+      );
+    } catch (e) {
+      // But it's OK if it's absent.
+      log.debug(
+        'local_configuration',
+        `Local configuration file 'local-config.json' was not found, but it's OK.`
+      );
+    }
+  }
+
+  conf.validate();
+  return conf.getProperties();
+}
 
 type Config = {|
   +env: string,
   +httpPort: number,
 |};
 
-export const config: Config = conf.getProperties();
+export const config: Config = loadConfig();
+log.info(
+  'configuration_success',
+  'Configuration info has been loaded successfully.'
+);
+
+// In tests we want to test how the config loads in several environments.
+// Instead of testing the `config` object we test the result of `loadConfig`
+// directly, so that this doesn't affect the main `config` object while other
+// tests run in parallel.
+export { loadConfig as loadConfigForTestsOnly };
