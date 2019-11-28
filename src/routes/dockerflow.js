@@ -9,7 +9,13 @@
 import Router from '@koa/router';
 import fs from 'fs';
 
+import { getLogger } from '../log';
+import { config } from '../config';
+import { create as gcsStorageCreate } from '../logic/gcs';
+
 export function dockerFlowRoutes() {
+  const log = getLogger('dockerFlowRoutes');
+
   const router = new Router();
 
   // "Respond to /__version__ with the contents of /app/version.json."
@@ -40,8 +46,11 @@ export function dockerFlowRoutes() {
   // check backing services like a database for connectivity and may respond
   // with the status of backing services and application components as a JSON
   // payload."
-  router.get('/__heartbeat__', ctx => {
-    // TODO Later we'll need to ping back-end services like google storage.
+  router.get('/__heartbeat__', async ctx => {
+    // In this heartbeat endpoint, we need to ping 3rd party servers.
+    const storage = gcsStorageCreate(config);
+    await storage.ping();
+    log.debug('heartbeat_gcs', 'GCS ping was successful.');
     ctx.body = 'OK';
   });
 

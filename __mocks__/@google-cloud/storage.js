@@ -39,6 +39,10 @@ class MockBucket {
   file(path: string) {
     return this.files[path] || (this.files[path] = new MockFile(path));
   }
+
+  exists() {
+    return [true];
+  }
 }
 
 type Metadata = {
