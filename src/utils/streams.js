@@ -22,7 +22,11 @@ export class HasherPassThrough extends Transform {
   // can be called only once.
   sha1Result: string | null = null;
 
-  _transform(chunk: *, encoding: *, callback: *) {
+  _transform(
+    chunk: string | Buffer,
+    encoding: mixed,
+    callback: (error?: Error) => mixed
+  ) {
     this.sha1Hasher.update(chunk);
     this.push(chunk);
     callback();
@@ -53,7 +57,11 @@ export class LengthCheckerPassThrough extends Transform {
     this.maxLength = maxLength;
   }
 
-  _transform(chunk: *, encoding: *, callback: *) {
+  _transform(
+    chunk: string | Buffer,
+    encoding: mixed,
+    callback: (error?: Error) => mixed
+  ) {
     this.length += chunk.length;
     this.log.verbose(
       'length-checker-length',
@@ -90,7 +98,11 @@ export class Concatenator extends Writable {
     super({ decodeStrings: false });
   }
 
-  _write(chunk: *, encoding: *, callback: *) {
+  _write(
+    chunk: string | Buffer,
+    encoding: mixed,
+    callback: (error?: Error) => mixed
+  ) {
     if (!(chunk instanceof Buffer)) {
       callback(new Error(`This stream doesn't support strings.`));
       return;
@@ -100,13 +112,13 @@ export class Concatenator extends Writable {
     callback();
   }
 
-  _destroy(err: *, callback: *) {
+  _destroy(err: ?Error, callback: (error?: Error) => mixed) {
     this.chunks.length = 0;
     this.contents = null;
     callback();
   }
 
-  _final(callback: *) {
+  _final(callback: (error?: Error) => mixed) {
     this.contents = Buffer.concat(this.chunks);
     this.chunks.length = 0;
     callback();
