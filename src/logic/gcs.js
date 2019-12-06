@@ -41,10 +41,14 @@ class RealGcsStorage implements GcsStorage {
 
   getWriteStreamForFile(filePath: string): Writable {
     const file = this.bucket.file(filePath);
+
+    // This uses fast-crc32c under the hood, to compute the crc32c checksum of
+    // the sent data and compare with the checksum google sends back after
+    // upload.
     const googleStorageStream = file.createWriteStream({
-      public: true, // Our content is already gzipped
+      public: true,
       resumable: false,
-      gzip: false,
+      gzip: false, // Our content is already gzipped
       metadata: {
         contentType: 'text/plain',
         cacheControl: 'max-age: 365000000, immutable',

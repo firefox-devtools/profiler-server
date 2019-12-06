@@ -8,8 +8,8 @@ version of the service.
 
 ## Configure Google platform for this project.
 
-If you're a Mozilla employee, you can jump directly to the last paragraph in
-this section.
+If you're a Mozilla employee, you can [jump directly to the last paragraph in
+this section](#youre-a-mozilla-employee).
 
 Otherwise you can start following the steps starting at the first paragraph.
 

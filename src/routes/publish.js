@@ -33,7 +33,7 @@ export function publishRoutes() {
     if (expectedLength !== undefined && expectedLength > MAX_BODY_LENGTH) {
       log.verbose(
         'length-header-check',
-        'The length specifided in the header Content-Length is too big.'
+        'The length specified in the header Content-Length is too big.'
       );
       ctx.status = 413;
       return;

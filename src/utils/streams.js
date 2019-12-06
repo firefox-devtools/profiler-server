@@ -11,12 +11,15 @@ import crypto from 'crypto';
 import { getLogger, type Logger } from '../log';
 
 /**
- * This transform computes a sha1 of the daa passing through it, but otherwise
+ * This transform computes a sha1 of the data passing through it, but otherwise
  * doesn't alter the data.
  */
 export class HasherPassThrough extends Transform {
   log: Logger = getLogger('HasherPassThrough');
-  sha1Hasher: crypto$Hash = crypto.createHash('sha1');
+  sha1Hasher = crypto.createHash('sha1');
+
+  // This variable holds the result of the sha operation, because `hash.digest`
+  // can be called only once.
   sha1Result: string | null = null;
 
   _transform(chunk: *, encoding: *, callback: *) {
@@ -25,7 +28,9 @@ export class HasherPassThrough extends Transform {
     callback();
   }
 
-  sha1() {
+  // This method returns the computed sha1 from the data that passed through the
+  // transform.
+  sha1(): string {
     this.log.verbose('sha1()');
     if (this.sha1Result === null) {
       this.sha1Result = this.sha1Hasher.digest('hex');
