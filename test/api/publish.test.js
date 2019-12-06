@@ -21,21 +21,38 @@ describe('publishing endpoints', () => {
   }
 
   it('uploads data all the way to google storage when using a content length', async () => {
+    // This is the content we want to send.
     const content = 'aaaa';
-    const req = setup();
-    await req.send(content).expect(200);
 
+    // This is the hash for the content. It's returned by the API and used as a
+    // file path in GCS.
     const contentHash = crypto
       .createHash('sha1')
       .update(content)
       .digest('hex');
 
+    // `setup` returns a request already configured with the right path and
+    // content type.
+    const req = setup();
+
+    // This checks that we get a 200 status from the server and that it returns
+    // the hash.
+    await req.send(content).expect(200, contentHash);
+
+    // Now we'll look at our mocked GCS library and check it's been called
+    // properly.
+
+    // Do we have the bucket configured in our config file?
     expect(MockStorage.buckets).toHaveProperty(config.gcsBucket);
 
     const bucket = MockStorage.buckets[config.gcsBucket];
+
+    // Do we have a file whose name is the hash in that bucket?
     expect(bucket.files).toHaveProperty(contentHash);
 
     const file = bucket.files[contentHash];
+
+    // Let's check that file's content, name and metadata information.
     expect(file).toHaveProperty('contents', Buffer.from(content));
     expect(file).toHaveProperty('name', contentHash);
     expect(file).toHaveProperty(
@@ -49,7 +66,16 @@ describe('publishing endpoints', () => {
   });
 
   it('uploads data all the way to google storage when using chunked encoding', async () => {
+    // Except the use of `write` below, this test follows the same scenario and
+    // checks the same things as the test above. Please refer to the test above
+    // for more information.
     const content = 'aaaa';
+
+    const contentHash = crypto
+      .createHash('sha1')
+      .update(content)
+      .digest('hex');
+
     const req = setup();
 
     // When using the low-level API "write", Node generates a "chunked encoding"
@@ -59,17 +85,14 @@ describe('publishing endpoints', () => {
     // have to rely on the heuristic.
     req.write(content);
 
-    await req.expect(200);
-
-    const contentHash = crypto
-      .createHash('sha1')
-      .update(content)
-      .digest('hex');
+    await req.expect(200, contentHash);
 
     expect(MockStorage.buckets).toHaveProperty(config.gcsBucket);
     const bucket = MockStorage.buckets[config.gcsBucket];
+
     expect(bucket.files).toHaveProperty(contentHash);
     const file = bucket.files[contentHash];
+
     expect(file).toHaveProperty('contents', Buffer.from(content));
     expect(file).toHaveProperty('name', contentHash);
     expect(file).toHaveProperty(
@@ -82,7 +105,7 @@ describe('publishing endpoints', () => {
     );
   });
 
-  it('returns an error when the length is too big', async () => {
+  it('returns an error when the length header is too big', async () => {
     const req = setup();
     await req.set('Content-Length', String(1024 * 1024 * 1024)).expect(413);
   });
@@ -93,7 +116,7 @@ describe('publishing endpoints', () => {
     await req
       .set('Content-Length', String(3))
       .send('aaaa')
-      .expect(400);
+      .expect(400); // 400 means Bad Request. It's generated automatically by Koa.
     expect(process.stdout.write).toHaveBeenCalledWith(
       expect.stringContaining('server_error')
     );
@@ -106,6 +129,7 @@ describe('publishing endpoints', () => {
     // When using the low-level API "write", Node generates a "chunked encoding"
     // request without a Content-Length. This is exactly what we want to check
     // here.
+    // We generate a Buffer of 33MB, but our limit is 32MB.
     await req.write(Buffer.alloc(33 * 1024 * 1024));
 
     const error = await req.then(

@@ -14,7 +14,7 @@ beforeEach(() => MockStorage.cleanUp());
 afterEach(() => MockStorage.cleanUp());
 
 describe('logic/gcs', () => {
-  it('creates a mock service when asked for', async () => {
+  it('creates a mock service when using the value "MOCKED"', async () => {
     jest.spyOn(Bucket.prototype, 'exists');
     jest.spyOn(Bucket.prototype, 'file');
     const storage = gcsStorageCreate({
@@ -30,7 +30,7 @@ describe('logic/gcs', () => {
     expect(Bucket.prototype.file).not.toHaveBeenCalled();
   });
 
-  it('calls the real service when passed no configuration file', async () => {
+  it('will call the real service when no configuration file path is passed to the library', async () => {
     jest.spyOn(Bucket.prototype, 'exists');
     jest.spyOn(Bucket.prototype, 'file');
 
@@ -46,7 +46,7 @@ describe('logic/gcs', () => {
     expect(Bucket.prototype.file).toHaveBeenCalledWith('filepath');
   });
 
-  it('calls the real service when passed a configuration file', async () => {
+  it('will call the real service when a configuration file path is passed to the library', async () => {
     jest.spyOn(Bucket.prototype, 'exists');
     jest.spyOn(Bucket.prototype, 'file');
 
