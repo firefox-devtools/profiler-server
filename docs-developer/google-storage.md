@@ -102,13 +102,11 @@ this bucket will be emptied from time to time.
 
 ## Configure your local development instance to use GCS
 
-Create a file in your project directory, called `local-config.json`. Here is the
+Create a file in your project directory, called `.env`. Here is the
 content it should have:
-```json
-{
-  "gcsBucket": "<bucket name>",
-  "googleAuthenticationFile": "<path to your key file>.json"
-}
+```
+GCS_BUCKET="<bucket name>"
+GCS_AUTHENTICATION_PATH="<path to your key file>.json"
 ```
 
 If you're using the Mozilla project, the bucket name you can use is
@@ -117,10 +115,8 @@ first step above.
 
 ## Configure your local development instance to use a mock version of GCS
 
-Create a file in your project directory, called `local-config.json`. Here is the
+Create a file in your project directory, called `.env`. Here is the
 content it should have:
-```json
-{
-    "googleAuthenticationFile": "MOCKED"
-}
+```
+GCS_AUTHENTICATION_PATH="MOCKED"
 ```

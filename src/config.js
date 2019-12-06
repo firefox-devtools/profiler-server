@@ -40,25 +40,6 @@ function loadConfig() {
     },
   });
 
-  if (conf.get('env') !== 'test') {
-    // We don't want to run a local configuration file for tests so that we
-    // ensure that they'll always run the same in all environments.
-    try {
-      // Load local configuration if present.
-      conf.loadFile('./local-config.json');
-      log.debug(
-        'local_configuration',
-        `Local configuration file 'local-config.json' was found and loaded.`
-      );
-    } catch (e) {
-      // But it's OK if it's absent.
-      log.debug(
-        'local_configuration',
-        `Local configuration file 'local-config.json' was not found, but it's OK.`
-      );
-    }
-  }
-
   conf.validate();
 
   return conf.getProperties();
