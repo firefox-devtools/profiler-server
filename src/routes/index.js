@@ -4,6 +4,8 @@
 // @flow
 
 import Router from '@koa/router';
+import cors from '@koa/cors';
+
 import { dockerFlowRoutes } from './dockerflow';
 import { publishRoutes } from './publish';
 import { versioning } from '../middlewares';
@@ -12,8 +14,9 @@ export function routes() {
   const router = new Router();
   router.use(dockerFlowRoutes().routes());
 
-  // Versioning applies only to API routes, that's why we specify it here.
+  // Versioning and CORS applies only to API routes, that's why we specify it here.
   router.use(versioning(1));
+  router.use(cors());
   router.use(publishRoutes().routes());
   return router;
 }
