@@ -4,10 +4,12 @@
 // @flow
 
 import Koa from 'koa';
+import helmet from 'koa-helmet';
 
 import { config } from './config';
 import { getLogger, logLevel } from './log';
 import { routes } from './routes';
+import { reportTo } from './middlewares';
 
 const log = getLogger('app');
 
@@ -27,6 +29,32 @@ export function createApp() {
     // the server frontend instead.
     app.use(require('koa-logger')());
   }
+
+  app.use(
+    reportTo([
+      {
+        group: 'cspreport',
+        maxAge: 365 * 24 * 60 * 60,
+        endpoints: [{ url: '/__cspreport__' }],
+      },
+    ])
+  );
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'none'"],
+          frameAncestors: ["'none'"],
+          baseUri: ["'none'"],
+          reportUri: '/__cspreport__',
+          reportTo: 'cspreport',
+        },
+      },
+      hsts: {
+        maxAge: 31536000, // 1year
+      },
+    })
+  );
 
   // Adding the main endpoints for this app.
   // koa-router exposes 2 middlewares:
