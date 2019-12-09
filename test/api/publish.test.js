@@ -10,14 +10,19 @@ import { Storage as MockStorage } from '../../__mocks__/@google-cloud/storage';
 
 import { config } from '../../src/config';
 import { createApp } from '../../src/app';
+import { ACCEPT_VALUE_PREFIX } from '../../src/middlewares/versioning';
 
 beforeEach(() => MockStorage.cleanUp());
 afterEach(() => MockStorage.cleanUp());
 
 describe('publishing endpoints', () => {
   function getPreconfiguredRequest() {
+    const acceptHeader = ACCEPT_VALUE_PREFIX + '1.0';
     const agent = supertest(createApp().callback());
-    return agent.post('/compressed-store').type('text');
+    return agent
+      .post('/compressed-store')
+      .accept(acceptHeader)
+      .type('text');
   }
 
   it('uploads data all the way to google storage when using a content length', async () => {
@@ -150,5 +155,31 @@ describe('publishing endpoints', () => {
     expect(process.stdout.write).toHaveBeenCalledWith(
       expect.stringContaining('server_error')
     );
+  });
+});
+
+describe('API versioning', () => {
+  function getPreconfiguredRequest() {
+    // In these tests we'll generate errors, which triggers a lot of output from
+    // the log. Let's silence that.
+    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+
+    const agent = supertest(createApp().callback());
+    return agent.post('/compressed-store').type('text');
+  }
+
+  it('returns an error when no `accept` header is specified', async () => {
+    const req = getPreconfiguredRequest();
+    await req.send('a').expect(400);
+  });
+
+  it('returns an error when an invalid `accept` header is specified', async () => {
+    const req = getPreconfiguredRequest().accept('INVALID_VALUE');
+    await req.send('a').expect(400);
+  });
+
+  it('returns an error when an `accept` header is specified with an unsupported version', async () => {
+    const req = getPreconfiguredRequest().accept(ACCEPT_VALUE_PREFIX + '2.0');
+    await req.send('a').expect(406);
   });
 });
