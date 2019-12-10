@@ -6,3 +6,4 @@
 // This file just reexports all middlewares for an easier access.
 
 export * from './versioning';
+export * from './reportTo';
