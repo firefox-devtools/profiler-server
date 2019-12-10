@@ -8,11 +8,14 @@ import cors from '@koa/cors';
 
 import { dockerFlowRoutes } from './dockerflow';
 import { publishRoutes } from './publish';
+import { cspReportRoutes } from './cspReport';
+
 import { versioning } from '../middlewares';
 
 export function routes() {
   const router = new Router();
   router.use(dockerFlowRoutes().routes());
+  router.use(cspReportRoutes().routes());
 
   // Versioning and CORS applies only to API routes, that's why we specify it here.
   router.use(versioning(1));
