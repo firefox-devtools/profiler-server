@@ -2,7 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 // @flow
-import fs from 'fs';
 import { config, loadConfigForTestsOnly as loadConfig } from '../../src/config';
 
 describe('config.js', () => {
@@ -10,10 +9,14 @@ describe('config.js', () => {
     expect(config).toEqual({
       env: 'test',
       httpPort: 4243,
+      gcsBucket: 'profile-store',
+      googleAuthenticationFilePath: '',
     });
     expect(loadConfig()).toEqual({
       env: 'test',
       httpPort: 4243,
+      gcsBucket: 'profile-store',
+      googleAuthenticationFilePath: '',
     });
   });
 
@@ -21,16 +24,5 @@ describe('config.js', () => {
     process.env.PORT = '12345';
     expect(loadConfig().httpPort).toEqual(12345);
     delete process.env.PORT;
-  });
-
-  it('configures other values from a local file', () => {
-    process.env.NODE_ENV = 'production';
-    jest.spyOn(fs, 'readFileSync').mockImplementation(() =>
-      JSON.stringify({
-        httpPort: '12345',
-      })
-    );
-    expect(loadConfig().httpPort).toEqual(12345);
-    process.env.NODE_ENV = 'test';
   });
 });
