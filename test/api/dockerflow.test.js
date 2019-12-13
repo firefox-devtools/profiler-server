@@ -8,6 +8,7 @@ import fs from 'fs';
 import { Bucket } from '@google-cloud/storage';
 
 import { createApp } from '../../src/app';
+import { checkSecurityHeaders } from './utils/check-security-headers';
 
 describe('dockerflow endpoints', () => {
   function setup() {
@@ -79,5 +80,15 @@ describe('dockerflow endpoints', () => {
 
     expect(fs.promises.readFile).toHaveBeenCalledWith('version.json');
     expect(response.body).toEqual(fixture);
+  });
+
+  it('all endpoints uses security headers', async () => {
+    const fixture = require('./fixtures/version.json');
+    jest.spyOn(fs.promises, 'readFile').mockResolvedValue(fixture);
+
+    const agent = setup();
+    await checkSecurityHeaders(agent.get('/__heartbeat__'));
+    await checkSecurityHeaders(agent.get('/__lbheartbeat__'));
+    await checkSecurityHeaders(agent.get('/__version__'));
   });
 });

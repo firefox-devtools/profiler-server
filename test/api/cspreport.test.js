@@ -6,6 +6,7 @@
 import supertest from 'supertest';
 
 import { createApp } from '../../src/app';
+import { checkSecurityHeaders } from './utils/check-security-headers';
 
 describe('cspreport endpoint', () => {
   function getPreconfiguredRequest() {
@@ -29,8 +30,11 @@ describe('cspreport endpoint', () => {
       },
     };
 
-    const req = getPreconfiguredRequest();
-    await req.send(validReport).expect(204);
+    let req = getPreconfiguredRequest();
+    req = req.send(validReport).expect(204);
+    req = checkSecurityHeaders(req);
+    await req;
+
     expect(process.stdout.write).toHaveBeenCalledWith(
       expect.stringContaining(JSON.stringify(validReport['csp-report']))
     );
