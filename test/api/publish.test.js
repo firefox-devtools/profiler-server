@@ -15,7 +15,7 @@ beforeEach(() => MockStorage.cleanUp());
 afterEach(() => MockStorage.cleanUp());
 
 describe('publishing endpoints', () => {
-  function setup() {
+  function getPreconfiguredRequest() {
     const agent = supertest(createApp().callback());
     return agent.post('/compressed-store').type('text');
   }
@@ -31,9 +31,9 @@ describe('publishing endpoints', () => {
       .update(content)
       .digest('hex');
 
-    // `setup` returns a request already configured with the right path and
-    // content type.
-    const req = setup();
+    // `getPreconfiguredRequest` returns a request already configured with the
+    // right path and content type.
+    const req = getPreconfiguredRequest();
 
     // This checks that we get a 200 status from the server and that it returns
     // the hash.
@@ -76,7 +76,7 @@ describe('publishing endpoints', () => {
       .update(content)
       .digest('hex');
 
-    const req = setup();
+    const req = getPreconfiguredRequest();
 
     // When using the low-level API "write", Node generates a "chunked encoding"
     // request without a Content-Length. This is exactly what we want to check
@@ -106,13 +106,13 @@ describe('publishing endpoints', () => {
   });
 
   it('returns an error when the length header is too big', async () => {
-    const req = setup();
+    const req = getPreconfiguredRequest();
     await req.set('Content-Length', String(1024 * 1024 * 1024)).expect(413);
   });
 
   it('returns an error when the sent data is bigger than the length', async () => {
     jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
-    const req = setup();
+    const req = getPreconfiguredRequest();
     await req
       .set('Content-Length', String(3))
       .send('aaaa')
@@ -124,7 +124,7 @@ describe('publishing endpoints', () => {
 
   it('returns an error when the pushed buffer is too big', async () => {
     jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
-    const req = setup();
+    const req = getPreconfiguredRequest();
 
     // When using the low-level API "write", Node generates a "chunked encoding"
     // request without a Content-Length. This is exactly what we want to check
