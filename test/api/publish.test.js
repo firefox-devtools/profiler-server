@@ -10,14 +10,14 @@ import { Storage as MockStorage } from '../../__mocks__/@google-cloud/storage';
 
 import { config } from '../../src/config';
 import { createApp } from '../../src/app';
-import { ACCEPT_VALUE_PREFIX } from '../../src/middlewares/versioning';
+import { ACCEPT_VALUE_MIME } from '../../src/middlewares/versioning';
 
 beforeEach(() => MockStorage.cleanUp());
 afterEach(() => MockStorage.cleanUp());
 
 describe('publishing endpoints', () => {
   function getPreconfiguredRequest() {
-    const acceptHeader = ACCEPT_VALUE_PREFIX + '1.0';
+    const acceptHeader = ACCEPT_VALUE_MIME + ';version=1';
     const agent = supertest(createApp().callback());
     return agent
       .post('/compressed-store')
@@ -170,16 +170,39 @@ describe('API versioning', () => {
 
   it('returns an error when no `accept` header is specified', async () => {
     const req = getPreconfiguredRequest();
-    await req.send('a').expect(400);
+    await req.send('a').expect(400, `The header 'Accept' is missing.`);
   });
 
   it('returns an error when an invalid `accept` header is specified', async () => {
     const req = getPreconfiguredRequest().accept('INVALID_VALUE');
-    await req.send('a').expect(400);
+    await req
+      .send('a')
+      .expect(
+        400,
+        `The header 'Accept' should have the value application/vnd.firefox-profiler+json; version=1`
+      );
   });
 
   it('returns an error when an `accept` header is specified with an unsupported version', async () => {
-    const req = getPreconfiguredRequest().accept(ACCEPT_VALUE_PREFIX + '2.0');
-    await req.send('a').expect(406);
+    const req = getPreconfiguredRequest().accept(
+      ACCEPT_VALUE_MIME + ';version=2'
+    );
+    await req
+      .send('a')
+      .expect(406, `Only the API version 1 is supported by this server.`);
+  });
+
+  it('returns an error when an accept header is specified without a version at all', async () => {
+    const req = getPreconfiguredRequest().accept(ACCEPT_VALUE_MIME);
+    await req
+      .send('a')
+      .expect(406, `Only the API version 1 is supported by this server.`);
+  });
+
+  it('accepts the request even if the version is specified with spaces before the parameter', async () => {
+    const req = getPreconfiguredRequest().accept(
+      ACCEPT_VALUE_MIME + '; version=1'
+    );
+    await req.send('a').expect(200, `86f7e437faa5a7fce15d1ddcb9eaeaea377667b8`);
   });
 });

@@ -13,7 +13,7 @@ export function routes() {
   router.use(dockerFlowRoutes().routes());
 
   // Versioning applies only to API routes, that's why we specify it here.
-  router.use(versioning('1.0'));
+  router.use(versioning(1));
   router.use(publishRoutes().routes());
   return router;
 }

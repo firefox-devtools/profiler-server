@@ -6,11 +6,19 @@
 // This middleware ensures that the request specifies the versioning header and
 // its value is the expected value.
 // In the future we'll want to implement an upgrade mechanism.
+
 import type { Context } from 'koa';
 
-export const ACCEPT_VALUE_PREFIX =
-  'application/vnd.firefox-profiler+json;version=';
-export function versioning(version: string) {
+import contentType from 'content-type';
+
+// This mime-type is a vendor mime-type (because this starts with `vnd.`). It
+// also uses the 'json' suffix to outline that the content, if any, is in JSON form.
+// Lastly we specify the version as a mime-type parameter (;version=XXX).
+// Here is an acceptable value for the Accept header:
+//   application/vnd.firefox-profiler+json; version=1
+export const ACCEPT_VALUE_MIME = 'application/vnd.firefox-profiler+json';
+
+export function versioning(expectedVersion: number) {
   return async function(ctx: Context, next: () => Promise<void>) {
     const acceptValue = ctx.get('accept');
     if (!acceptValue) {
@@ -18,19 +26,24 @@ export function versioning(version: string) {
       return;
     }
 
-    if (!acceptValue.startsWith(ACCEPT_VALUE_PREFIX)) {
+    const parsedAcceptValue = contentType.parse(acceptValue);
+    if (parsedAcceptValue.type !== ACCEPT_VALUE_MIME) {
+      const expectedValue = contentType.format({
+        type: ACCEPT_VALUE_MIME,
+        parameters: { version: expectedVersion },
+      });
       ctx.throw(
         400,
-        `The header 'Accept' should have the value ${ACCEPT_VALUE_PREFIX}${version}`
+        `The header 'Accept' should have the value ${expectedValue}`
       );
       return;
     }
 
-    const requestedVersion = acceptValue.slice(ACCEPT_VALUE_PREFIX.length);
-    if (requestedVersion !== version) {
+    const receivedVersion = +parsedAcceptValue.parameters.version;
+    if (receivedVersion !== expectedVersion) {
       ctx.throw(
         406,
-        `Only the API version ${version} is supported by this server.`
+        `Only the API version ${expectedVersion} is supported by this server.`
       );
     }
 
