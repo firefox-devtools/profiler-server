@@ -26,25 +26,32 @@ export function versioning(expectedVersion: number) {
       return;
     }
 
-    const parsedAcceptValue = contentType.parse(acceptValue);
-    if (parsedAcceptValue.type !== ACCEPT_VALUE_MIME) {
+    // An Accept header can contain several values separated by a comma.
+    // In this case this probably comes from a browser, and won't contain the
+    // value we're looking for here, but we're still looking at all values for
+    // correctness.
+
+    const acceptValues = acceptValue.split(',');
+
+    const hasAcceptableValue = acceptValues.some(acceptValue => {
+      const parsedAcceptValue = contentType.parse(acceptValue);
+      const receivedVersion = +parsedAcceptValue.parameters.version;
+      const isAcceptableValue =
+        parsedAcceptValue.type === ACCEPT_VALUE_MIME &&
+        receivedVersion === expectedVersion;
+      return isAcceptableValue;
+    });
+
+    if (!hasAcceptableValue) {
       const expectedValue = contentType.format({
         type: ACCEPT_VALUE_MIME,
         parameters: { version: expectedVersion },
       });
       ctx.throw(
-        400,
+        406,
         `The header 'Accept' should have the value ${expectedValue}`
       );
       return;
-    }
-
-    const receivedVersion = +parsedAcceptValue.parameters.version;
-    if (receivedVersion !== expectedVersion) {
-      ctx.throw(
-        406,
-        `Only the API version ${expectedVersion} is supported by this server.`
-      );
     }
 
     await next();

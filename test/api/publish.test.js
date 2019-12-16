@@ -178,7 +178,7 @@ describe('API versioning', () => {
     await req
       .send('a')
       .expect(
-        400,
+        406,
         `The header 'Accept' should have the value application/vnd.firefox-profiler+json; version=1`
       );
   });
@@ -189,14 +189,39 @@ describe('API versioning', () => {
     );
     await req
       .send('a')
-      .expect(406, `Only the API version 1 is supported by this server.`);
+      .expect(
+        406,
+        `The header 'Accept' should have the value application/vnd.firefox-profiler+json; version=1`
+      );
   });
 
   it('returns an error when an accept header is specified without a version at all', async () => {
     const req = getPreconfiguredRequest().accept(ACCEPT_VALUE_MIME);
     await req
       .send('a')
-      .expect(406, `Only the API version 1 is supported by this server.`);
+      .expect(
+        406,
+        `The header 'Accept' should have the value application/vnd.firefox-profiler+json; version=1`
+      );
+  });
+
+  it('returns an error when an accept header is specified with several unacceptable values', async () => {
+    const req = getPreconfiguredRequest().accept(
+      'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+    );
+    await req
+      .send('a')
+      .expect(
+        406,
+        `The header 'Accept' should have the value application/vnd.firefox-profiler+json; version=1`
+      );
+  });
+
+  it('accepts the request when there is the expected value amont several values', async () => {
+    const req = getPreconfiguredRequest().accept(
+      `image/webp,${ACCEPT_VALUE_MIME};version=1`
+    );
+    await req.send('a').expect(200, `86f7e437faa5a7fce15d1ddcb9eaeaea377667b8`);
   });
 
   it('accepts the request even if the version is specified with spaces before the parameter', async () => {
