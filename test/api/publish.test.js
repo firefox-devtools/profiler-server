@@ -10,14 +10,19 @@ import { Storage as MockStorage } from '../../__mocks__/@google-cloud/storage';
 
 import { config } from '../../src/config';
 import { createApp } from '../../src/app';
+import { ACCEPT_VALUE_MIME } from '../../src/middlewares/versioning';
 
 beforeEach(() => MockStorage.cleanUp());
 afterEach(() => MockStorage.cleanUp());
 
 describe('publishing endpoints', () => {
   function getPreconfiguredRequest() {
+    const acceptHeader = ACCEPT_VALUE_MIME + ';version=1';
     const agent = supertest(createApp().callback());
-    return agent.post('/compressed-store').type('text');
+    return agent
+      .post('/compressed-store')
+      .accept(acceptHeader)
+      .type('text');
   }
 
   it('uploads data all the way to google storage when using a content length', async () => {
@@ -150,5 +155,84 @@ describe('publishing endpoints', () => {
     expect(process.stdout.write).toHaveBeenCalledWith(
       expect.stringContaining('server_error')
     );
+  });
+});
+
+describe('API versioning', () => {
+  function getPreconfiguredRequest() {
+    // In these tests we'll generate errors, which triggers a lot of output from
+    // the log. Let's silence that.
+    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+
+    const agent = supertest(createApp().callback());
+    return agent.post('/compressed-store').type('text');
+  }
+
+  it('returns an error when no `accept` header is specified', async () => {
+    const req = getPreconfiguredRequest();
+    await req.send('a').expect(400, `The header 'Accept' is missing.`);
+    expect(process.stdout.write).toMatchSnapshot();
+  });
+
+  it('returns an error when an invalid `accept` header is specified', async () => {
+    const req = getPreconfiguredRequest().accept('INVALID_VALUE');
+    await req
+      .send('a')
+      .expect(
+        406,
+        `The header 'Accept' should have the value application/vnd.firefox-profiler+json; version=1`
+      );
+    expect(process.stdout.write).toMatchSnapshot();
+  });
+
+  it('returns an error when an `accept` header is specified with an unsupported version', async () => {
+    const req = getPreconfiguredRequest().accept(
+      ACCEPT_VALUE_MIME + ';version=2'
+    );
+    await req
+      .send('a')
+      .expect(
+        406,
+        `The header 'Accept' should have the value application/vnd.firefox-profiler+json; version=1`
+      );
+    expect(process.stdout.write).toMatchSnapshot();
+  });
+
+  it('returns an error when an accept header is specified without a version at all', async () => {
+    const req = getPreconfiguredRequest().accept(ACCEPT_VALUE_MIME);
+    await req
+      .send('a')
+      .expect(
+        406,
+        `The header 'Accept' should have the value application/vnd.firefox-profiler+json; version=1`
+      );
+    expect(process.stdout.write).toMatchSnapshot();
+  });
+
+  it('returns an error when an accept header is specified with several unacceptable values', async () => {
+    const req = getPreconfiguredRequest().accept(
+      'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+    );
+    await req
+      .send('a')
+      .expect(
+        406,
+        `The header 'Accept' should have the value application/vnd.firefox-profiler+json; version=1`
+      );
+    expect(process.stdout.write).toMatchSnapshot();
+  });
+
+  it('accepts the request when there is the expected value among several values', async () => {
+    const req = getPreconfiguredRequest().accept(
+      `image/webp,${ACCEPT_VALUE_MIME};version=1`
+    );
+    await req.send('a').expect(200, `86f7e437faa5a7fce15d1ddcb9eaeaea377667b8`);
+  });
+
+  it('accepts the request even if the version is specified with spaces before the parameter', async () => {
+    const req = getPreconfiguredRequest().accept(
+      ACCEPT_VALUE_MIME + '; version=1'
+    );
+    await req.send('a').expect(200, `86f7e437faa5a7fce15d1ddcb9eaeaea377667b8`);
   });
 });
