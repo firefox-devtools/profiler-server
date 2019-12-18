@@ -11,6 +11,10 @@ import { Storage as MockStorage } from '../../__mocks__/@google-cloud/storage';
 import { config } from '../../src/config';
 import { createApp } from '../../src/app';
 import { ACCEPT_VALUE_MIME } from '../../src/middlewares/versioning';
+import {
+  checkSecurityHeaders,
+  checkCorsHeader,
+} from './utils/check-security-headers';
 
 beforeEach(() => MockStorage.cleanUp());
 afterEach(() => MockStorage.cleanUp());
@@ -155,6 +159,16 @@ describe('publishing endpoints', () => {
     expect(process.stdout.write).toHaveBeenCalledWith(
       expect.stringContaining('server_error')
     );
+  });
+
+  it('implements security headers', async () => {
+    const corsHeaderValue = 'http://example.org';
+    let req = getPreconfiguredRequest()
+      .set('Origin', corsHeaderValue)
+      .send('a');
+    req = checkSecurityHeaders(req);
+    req = checkCorsHeader(req, corsHeaderValue);
+    await req;
   });
 });
 

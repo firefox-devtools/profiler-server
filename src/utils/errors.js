@@ -3,7 +3,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 // @flow
 
-// This file just reexports all middlewares for an easier access.
+// This file contains useful errors.
 
-export * from './versioning';
-export * from './reportTo';
+export class BadRequestError extends Error {
+  name = 'BadRequestError';
+  status = 400;
+  expose = true; // The message will be exposed to users
+}
