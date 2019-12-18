@@ -3,8 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 // @flow
 
-// This middleware adds the header Report-To that's used in CSP. This header
-// supersedes report-uri but isn't widely implemented nowadays.
+// This middleware adds the header Report-To that's used in CSP. It specifies
+// the URL that CSP (and other) reports are sent to.
+// This header supersedes report-uri but isn't widely implemented yet.
 // To read more about it, here is the spec:
 // https://w3c.github.io/reporting/
 

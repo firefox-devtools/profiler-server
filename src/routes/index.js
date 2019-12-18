@@ -19,6 +19,8 @@ export function routes() {
 
   // Versioning and CORS applies only to API routes, that's why we specify it here.
   router.use(versioning(1));
+  // We use the default configuration for cors, that is we allow all origins and
+  // all methods.
   router.use(cors());
   router.use(publishRoutes().routes());
   return router;

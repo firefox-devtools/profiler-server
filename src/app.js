@@ -34,7 +34,8 @@ export function createApp() {
     reportTo([
       {
         group: 'cspreport',
-        maxAge: 365 * 24 * 60 * 60,
+        maxAge: 365 * 24 * 60 * 60, // 1 year
+        // The URL here should be identical to the URL we specify in the CSP policy below.
         endpoints: [{ url: '/__cspreport__' }],
       },
     ])
@@ -42,16 +43,20 @@ export function createApp() {
   app.use(
     helmet({
       contentSecurityPolicy: {
+        // because this is an API server and shouldn't be used as a webpage,
+        // everything is locked down as much as possible, following the
+        // checklist at https://github.com/mozilla-services/websec-check.
         directives: {
           defaultSrc: ["'none'"],
           frameAncestors: ["'none'"],
           baseUri: ["'none'"],
+          // This URI is what the checklist (see link above) suggests.
           reportUri: '/__cspreport__',
           reportTo: 'cspreport',
         },
       },
       hsts: {
-        maxAge: 31536000, // 1year
+        maxAge: 365 * 24 * 60 * 60, // 1 year
       },
     })
   );

@@ -3,14 +3,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 // @flow
 
-// In this router we implement the service to handle csp reports.
-
 import Router from '@koa/router';
 import body from 'koa-json-body';
 
 import { getLogger } from '../log';
 import { BadRequestError } from '../utils/errors';
 
+// In this router we implement the service to handle csp reports.
 export function cspReportRoutes() {
   const log = getLogger('cspReportRoutes');
 
