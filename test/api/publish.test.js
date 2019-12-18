@@ -217,7 +217,7 @@ describe('API versioning', () => {
       );
   });
 
-  it('accepts the request when there is the expected value amont several values', async () => {
+  it('accepts the request when there is the expected value among several values', async () => {
     const req = getPreconfiguredRequest().accept(
       `image/webp,${ACCEPT_VALUE_MIME};version=1`
     );
