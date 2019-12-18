@@ -171,6 +171,7 @@ describe('API versioning', () => {
   it('returns an error when no `accept` header is specified', async () => {
     const req = getPreconfiguredRequest();
     await req.send('a').expect(400, `The header 'Accept' is missing.`);
+    expect(process.stdout.write).toMatchSnapshot();
   });
 
   it('returns an error when an invalid `accept` header is specified', async () => {
@@ -181,6 +182,7 @@ describe('API versioning', () => {
         406,
         `The header 'Accept' should have the value application/vnd.firefox-profiler+json; version=1`
       );
+    expect(process.stdout.write).toMatchSnapshot();
   });
 
   it('returns an error when an `accept` header is specified with an unsupported version', async () => {
@@ -193,6 +195,7 @@ describe('API versioning', () => {
         406,
         `The header 'Accept' should have the value application/vnd.firefox-profiler+json; version=1`
       );
+    expect(process.stdout.write).toMatchSnapshot();
   });
 
   it('returns an error when an accept header is specified without a version at all', async () => {
@@ -203,6 +206,7 @@ describe('API versioning', () => {
         406,
         `The header 'Accept' should have the value application/vnd.firefox-profiler+json; version=1`
       );
+    expect(process.stdout.write).toMatchSnapshot();
   });
 
   it('returns an error when an accept header is specified with several unacceptable values', async () => {
@@ -215,6 +219,7 @@ describe('API versioning', () => {
         406,
         `The header 'Accept' should have the value application/vnd.firefox-profiler+json; version=1`
       );
+    expect(process.stdout.write).toMatchSnapshot();
   });
 
   it('accepts the request when there is the expected value among several values', async () => {
