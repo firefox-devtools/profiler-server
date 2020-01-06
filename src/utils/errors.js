@@ -10,3 +10,15 @@ export class BadRequestError extends Error {
   status = 400;
   expose = true; // The message will be exposed to users
 }
+
+export class PayloadTooLargeError extends Error {
+  name = 'PayloadTooLargeError';
+  status = 413;
+  expose = true;
+
+  constructor(maxPayloadSize: number) {
+    super(
+      `The length is bigger than the configured maximum ${maxPayloadSize}.`
+    );
+  }
+}

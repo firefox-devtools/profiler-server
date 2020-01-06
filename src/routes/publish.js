@@ -18,6 +18,7 @@ import {
   LengthCheckerPassThrough,
   Concatenator,
 } from '../utils/streams';
+import { PayloadTooLargeError } from '../utils/errors';
 
 const MAX_BODY_LENGTH = 32 * 1024 * 1024; // 32MB
 
@@ -35,16 +36,34 @@ export function publishRoutes() {
         'length-header-check',
         'The length specified in the header Content-Length is too big.'
       );
-      ctx.status = 413;
-      return;
+      throw new PayloadTooLargeError(MAX_BODY_LENGTH);
     }
 
     const hasherTransform = new HasherPassThrough();
     const lengthChecker = new LengthCheckerPassThrough(MAX_BODY_LENGTH);
     const concatener = new Concatenator();
 
+    // The "pipeline" utility conveniently destroys all streams when there's an
+    // error. However the HTTP request isn't part of the pipeline because we
+    // don't want to destroy it. Indeed if it's destroyed, the socket is closed
+    // and we can't send a nice error to the caller.
     const pipeline = util.promisify(Stream.pipeline);
-    await pipeline(ctx.req, lengthChecker, hasherTransform, concatener);
+    const pipelinePromise = pipeline(
+      lengthChecker,
+      hasherTransform,
+      concatener
+    );
+
+    // The HTTP Request is piped directly to the first stream in the pipeline.
+    // We do no error handling here: simply if there's an error (either expected
+    // or unexpected) and lengthChecker is destroyed, the request won't flow
+    // anymore. The request's destroy should be properly handled by Koa or node.
+    ctx.req.pipe(lengthChecker);
+
+    // We still wait for the end of the pipeline before moving forward.
+    // If there's an error (either expected or unexpected) it will bubble up to
+    // Koa which will expose it appropriately to the caller.
+    await pipelinePromise;
 
     const storage = gcsStorageCreate(config);
     const hash = hasherTransform.sha1();

@@ -9,6 +9,7 @@ import { Transform, Writable } from 'stream';
 import crypto from 'crypto';
 
 import { getLogger, type Logger } from '../log';
+import { PayloadTooLargeError } from './errors';
 
 /**
  * This transform computes a sha1 of the data passing through it, but otherwise
@@ -72,11 +73,7 @@ export class LengthCheckerPassThrough extends Transform {
       // Using debug instead of verbose will make it possible to assert it in
       // tests that we actually checked the length through this class.
       this.log.debug('length-checker-length-error');
-      callback(
-        new Error(
-          `The length is bigger than the configured maximum ${this.maxLength}.`
-        )
-      );
+      callback(new PayloadTooLargeError(this.maxLength));
       return;
     }
 
