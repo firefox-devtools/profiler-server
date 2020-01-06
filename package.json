@@ -24,7 +24,7 @@
     "docker:run:detached": "docker run -d -p 8000:8000 --rm --name $npm_package_name $npm_package_name:dev",
     "docker:stop": "docker container stop $npm_package_name",
     "serve": "node dist/index.js",
-    "start": "nodemon --exec babel-node -w src src/index.js",
+    "start": "nodemon --exec babel-node -w .env -w src src/index.js",
     "start:prod": "run-s build:clean build serve",
     "test": "jest",
     "test-all": "run-p flow lint test"
@@ -50,7 +50,7 @@
     "husky": "^3.0.5",
     "jest": "^24.9.0",
     "mkdirp": "^0.5.1",
-    "nodemon": "^1.19.2",
+    "nodemon": "^2.0.2",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.18.2",
     "rimraf": "^3.0.0",
