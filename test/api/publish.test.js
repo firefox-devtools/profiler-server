@@ -168,6 +168,20 @@ describe('publishing endpoints', () => {
     req = checkCorsHeader(req, corsHeaderValue);
     await req;
   });
+
+  it('implements preflight CORS requests', async () => {
+    const corsHeaderValue = 'http://example.org';
+
+    const agent = supertest(createApp().callback());
+    let req = agent
+      .options('/compressed-store')
+      .set('Origin', corsHeaderValue)
+      .set('Access-Control-Request-Method', 'POST')
+      .send();
+
+    req = checkCorsHeader(req, corsHeaderValue);
+    await req;
+  });
 });
 
 describe('API versioning', () => {
