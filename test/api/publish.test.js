@@ -115,8 +115,14 @@ describe('publishing endpoints', () => {
   });
 
   it('returns an error when the length header is too big', async () => {
+    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
     const req = getPreconfiguredRequest();
-    await req.set('Content-Length', String(1024 * 1024 * 1024)).expect(413);
+    await req
+      .set('Content-Length', String(1024 * 1024 * 1024))
+      .expect(413, /The length is bigger than the configured maximum/);
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringContaining('server_error')
+    );
   });
 
   it('returns an error when the sent data is bigger than the length', async () => {
@@ -140,16 +146,8 @@ describe('publishing endpoints', () => {
     // here.
     // We generate a Buffer of 33MB, but our limit is 32MB.
     await req.write(Buffer.alloc(33 * 1024 * 1024));
+    await req.expect(413, /The length is bigger than the configured maximum/);
 
-    const error = await req.then(
-      () => {
-        throw new Error(`The request shouldn't succeed.`);
-      },
-      e => e
-    );
-
-    // We don't get a 413 because the connection is reset without a response.
-    expect(error.code).toBe('ECONNRESET');
     // This check asserts that we get the error using the
     // LengthCheckerPassThrough transform. This asserts that we stop the stream
     // early even without a Content-Length header.
