@@ -81,7 +81,9 @@ export function publishRoutes() {
     });
     googleStorageStream.destroy();
 
-    // This should be fine in this case.
+    // Eslint thinks that ctx.body is assigned a value that depends on a
+    // previous value of ctx.body, which could be unsafe when using `await`. But
+    // here this is obvously wrong, so let's disable the rule.
     // eslint-disable-next-line require-atomic-updates
     ctx.body = hash;
   });
