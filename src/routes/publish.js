@@ -13,6 +13,7 @@ import util from 'util';
 import { getLogger } from '../log';
 import { config } from '../config';
 import { create as gcsStorageCreate } from '../logic/gcs';
+import { getToken as getJwtToken } from '../logic/jwt';
 import {
   HasherPassThrough,
   LengthCheckerPassThrough,
@@ -81,11 +82,13 @@ export function publishRoutes() {
     });
     googleStorageStream.destroy();
 
+    const jwtToken = getJwtToken({ profileToken: hash });
+
     // Eslint thinks that ctx.body is assigned a value that depends on a
     // previous value of ctx.body, which could be unsafe when using `await`. But
     // here this is obvously wrong, so let's disable the rule.
     // eslint-disable-next-line require-atomic-updates
-    ctx.body = hash;
+    ctx.body = jwtToken;
   });
 
   return router;
