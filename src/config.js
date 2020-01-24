@@ -38,6 +38,13 @@ function loadConfig() {
       default: '',
       env: 'GCS_AUTHENTICATION_PATH',
     },
+    jwtSecret: {
+      // This holds the secret to generate and verify GWT token.
+      doc: `Secret that's used when generating and verifying JWT tokens`,
+      format: String,
+      default: process.env.NODE_ENV === 'test' ? 'secret' : '',
+      env: 'JWT_SECRET',
+    },
   });
 
   conf.validate();
@@ -50,6 +57,7 @@ type Config = {|
   +httpPort: number,
   +gcsBucket: string,
   +googleAuthenticationFilePath: string,
+  +jwtSecret: string,
 |};
 
 export const config: Config = loadConfig();

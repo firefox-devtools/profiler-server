@@ -11,12 +11,14 @@ describe('config.js', () => {
       httpPort: 5252,
       gcsBucket: 'profile-store',
       googleAuthenticationFilePath: '',
+      jwtSecret: 'secret',
     });
     expect(loadConfig()).toEqual({
       env: 'test',
       httpPort: 5252,
       gcsBucket: 'profile-store',
       googleAuthenticationFilePath: '',
+      jwtSecret: 'secret',
     });
   });
 
@@ -24,5 +26,11 @@ describe('config.js', () => {
     process.env.PORT = '12345';
     expect(loadConfig().httpPort).toEqual(12345);
     delete process.env.PORT;
+  });
+
+  it('returns an empty default secret when not in tests', () => {
+    process.env.NODE_ENV = 'production';
+    expect(loadConfig().jwtSecret).toBe('');
+    process.env.NODE_ENV = 'test';
   });
 });
