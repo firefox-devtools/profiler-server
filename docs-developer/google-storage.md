@@ -107,6 +107,7 @@ content it should have:
 ```
 GCS_BUCKET="<bucket name>"
 GCS_AUTHENTICATION_PATH="<path to your key file>.json"
+JWT_SECRET="<something you choose>"
 ```
 
 If you're using the Mozilla project, the bucket name you can use is
@@ -119,4 +120,5 @@ Create a file in your project directory, called `.env`. Here is the
 content it should have:
 ```
 GCS_AUTHENTICATION_PATH="MOCKED"
+JWT_SECRET="<something you choose>"
 ```
