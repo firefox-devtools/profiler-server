@@ -30,6 +30,7 @@ workflows:
   master:
     jobs:
       - tests
+      - python
       - lint
       - build
       - flow
@@ -55,6 +56,12 @@ jobs:
     steps:
       - checkout-and-dependencies
       - run: yarn test --runInBand
+
+  python:
+    executor: node
+    steps:
+      - checkout-and-dependencies
+      - run: yarn test-python
 
   flow:
     executor: node
