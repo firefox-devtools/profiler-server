@@ -8,7 +8,7 @@ import helmet from 'koa-helmet';
 
 import { config } from './config';
 import { getLogger, logLevel } from './log';
-import { routes } from './routes';
+import { configureRoutes } from './routes';
 import { reportTo } from './middlewares';
 
 const log = getLogger('app');
@@ -61,13 +61,7 @@ export function createApp() {
     })
   );
 
-  // Adding the main endpoints for this app.
-  // koa-router exposes 2 middlewares:
-  // - the result of routes() returns the configured routes.
-  // - the result of allowedMethods() configures the OPTIONS verb.
-  const router = routes();
-  app.use(router.routes());
-  app.use(router.allowedMethods());
+  configureRoutes(app);
 
   return app;
 }
