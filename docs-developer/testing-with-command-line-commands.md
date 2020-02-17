@@ -8,7 +8,7 @@ The following command uploads a file through the server. Curl will automatically
 send a `Content-Length` header using the file size. Of course, don't forget to
 change the path to the file. Note that the character `@` is important!
 ```
-curl -i -X POST --data-binary @/path/to/file -H 'Accept: application/vnd.firefox-profiler+json;version=1.0' localhost:4243/compressed-store
+curl -i -X POST --data-binary @/path/to/file -H 'Accept: application/vnd.firefox-profiler+json;version=1.0' localhost:5252/compressed-store
 ```
 
 The parameter `-i` outputs the response headers as well as the response.
@@ -24,7 +24,7 @@ Sometimes we want to test uploading without the `Content-Length` header. For
 this we'll used the chunked encoding, like this:
 
 ```
-curl -i -X POST --data-binary @/path/to/file -H 'Accept: application/vnd.firefox-profiler+json;version=1.0' -H 'Transfer-Encoding: chunked' localhost:4243/compressed-store
+curl -i -X POST --data-binary @/path/to/file -H 'Accept: application/vnd.firefox-profiler+json;version=1.0' -H 'Transfer-Encoding: chunked' localhost:5252/compressed-store
 ```
 
 Curl will detect that we use the header for chunked encoding and skip sending
