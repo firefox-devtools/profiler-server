@@ -5,7 +5,7 @@ executors:
     docker:
       - image: circleci/node:10.15
     environment:
-      IMAGE_NAME: mozilla/profilerserver
+      IMAGE_NAME: mozilla/profiler-server
 
 commands:
   checkout-and-dependencies:
