@@ -4,6 +4,8 @@ executors:
   node:
     docker:
       - image: circleci/node:10.15
+    environment:
+      IMAGE_NAME: mozilla/profiler-server
 
 commands:
   checkout-and-dependencies:
@@ -32,6 +34,14 @@ workflows:
       - build
       - flow
       - docker
+      - docker-publish:
+          requires:
+            - docker
+          filters:
+            branches:
+              only:
+                - master
+                - production
 
 jobs:
   lint:
@@ -82,3 +92,38 @@ jobs:
             done
             EOF
             yarn docker:stop
+      - run:
+          name: Archive Docker image
+          command: docker save -o image.tar profiler-server:dev
+      # This makes it possible to load this image from subsequent jobs.
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
+
+  docker-publish:
+    executor: node
+    steps:
+      # Let's attach the workspace so that we can reload the saved image later.
+      - attach_workspace:
+          at: /tmp/workspace
+      # This sets up a remote environment that's necessary to run docker commands.
+      - setup_remote_docker
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            # Use both a version tag depending on the circle's build number
+            # and a latest tag that's depending on the branch name.
+            IMAGE_VERSION_TAG="0.0.${CIRCLE_BUILD_NUM}"
+            IMAGE_LATEST_TAG="${CIRCLE_BRANCH}-latest"
+            docker tag profiler-server:dev $IMAGE_NAME:$IMAGE_LATEST_TAG
+            docker tag profiler-server:dev $IMAGE_NAME:$IMAGE_VERSION_TAG
+
+            # Deploy to docker hub using the environment variables passed from
+            # CircleCI configuration.
+            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+            docker push $IMAGE_NAME:$IMAGE_LATEST_TAG
+            docker push $IMAGE_NAME:$IMAGE_VERSION_TAG
