@@ -18,7 +18,7 @@ function loadConfig() {
     },
     httpPort: {
       format: 'port',
-      default: 4243,
+      default: 5252,
       // The environment variable's name is required by Dockerflow.
       // see https://github.com/mozilla-services/Dockerflow#containerized-app-requirements
       env: 'PORT',
