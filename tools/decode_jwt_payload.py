@@ -24,16 +24,16 @@ def jwt_base64_decode(payload):
 
     JWT encodes using the URLSafe base64 algorithm and then removes the
     padding. This function does the opposite: adds the padding back and then
-    uses the URLSafe base4 algorithm to decode the string.
+    uses the URLSafe base64 algorithm to decode the string.
     """
     # Thanks Simon Sapin (https://stackoverflow.com/questions/2941995/python-ignore-incorrect-padding-error-when-base64-decoding)
     missing_padding = len(payload) % 4
     if missing_padding:
         payload += "=" * (4 - missing_padding)
 
-    decodedBytes = base64.urlsafe_b64decode(payload)
-    decodedStr = str(decodedBytes, "utf-8")
-    return decodedStr
+    decoded_bytes = base64.urlsafe_b64decode(payload)
+    decoded_str = decoded_bytes.decode("utf-8")
+    return decoded_str
 
 def handle_input_line(line):
     """This handles one line of input, that should be a JWT token.
@@ -44,9 +44,9 @@ def handle_input_line(line):
     """
     _header, payload, _signature = line.strip().split(".")
 
-    decodedStr = jwt_base64_decode(payload)
-    jsonPayload = json.loads(decodedStr)
-    token = jsonPayload['profileToken']
+    decoded_str = jwt_base64_decode(payload)
+    json_payload = json.loads(decoded_str)
+    token = json_payload['profileToken']
     return token
 
 if sys.version_info[0] < 3:
