@@ -28,9 +28,9 @@ describe('config.js', () => {
     delete process.env.PORT;
   });
 
-  it('returns an empty default secret when not in tests', () => {
+  it(`when not in tests throws if there's no jwt secret specified`, () => {
     process.env.NODE_ENV = 'production';
-    expect(loadConfig().jwtSecret).toBe('');
+    expect(() => loadConfig()).toThrow();
     process.env.NODE_ENV = 'test';
   });
 });

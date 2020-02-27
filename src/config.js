@@ -39,10 +39,9 @@ function loadConfig() {
       env: 'GCS_AUTHENTICATION_PATH',
     },
     jwtSecret: {
-      // This holds the secret to generate and verify GWT token.
       doc: `Secret that's used when generating and verifying JWT tokens`,
       format: String,
-      default: process.env.NODE_ENV === 'test' ? 'secret' : '',
+      default: process.env.NODE_ENV === 'test' ? 'secret' : null,
       env: 'JWT_SECRET',
     },
   });
