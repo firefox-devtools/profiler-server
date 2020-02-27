@@ -91,7 +91,7 @@ jobs:
       - run:
           name: "Start the docker image in a container and check it's running"
           command: |
-            echo 'JWT_SECRET="secret"' > .env
+            cp .env.example .env
             yarn docker:run:detached
             # Wait up to 10 seconds that the server is launched.
             timeout 10s sh \<<'EOF'
