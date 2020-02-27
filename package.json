@@ -79,6 +79,7 @@
     "koa-json-body": "^5.3.0",
     "koa-jwt": "^3.6.0",
     "koa-logger": "^3.2.1",
-    "mozlog": "^2.2.0"
+    "mozlog": "^2.2.0",
+    "node-fetch": "^2.6.0"
   }
 }

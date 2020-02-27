@@ -9,6 +9,7 @@ import { dockerFlowRoutes } from './dockerflow';
 import { publishRoutes } from './publish';
 import { cspReportRoutes } from './cspReport';
 import { profileRoutes } from './profile';
+import { shortenRoutes } from './shorten';
 
 import { versioning } from '../middlewares';
 
@@ -59,7 +60,9 @@ function configureTechnicalRoutes(app: Koa) {
 function configureUserFacingRoutes(app: Koa) {
   const publish = publishRoutes();
   const profile = profileRoutes();
+  const shorten = shortenRoutes();
 
   app.use(publish.routes()).use(publish.allowedMethods());
   app.use(profile.routes()).use(profile.allowedMethods());
+  app.use(shorten.routes()).use(shorten.allowedMethods());
 }
