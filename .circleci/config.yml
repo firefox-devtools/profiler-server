@@ -30,6 +30,7 @@ workflows:
   master:
     jobs:
       - tests
+      - python
       - lint
       - build
       - flow
@@ -55,6 +56,12 @@ jobs:
     steps:
       - checkout-and-dependencies
       - run: yarn test --runInBand
+
+  python:
+    executor: node
+    steps:
+      - checkout-and-dependencies
+      - run: yarn test-python
 
   flow:
     executor: node
@@ -84,6 +91,7 @@ jobs:
       - run:
           name: "Start the docker image in a container and check it's running"
           command: |
+            cp .env.example .env
             yarn docker:run:detached
             # Wait up to 10 seconds that the server is launched.
             timeout 10s sh \<<'EOF'

@@ -20,14 +20,15 @@
     "build": "babel src --out-dir dist",
     "generate-version-file": "node bin/generate-version-file.js",
     "docker:build": "docker build -t $npm_package_name:dev .",
-    "docker:run": "docker run -t -i -p 8000:8000 --rm --name $npm_package_name $npm_package_name:dev",
-    "docker:run:detached": "docker run -d -p 8000:8000 --rm --name $npm_package_name $npm_package_name:dev",
+    "docker:run": "docker run -t -i -p 8000:8000 --rm --name $npm_package_name --env-file .env $npm_package_name:dev",
+    "docker:run:detached": "docker run -d -p 8000:8000 --rm --name $npm_package_name --env-file .env $npm_package_name:dev",
     "docker:stop": "docker container stop $npm_package_name",
     "serve": "node dist/index.js",
     "start": "nodemon --exec babel-node -w .env -w src src/index.js",
     "start:prod": "run-s build:clean build serve",
     "test": "jest",
-    "test-all": "run-p flow lint test"
+    "test-python": "./tools/test_decode_jwt_payload.py",
+    "test-all": "run-p flow lint test test-python"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.2",
@@ -72,6 +73,7 @@
     "convict": "^5.1.0",
     "dotenv": "^8.2.0",
     "fast-crc32c": "^2.0.0",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.8.1",
     "koa-helmet": "^5.2.0",
     "koa-json-body": "^5.3.0",
