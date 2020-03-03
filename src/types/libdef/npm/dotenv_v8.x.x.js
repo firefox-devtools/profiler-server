@@ -1,3 +1,6 @@
+// flow-typed signature: f4a700556e8a1a83c5e3ae513140d88c
+// flow-typed version: 9899c09849/dotenv_v8.x.x/flow_>=v0.53.x
+
 // @flow
 
 declare module 'dotenv' {
