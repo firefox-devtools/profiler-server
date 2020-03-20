@@ -3,6 +3,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 // @flow
 
+import nock from 'nock';
+
+// Forbid connections to Internet. We should have a test error if we attempt
+// such a connection.
+nock.disableNetConnect();
+// But allow localhost connections so we can test local routes and mock servers.
+nock.enableNetConnect('127.0.0.1');
+
 afterEach(() => {
   // The configuration to restore and reset all of the mocks in tests does not seem
   // to be working correctly. Manually trigger this call here to ensure we
