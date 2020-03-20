@@ -12,6 +12,7 @@ describe('config.js', () => {
       gcsBucket: 'profile-store',
       googleAuthenticationFilePath: '',
       jwtSecret: 'secret',
+      bitlyToken: 'FAKE_TOKEN_FOR_TESTS',
     });
     expect(loadConfig()).toEqual({
       env: 'test',
@@ -19,6 +20,7 @@ describe('config.js', () => {
       gcsBucket: 'profile-store',
       googleAuthenticationFilePath: '',
       jwtSecret: 'secret',
+      bitlyToken: 'FAKE_TOKEN_FOR_TESTS',
     });
   });
 

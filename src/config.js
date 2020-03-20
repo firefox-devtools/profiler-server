@@ -47,7 +47,7 @@ function loadConfig() {
     bitlyToken: {
       doc: `This token is used to access the bitly API`,
       format: String,
-      default: '',
+      default: process.env.NODE_ENV === 'test' ? 'FAKE_TOKEN_FOR_TESTS' : '',
       env: 'BITLY_TOKEN',
     },
   });
