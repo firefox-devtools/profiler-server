@@ -20,6 +20,7 @@ import { getLogger } from '../log';
 interface GcsStorage {
   ping(): Promise<void>;
   getWriteStreamForFile(filePath: string): Writable;
+  deleteFile(filePath: string): Promise<*>;
 }
 
 /**
@@ -28,7 +29,7 @@ interface GcsStorage {
 class RealGcsStorage implements GcsStorage {
   bucket: Bucket;
 
-  constructor(bucket: any) {
+  constructor(bucket: Bucket) {
     this.bucket = bucket;
   }
 
@@ -57,6 +58,11 @@ class RealGcsStorage implements GcsStorage {
     });
     return googleStorageStream;
   }
+
+  deleteFile(filePath: string): Promise<mixed> {
+    const file = this.bucket.file(filePath);
+    return file.delete();
+  }
 }
 
 /**
@@ -75,6 +81,10 @@ class MockGcsStorage implements GcsStorage {
       },
     });
     return sinkWriteStream;
+  }
+
+  deleteFile(_filePath: string): Promise<mixed> {
+    return Promise.resolve();
   }
 }
 

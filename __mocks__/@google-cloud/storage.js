@@ -37,7 +37,7 @@ class MockBucket {
   }
 
   file(path: string) {
-    return this.files[path] || (this.files[path] = new MockFile(path));
+    return this.files[path] || (this.files[path] = new MockFile(this, path));
   }
 
   exists() {
@@ -51,14 +51,19 @@ type Metadata = {
 };
 
 class MockFile {
+  bucket: MockBucket;
   name: string;
   contents: Buffer;
   metadata: Metadata;
+  _exists: boolean;
 
-  constructor(name: string) {
+  // The constructor doesn't follow the same API as the real type.
+  constructor(bucket: MockBucket, name: string) {
+    this.bucket = bucket;
     this.name = name;
     this.contents = Buffer.alloc(0);
     this.metadata = {};
+    this._exists = false;
   }
 
   get() {
@@ -78,6 +83,7 @@ class MockFile {
   }
 
   createWriteStream({ metadata }: Object) {
+    this._exists = true;
     this.setMetadata(metadata);
     const writable = new Concatenator();
     writable.on('finish', () => {
@@ -85,6 +91,20 @@ class MockFile {
       writable.destroy();
     });
     return writable;
+  }
+
+  delete() {
+    if (this._exists) {
+      delete this.bucket.files[this.name];
+      return Promise.resolve();
+    }
+    // eslint-disable-next-line prefer-promise-reject-errors
+    return Promise.reject({
+      code: 404,
+      errors: [{}],
+      response: {},
+      message: 'MockFile does not exist',
+    });
   }
 }
 

@@ -41,3 +41,16 @@ will generate a file of 33 MiB filled with zeros.
 You can use `/dev/urandom` instead of `/dev/zero` to fill the file with random
 data.
 
+## Delete a profile
+
+To test deleting a profile, first upload one, and get the JWT. [Decode the JWT](https://jwt.io/) to get the profileToken value. Finally run:
+
+```sh
+# Delete a profile
+curl \
+  --include \
+  --request DELETE \
+  --header 'Accept: application/vnd.firefox-profiler+json;version=1.0' \
+  --header 'Authorization: Bearer ________PUT_JWT_TOKEN_HERE_______'
+  http://localhost:5252/profile/PUT_PROFILE_TOKEN_HERE
+```
