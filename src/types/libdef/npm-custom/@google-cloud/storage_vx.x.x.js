@@ -40,7 +40,7 @@ declare module '@google-cloud/storage' {
       options?: $Shape<CreateWriteStreamOptions>
     ): stream$Writable;
 
-    delete(): Promise<unknown>;
+    delete(): Promise<mixed>;
   }
 
   // Source: https://googleapis.dev/nodejs/storage/latest/Bucket.html

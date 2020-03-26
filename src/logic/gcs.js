@@ -20,7 +20,7 @@ import { getLogger } from '../log';
 interface GcsStorage {
   ping(): Promise<void>;
   getWriteStreamForFile(filePath: string): Writable;
-  deleteFile(filePath: string): Promise<*>;
+  deleteFile(filePath: string): Promise<mixed>;
 }
 
 /**
