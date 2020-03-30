@@ -43,7 +43,13 @@ data.
 
 ## Delete a profile
 
-To test deleting a profile, first upload one, and get the JWT. [Decode the JWT](https://jwt.io/) to get the profileToken value. Finally run:
+To test deleting a profile, first upload one, and get the JWT. Run the following to get the profileToken.
+
+```
+echo '________PUT_JWT_TOKEN_HERE_______' | tools/decode_jwt_payload.py
+```
+
+Then run the following curl.
 
 ```sh
 # Delete a profile

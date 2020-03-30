@@ -47,13 +47,13 @@ describe('DELETE /profile', () => {
       .expect(200)
       .expect('Profile successfully deleted.');
 
-    // Sending it another time will result in a 400 for it not existing.
+    // Sending it another time will result in a 404 for it not existing.
     await agent
       .delete(`/profile/${profileToken}`)
       .accept(acceptHeader)
       .set('Authorization', `Bearer ${jwtToken}`)
       .send()
-      .expect(400)
+      .expect(404)
       .expect('That profile was most likely already deleted.');
   });
 
@@ -92,7 +92,7 @@ describe('DELETE /profile', () => {
       .accept(acceptHeader)
       .set('Authorization', `Bearer ${jwtToken}`)
       .send()
-      .expect(400)
+      .expect(404)
       .expect('That profile was most likely already deleted.');
   });
 });

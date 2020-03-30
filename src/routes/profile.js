@@ -9,10 +9,15 @@ import Router from '@koa/router';
 import jwt from 'koa-jwt';
 
 import { getLogger } from '../log';
-import { BadRequestError } from '../utils/errors';
+import {
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+} from '../utils/errors';
 import { config } from '../config';
 import { create as gcsStorageCreate } from '../logic/gcs';
 import type { ErrorResponse } from '@google-cloud/storage';
+import type { Middleware } from '@koa/router';
 
 export function profileRoutes() {
   const log = getLogger('routes.profile');
@@ -26,14 +31,12 @@ export function profileRoutes() {
    */
   router.delete(
     '/profile/:profileToken',
-    jwt({ secret: config.jwtSecret, algorithms: ['HS256'], key: 'jwtData' }),
-    async ctx => {
-      // Verify there is a valid JWT token.
-      const jwtData: mixed = ctx.state.jwtData;
-      if (!jwtData || typeof jwtData !== 'object' || !jwtData.profileToken) {
-        throw new BadRequestError(`A profileToken was not found in the JWT.`);
-      }
-
+    jwt({
+      secret: config.jwtSecret,
+      algorithms: ['HS256'],
+      key: 'jwtData',
+    }),
+    (async ctx => {
       // Verify there is a valid profileToken in the URL path.
       if (!ctx.params.profileToken) {
         throw new BadRequestError(
@@ -41,9 +44,22 @@ export function profileRoutes() {
         );
       }
 
+      // Verify there is a valid JWT token.
+      let profileToken: string;
+      const jwtData: mixed = ctx.state.jwtData;
+      if (
+        !jwtData ||
+        typeof jwtData !== 'object' ||
+        typeof jwtData.profileToken !== 'string'
+      ) {
+        throw new ForbiddenError(`A profileToken was not found in the JWT.`);
+      } else {
+        profileToken = jwtData.profileToken;
+      }
+
       // Make sure the profile token from the route and JWT agree.
-      if (jwtData.profileToken !== ctx.params.profileToken) {
-        throw new BadRequestError(
+      if (profileToken !== ctx.params.profileToken) {
+        throw new ForbiddenError(
           'The profileToken in the JWT did not match the token provided in the path.'
         );
       }
@@ -54,14 +70,14 @@ export function profileRoutes() {
       );
       const storage = gcsStorageCreate(config);
       try {
-        await storage.deleteFile(jwtData.profileToken);
+        await storage.deleteFile(profileToken);
       } catch (error) {
         if ('code' in error && 'message' in error) {
           const { code } = (error: ErrorResponse);
           if (code === 404) {
-            ctx.status = 400;
-            ctx.body = 'That profile was most likely already deleted.';
-            return;
+            throw new NotFoundError(
+              'That profile was most likely already deleted.'
+            );
           }
           throw error;
         }
@@ -69,7 +85,7 @@ export function profileRoutes() {
       }
 
       ctx.body = 'Profile successfully deleted.';
-    }
+    }: Middleware)
   );
 
   return router;

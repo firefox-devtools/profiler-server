@@ -5,9 +5,7 @@
 // Definitions by: Bruno Krebs <https://github.com/brunokrebs/>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-import type { Context, Middleware } from 'koa';
-
-declare type Options = {
+declare type Options = {|
   secret: string | string[] | Buffer | Buffer[] | SecretLoader,
   key?: string,
   tokenKey?: string,
@@ -23,12 +21,17 @@ declare type Options = {
   audience?: string | string[],
   issuer?: string | string[],
   algorithms?: string[],
-};
+|};
 
 export type SecretLoader = (
   header: any,
   payload: any
 ) => Promise<string | string[] | Buffer | Buffer[]>;
+
+declare type Middleware = (
+  ctx: any,
+  next: () => Promise<void>
+) => Promise<void> | void;
 
 declare module 'koa-jwt' {
   declare module.exports: (options: Options) => Middleware;

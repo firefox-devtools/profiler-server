@@ -11,6 +11,18 @@ export class BadRequestError extends Error {
   expose = true; // The message will be exposed to users
 }
 
+export class ForbiddenError extends Error {
+  name = 'ForbiddenError';
+  status = 401;
+  expose = true; // The message will be exposed to users
+}
+
+export class NotFoundError extends Error {
+  name = 'NotFoundError';
+  status = 404;
+  expose = true; // The message will be exposed to users
+}
+
 export class PayloadTooLargeError extends Error {
   name = 'PayloadTooLargeError';
   status = 413;
