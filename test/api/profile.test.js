@@ -7,6 +7,12 @@ import { Storage as MockStorage } from '../../__mocks__/@google-cloud/storage';
 import { createApp } from '../../src/app';
 import { ACCEPT_VALUE_MIME } from '../../src/middlewares/versioning';
 import { generateToken, decodeToken } from '../../src/logic/jwt';
+import jwt from 'jsonwebtoken';
+import {
+  checkSecurityHeaders,
+  checkCorsHeader,
+} from './utils/check-security-headers';
+import { config } from '../../src/config';
 
 beforeEach(() => MockStorage.cleanUp());
 afterEach(() => MockStorage.cleanUp());
@@ -15,28 +21,40 @@ describe('DELETE /profile', () => {
   function setup() {
     const acceptHeader = ACCEPT_VALUE_MIME + ';version=1';
     const agent = supertest(createApp().callback());
-    return { acceptHeader, agent };
+
+    async function postProfileToCompressedStore() {
+      // First send a request to create a file.
+      const result = await agent
+        .post('/compressed-store')
+        .accept(acceptHeader)
+        .type('text')
+        .send('SOME_RANDOM_CONTENT')
+        .expect(200);
+
+      if (!result.text) {
+        // Flow couldn't refine this on its own:
+        throw new Error(
+          'Could not find the text response from the post to compressed store.'
+        );
+      }
+      const jwtToken = result.text;
+
+      const profileToken: string = (decodeToken(jwtToken): any).profileToken;
+
+      return { profileToken, jwtToken };
+    }
+
+    return { acceptHeader, agent, postProfileToCompressedStore };
   }
 
   it('gives a 200 response when successfully uploading a profile', async function() {
-    const { agent, acceptHeader } = setup();
+    const { agent, acceptHeader, postProfileToCompressedStore } = setup();
 
-    // First send a request to create a file.
-    const result = await agent
-      .post('/compressed-store')
-      .accept(acceptHeader)
-      .type('text')
-      .send('SOME_RANDOM_CONTENT')
-      .expect(200);
+    const { profileToken, jwtToken } = await postProfileToCompressedStore();
 
-    if (!result.text) {
-      // Flow couldn't refine this on its own:
-      throw new Error(
-        'Could not find the text response from the post to compressed store.'
-      );
-    }
-    const jwtToken = result.text;
-    const { profileToken } = (decodeToken(jwtToken): any);
+    expect(
+      MockStorage.buckets['profile-store'].files[profileToken]
+    ).toBeTruthy();
 
     // Then delete the file.
     await agent
@@ -44,17 +62,11 @@ describe('DELETE /profile', () => {
       .accept(acceptHeader)
       .set('Authorization', `Bearer ${jwtToken}`)
       .send()
-      .expect(200)
-      .expect('Profile successfully deleted.');
+      .expect(200, 'Profile successfully deleted.');
 
-    // Sending it another time will result in a 404 for it not existing.
-    await agent
-      .delete(`/profile/${profileToken}`)
-      .accept(acceptHeader)
-      .set('Authorization', `Bearer ${jwtToken}`)
-      .send()
-      .expect(404)
-      .expect('That profile was most likely already deleted.');
+    expect(
+      MockStorage.buckets['profile-store'].files[profileToken]
+    ).toBeFalsy();
   });
 
   it('gives a 401 response when not providing a JWT', async function() {
@@ -64,8 +76,7 @@ describe('DELETE /profile', () => {
       .delete('/profile/FAKE_HASH')
       .accept(acceptHeader)
       .send()
-      .expect(401)
-      .expect('Authentication Error');
+      .expect(401, 'Authentication Error');
   });
 
   it('gives a 401 response when providing an invalid JWT', async function() {
@@ -76,8 +87,24 @@ describe('DELETE /profile', () => {
       .accept(acceptHeader)
       .set('Authorization', `Bearer FAKE_TOKEN`)
       .send()
-      .expect(401)
-      .expect('Authentication Error');
+      .expect(401, 'Authentication Error');
+  });
+
+  it('gives a 401 response when using the wrong JWT algorithm', async function() {
+    const { agent, acceptHeader, postProfileToCompressedStore } = setup();
+
+    const { profileToken } = await postProfileToCompressedStore();
+
+    const badJwtToken = jwt.sign({ profileToken }, config.jwtSecret, {
+      algorithm: 'none',
+    });
+
+    await agent
+      .delete(`/profile/${profileToken}`)
+      .accept(acceptHeader)
+      .set('Authorization', `Bearer ${badJwtToken}`)
+      .send()
+      .expect(401, 'Authentication Error');
   });
 
   it('gives a 400 response when requesting to delete a profile that does not exist', async function() {
@@ -92,7 +119,25 @@ describe('DELETE /profile', () => {
       .accept(acceptHeader)
       .set('Authorization', `Bearer ${jwtToken}`)
       .send()
-      .expect(404)
-      .expect('That profile was most likely already deleted.');
+      .expect(404, 'That profile was most likely already deleted.');
+  });
+
+  it('implements security headers', async () => {
+    const { agent, acceptHeader, postProfileToCompressedStore } = setup();
+    const { profileToken, jwtToken } = await postProfileToCompressedStore();
+
+    const corsHeaderValue = 'http://example.org';
+
+    let request = agent
+      .delete(`/profile/${profileToken}`)
+      .accept(acceptHeader)
+      .set('Origin', corsHeaderValue)
+      .set('Authorization', `Bearer ${jwtToken}`)
+      .send();
+
+    request = checkSecurityHeaders(request);
+    request = checkCorsHeader(request, corsHeaderValue);
+
+    await request;
   });
 });
