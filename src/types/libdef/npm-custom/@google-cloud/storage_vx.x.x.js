@@ -39,6 +39,8 @@ declare module '@google-cloud/storage' {
     createWriteStream(
       options?: $Shape<CreateWriteStreamOptions>
     ): stream$Writable;
+
+    delete(): Promise<mixed>;
   }
 
   // Source: https://googleapis.dev/nodejs/storage/latest/Bucket.html
@@ -92,4 +94,18 @@ declare module '@google-cloud/storage' {
       options?: $Shape<{| kmsKeyName: string, userProject: string |}>
     ): Bucket;
   }
+
+  declare type Error = {
+    message: string,
+    domain: string,
+    reason: string,
+  };
+
+  declare export type ErrorResponse = {
+    // Status code like 404.
+    code: number,
+    errors: Error[],
+    response: mixed,
+    message: string,
+  };
 }

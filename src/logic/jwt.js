@@ -37,3 +37,15 @@ export function generateToken(payload: Payload): string {
 
   throw new JwtConfigurationError('The secret for JWT generation is missing.');
 }
+
+/**
+ * The JWT can return any valid JSON, so the result will be of type "mixed".
+ */
+export function decodeToken(token: string): mixed {
+  if (config.jwtSecret) {
+    // Verify and decode the token, only allowing the HS256 algorithm.
+    return jwt.verify(token, config.jwtSecret, { algorithms: ['HS256'] });
+  }
+
+  throw new JwtConfigurationError('The secret for JWT generation is missing.');
+}

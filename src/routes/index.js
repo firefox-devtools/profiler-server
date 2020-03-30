@@ -8,6 +8,7 @@ import cors from '@koa/cors';
 import { dockerFlowRoutes } from './dockerflow';
 import { publishRoutes } from './publish';
 import { cspReportRoutes } from './cspReport';
+import { profileRoutes } from './profile';
 
 import { versioning } from '../middlewares';
 
@@ -57,5 +58,8 @@ function configureTechnicalRoutes(app: Koa) {
 
 function configureUserFacingRoutes(app: Koa) {
   const publish = publishRoutes();
+  const profile = profileRoutes();
+
   app.use(publish.routes()).use(publish.allowedMethods());
+  app.use(profile.routes()).use(profile.allowedMethods());
 }
