@@ -70,6 +70,7 @@ describe('DELETE /profile', () => {
   });
 
   it('gives a 401 response when not providing a JWT', async function() {
+    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
     const { agent, acceptHeader } = setup();
 
     await agent
@@ -77,9 +78,16 @@ describe('DELETE /profile', () => {
       .accept(acceptHeader)
       .send()
       .expect(401, 'Authentication Error');
+
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringMatching(
+        /server_error.*UnauthorizedError: Authentication Error/
+      )
+    );
   });
 
   it('gives a 401 response when providing an invalid JWT', async function() {
+    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
     const { agent, acceptHeader } = setup();
 
     await agent
@@ -88,9 +96,16 @@ describe('DELETE /profile', () => {
       .set('Authorization', `Bearer FAKE_TOKEN`)
       .send()
       .expect(401, 'Authentication Error');
+
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringMatching(
+        /server_error.*UnauthorizedError: Authentication Error/
+      )
+    );
   });
 
   it('gives a 401 response when using the wrong JWT algorithm', async function() {
+    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
     const { agent, acceptHeader, postProfileToCompressedStore } = setup();
 
     const { profileToken } = await postProfileToCompressedStore();
@@ -105,9 +120,16 @@ describe('DELETE /profile', () => {
       .set('Authorization', `Bearer ${badJwtToken}`)
       .send()
       .expect(401, 'Authentication Error');
+
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringMatching(
+        /server_error.*UnauthorizedError: Authentication Error/
+      )
+    );
   });
 
-  it('gives a 400 response when requesting to delete a profile that does not exist', async function() {
+  it('gives a 404 response when requesting to delete a profile that does not exist', async function() {
+    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
     const { agent, acceptHeader } = setup();
 
     // Generate a random token.
@@ -120,6 +142,10 @@ describe('DELETE /profile', () => {
       .set('Authorization', `Bearer ${jwtToken}`)
       .send()
       .expect(404, 'That profile was most likely already deleted.');
+
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringMatching(/server_error.*NotFoundError/)
+    );
   });
 
   it('implements security headers', async () => {
