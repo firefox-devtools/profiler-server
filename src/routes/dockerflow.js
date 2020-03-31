@@ -12,6 +12,7 @@ import fs from 'fs';
 import { getLogger } from '../log';
 import { config } from '../config';
 import { create as gcsStorageCreate } from '../logic/gcs';
+import * as BitLy from '../logic/shorten-url';
 
 export function dockerFlowRoutes() {
   const log = getLogger('dockerFlowRoutes');
@@ -48,9 +49,38 @@ export function dockerFlowRoutes() {
   // payload."
   router.get('/__heartbeat__', async ctx => {
     // In this heartbeat endpoint, we need to ping 3rd party servers.
+    // 1. Google Cloud Storage
     const storage = gcsStorageCreate(config);
-    await storage.ping();
-    log.debug('heartbeat_gcs', 'GCS ping was successful.');
+    const googlePromise = storage.ping().then(
+      () => {
+        log.debug('heartbeat_gcs', 'GCS ping was successful.');
+      },
+      e => {
+        log.error(
+          'heartbeat_gcs_error',
+          `GCS ping was unsuccessful: (${e.name}) ${e.message}`
+        );
+        throw e;
+      }
+    );
+
+    // 2. BitLy
+    const bitlyPromise = BitLy.retrieveCurrentUser().then(
+      () => {
+        log.debug('heartbeat_bitly', 'BitLy ping was successful.');
+      },
+      e => {
+        log.error(
+          'heartbeat_bitly_error',
+          `BitLy ping was unsuccessful: (${e.name}) ${e.message}`
+        );
+        throw e;
+      }
+    );
+
+    // Wait for all 3rd party services.
+    await Promise.all([googlePromise, bitlyPromise]);
+
     ctx.body = 'OK';
   });
 

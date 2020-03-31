@@ -98,3 +98,44 @@ export async function expandUrl(urlToExpand: string): Promise<string> {
   const json = await response.json();
   return json.long_url;
 }
+
+type UserInfo = {|
+  default_group_guid: string,
+  name: string,
+  created: string,
+  is_active: boolean,
+  modified: string,
+  is_sso_user: boolean,
+  is_2fa_enabled: boolean,
+  login: string,
+  emails: Array<{|
+    is_primary: boolean,
+    is_verified: boolean,
+    email: string,
+  |}>,
+|};
+
+export async function retrieveCurrentUser(): Promise<UserInfo> {
+  const log = getLogger('expandUrl');
+  if (!config.bitlyToken) {
+    log.error('No access token for bitly has been configured!');
+    throw new BitlyConfigurationError(
+      'No access token for bitly has been configured!'
+    );
+  }
+
+  const bitlyQueryUrl = 'https://api-ssl.bitly.com/v4/user';
+  const response = await fetch(bitlyQueryUrl, {
+    headers: {
+      Authorization: `Bearer ${config.bitlyToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    const baseMessage = `An error happened while retrieving information about the user.`;
+    throw await BitlyResponseError.forResponse(baseMessage, response);
+  }
+
+  const result = await response.json();
+  return result;
+}
