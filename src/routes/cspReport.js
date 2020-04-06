@@ -14,7 +14,7 @@ export function cspReportRoutes() {
   const log = getLogger('cspReportRoutes');
 
   const router = new Router();
-  router.post('/__cspreport__', body(), async ctx => {
+  router.post('/__cspreport__', body(), async (ctx) => {
     if (!ctx.request.body) {
       // Send a "Bad Request" error if the body could not be parsed.
       throw new BadRequestError(`The body couldn't be parsed as JSON.`);

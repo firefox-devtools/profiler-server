@@ -36,7 +36,7 @@ export function profileRoutes() {
       algorithms: ['HS256'],
       key: 'jwtData',
     }),
-    (async ctx => {
+    (async (ctx) => {
       // Verify there is a valid profileToken in the URL path.
       if (!ctx.params.profileToken) {
         throw new BadRequestError(

@@ -19,7 +19,7 @@ log.info('server_started', { port: config.httpPort });
 function gracefulExit() {
   console.log('Received exit request. Closing app...');
 
-  server.close(err => {
+  server.close((err) => {
     if (err) {
       console.error('Error while closing the app', err);
     }

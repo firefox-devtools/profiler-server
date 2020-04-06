@@ -28,7 +28,7 @@ export function publishRoutes() {
 
   const router = new Router();
 
-  router.post('/compressed-store', async ctx => {
+  router.post('/compressed-store', async (ctx) => {
     log.verbose('/compressed-store');
     const expectedLength = ctx.request.length;
 

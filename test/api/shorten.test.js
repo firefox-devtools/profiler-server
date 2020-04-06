@@ -19,10 +19,7 @@ describe('shorten url', () => {
   function getPreconfiguredRequest() {
     const acceptHeader = ACCEPT_VALUE_MIME + ';version=1';
     const agent = supertest(createApp().callback());
-    return agent
-      .post('/shorten')
-      .accept(acceptHeader)
-      .type('json');
+    return agent.post('/shorten').accept(acceptHeader).type('json');
   }
 
   function setup({ longUrl, shortUrl } = {}) {
@@ -140,10 +137,7 @@ describe('expand url', () => {
   function getPreconfiguredRequest() {
     const acceptHeader = ACCEPT_VALUE_MIME + ';version=1';
     const agent = supertest(createApp().callback());
-    return agent
-      .post('/expand')
-      .accept(acceptHeader)
-      .type('json');
+    return agent.post('/expand').accept(acceptHeader).type('json');
   }
 
   function setup({ longUrl, shortUrl } = {}) {

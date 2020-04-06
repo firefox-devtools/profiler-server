@@ -47,7 +47,7 @@ describe('DELETE /profile', () => {
     return { acceptHeader, agent, postProfileToCompressedStore };
   }
 
-  it('gives a 200 response when successfully uploading a profile', async function() {
+  it('gives a 200 response when successfully uploading a profile', async function () {
     const { agent, acceptHeader, postProfileToCompressedStore } = setup();
 
     const { profileToken, jwtToken } = await postProfileToCompressedStore();
@@ -69,7 +69,7 @@ describe('DELETE /profile', () => {
     ).toBeFalsy();
   });
 
-  it('gives a 401 response when not providing a JWT', async function() {
+  it('gives a 401 response when not providing a JWT', async function () {
     jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
     const { agent, acceptHeader } = setup();
 
@@ -86,7 +86,7 @@ describe('DELETE /profile', () => {
     );
   });
 
-  it('gives a 401 response when providing an invalid JWT', async function() {
+  it('gives a 401 response when providing an invalid JWT', async function () {
     jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
     const { agent, acceptHeader } = setup();
 
@@ -104,7 +104,7 @@ describe('DELETE /profile', () => {
     );
   });
 
-  it('gives a 401 response when using the wrong JWT algorithm', async function() {
+  it('gives a 401 response when using the wrong JWT algorithm', async function () {
     jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
     const { agent, acceptHeader, postProfileToCompressedStore } = setup();
 
@@ -128,7 +128,7 @@ describe('DELETE /profile', () => {
     );
   });
 
-  it('gives a 404 response when requesting to delete a profile that does not exist', async function() {
+  it('gives a 404 response when requesting to delete a profile that does not exist', async function () {
     jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
     const { agent, acceptHeader } = setup();
 
