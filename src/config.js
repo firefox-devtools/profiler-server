@@ -44,6 +44,12 @@ function loadConfig() {
       default: process.env.NODE_ENV === 'test' ? 'secret' : null,
       env: 'JWT_SECRET',
     },
+    bitlyToken: {
+      doc: `This token is used to access the bitly API`,
+      format: String,
+      default: process.env.NODE_ENV === 'test' ? 'FAKE_TOKEN_FOR_TESTS' : '',
+      env: 'BITLY_TOKEN',
+    },
   });
 
   conf.validate();
@@ -57,6 +63,7 @@ type Config = {|
   +gcsBucket: string,
   +googleAuthenticationFilePath: string,
   +jwtSecret: string,
+  +bitlyToken: string,
 |};
 
 export const config: Config = loadConfig();
