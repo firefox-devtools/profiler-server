@@ -1,5 +1,5 @@
-// flow-typed signature: ef1ae537f0199f2acf44b5aeab5616f0
-// flow-typed version: 4486f058ec/@koa/router_v8.0.x/flow_>=v0.84.x
+// flow-typed signature: 1b9de4ccdf1bb9599d73d12879daed14
+// flow-typed version: 9af75ce708/@koa/router_v8.0.x/flow_>=v0.84.x
 
 declare module "@koa/router" {
   declare type Middleware = (
