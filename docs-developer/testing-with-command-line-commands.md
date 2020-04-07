@@ -57,6 +57,6 @@ curl \
   --include \
   --request DELETE \
   --header 'Accept: application/vnd.firefox-profiler+json;version=1.0' \
-  --header 'Authorization: Bearer ________PUT_JWT_TOKEN_HERE_______'
+  --header 'Authorization: Bearer ________PUT_JWT_TOKEN_HERE_______' \
   http://localhost:5252/profile/PUT_PROFILE_TOKEN_HERE
 ```
