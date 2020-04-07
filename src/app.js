@@ -17,7 +17,7 @@ export function createApp() {
   const app = new Koa();
 
   // attach general utils.
-  app.on('error', err => {
+  app.on('error', (err) => {
     log.error('server_error', { error: err, stack: err.stack });
   });
 

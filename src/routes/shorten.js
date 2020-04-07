@@ -16,7 +16,7 @@ export function shortenRoutes() {
   const log = getLogger('routes.shorten');
   const router = new Router();
 
-  router.post('/shorten', body(), async ctx => {
+  router.post('/shorten', body(), async (ctx) => {
     log.verbose('/shorten');
 
     if (!ctx.request.body) {
@@ -39,7 +39,7 @@ export function shortenRoutes() {
     ctx.body = { shortUrl };
   });
 
-  router.post('/expand', body(), async ctx => {
+  router.post('/expand', body(), async (ctx) => {
     log.verbose('/expand');
     if (!ctx.request.body) {
       // Send a "Bad Request" error if the body could not be parsed.

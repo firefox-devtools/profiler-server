@@ -22,7 +22,7 @@ describe('reportTo middleware', () => {
       ])
     );
 
-    app.use(ctx => {
+    app.use((ctx) => {
       ctx.body = 'hello world';
     });
 
