@@ -1,0 +1,3 @@
+git+https://github.com/loads/molotov.git#egg=molotov
+# molotov needs it but doesn't install it itself
+aiodogstatsd
