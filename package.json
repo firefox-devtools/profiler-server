@@ -17,7 +17,7 @@
     "lint-fix": "run-p lint-fix-js",
     "lint-js": "eslint src bin test",
     "lint-fix-js": "yarn lint --fix",
-    "lint-python": "flake8 tools",
+    "lint-python": "flake8 tools loadtest",
     "preinstall": "node bin/pre-install.js",
     "build:clean": "rimraf dist && mkdirp dist",
     "build": "babel src --out-dir dist",
