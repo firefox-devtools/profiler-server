@@ -135,6 +135,8 @@ jobs:
           command: |
             # Use both a version tag depending on the circle's build number
             # and a latest tag that's depending on the branch name.
+            # Please keep the version in sync with the version file generated in
+            # bin/generate-version-file.js.
             IMAGE_VERSION_TAG="0.0.${CIRCLE_BUILD_NUM}"
             IMAGE_LATEST_TAG="${CIRCLE_BRANCH}-latest"
             docker tag profiler-server:dev $IMAGE_NAME:$IMAGE_LATEST_TAG
