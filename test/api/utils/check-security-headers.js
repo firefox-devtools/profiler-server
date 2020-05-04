@@ -19,7 +19,7 @@ export function checkSecurityHeaders(request: Test) {
       'Report-To',
       `{"group":"cspreport","max_age":31536000,"endpoints":[{"url":"/__cspreport__"}]}`
     )
-    .expect('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
+    .expect('Strict-Transport-Security', 'max-age=63072000; includeSubDomains')
     .expect('X-DNS-Prefetch-Control', 'off')
     .expect('X-Frame-Options', 'SAMEORIGIN')
     .expect('X-Download-Options', 'noopen')
