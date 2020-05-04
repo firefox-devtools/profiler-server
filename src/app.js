@@ -50,6 +50,7 @@ export function createApp() {
           defaultSrc: ["'none'"],
           frameAncestors: ["'none'"],
           baseUri: ["'none'"],
+          formAction: ["'self'"],
           // This URI is what the checklist (see link above) suggests.
           reportUri: '/__cspreport__',
           reportTo: 'cspreport',

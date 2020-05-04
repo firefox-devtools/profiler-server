@@ -13,7 +13,7 @@ export function checkSecurityHeaders(request: Test) {
   return request
     .expect(
       'Content-Security-Policy',
-      `default-src 'none'; frame-ancestors 'none'; base-uri 'none'; report-uri /__cspreport__; report-to cspreport`
+      `default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; report-uri /__cspreport__; report-to cspreport`
     )
     .expect(
       'Report-To',
