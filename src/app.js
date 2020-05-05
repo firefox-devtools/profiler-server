@@ -50,13 +50,15 @@ export function createApp() {
           defaultSrc: ["'none'"],
           frameAncestors: ["'none'"],
           baseUri: ["'none'"],
+          formAction: ["'self'"],
           // This URI is what the checklist (see link above) suggests.
           reportUri: '/__cspreport__',
           reportTo: 'cspreport',
         },
       },
       hsts: {
-        maxAge: 365 * 24 * 60 * 60, // 1 year
+        // 2 years according to https://wiki.mozilla.org/Security/Server_Side_TLS
+        maxAge: 2 * 365 * 24 * 60 * 60,
       },
     })
   );
