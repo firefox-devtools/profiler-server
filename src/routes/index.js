@@ -5,6 +5,7 @@
 
 import cors from '@koa/cors';
 
+import { rootRoutes } from './root';
 import { dockerFlowRoutes } from './dockerflow';
 import { publishRoutes } from './publish';
 import { cspReportRoutes } from './cspReport';
@@ -50,9 +51,11 @@ export function configureRoutes(app: Koa) {
 }
 
 function configureTechnicalRoutes(app: Koa) {
+  const root = rootRoutes();
   const dockerFlow = dockerFlowRoutes();
   const cspReport = cspReportRoutes();
 
+  app.use(root.routes()).use(root.allowedMethods());
   app.use(dockerFlow.routes()).use(dockerFlow.allowedMethods());
   app.use(cspReport.routes()).use(cspReport.allowedMethods());
 }
