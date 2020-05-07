@@ -27,6 +27,11 @@ export function dockerFlowRoutes() {
     // We try to get the version file in the current working directory.
     const versionFilePath = 'version.json';
     try {
+      const stat = await fs.promises.stat(versionFilePath);
+      ctx.lastModified = stat.mtime;
+
+      // We could try to conditionally answer depending on cache-related headers
+      // in the request but this is a lot of work for this small file.
       const content = await fs.promises.readFile(versionFilePath);
       ctx.body = content;
       ctx.type = 'json';
