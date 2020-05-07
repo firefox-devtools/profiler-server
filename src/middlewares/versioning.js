@@ -19,7 +19,7 @@ import contentType from 'content-type';
 export const ACCEPT_VALUE_MIME = 'application/vnd.firefox-profiler+json';
 
 export function versioning(expectedVersion: number) {
-  return async function(ctx: Context, next: () => Promise<void>) {
+  return async function (ctx: Context, next: () => Promise<void>) {
     const acceptValue = ctx.get('accept');
     if (!acceptValue) {
       ctx.throw(400, `The header 'Accept' is missing.`);
@@ -33,7 +33,7 @@ export function versioning(expectedVersion: number) {
 
     const acceptValues = acceptValue.split(',');
 
-    const hasAcceptableValue = acceptValues.some(acceptValue => {
+    const hasAcceptableValue = acceptValues.some((acceptValue) => {
       const parsedAcceptValue = contentType.parse(acceptValue);
       const receivedVersion = +parsedAcceptValue.parameters.version;
       const isAcceptableValue =

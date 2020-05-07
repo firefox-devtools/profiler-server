@@ -25,6 +25,9 @@ We can run the last built image in a new container with the command:
 ```
 yarn docker:run
 ```
+This makes use of the local file .env to provide environment variables.
+Especially the environment variable `JWT_SECRET` needs to be set.
+
 The app should listen on port 8000. The container is named `profiler-server`.
 
 Pressing Ctrl-C will gracefully close the app and the container, then delete the

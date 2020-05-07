@@ -31,7 +31,7 @@ RUN mkdir /app \
 # - python, as we need it to build fast-crc32c when installing with yarn later.
 # - build-essential, that installs all build tools for the same reason.
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends git python build-essential \
+  && apt-get install -y --no-install-recommends git python build-essential flake8 \
 # and clean the downloaded lists so that they don't increase the layer size.
   && rm -rf /var/lib/apt/lists/*
 

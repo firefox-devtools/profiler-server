@@ -107,7 +107,9 @@ content it should have:
 ```
 GCS_BUCKET="<bucket name>"
 GCS_AUTHENTICATION_PATH="<path to your key file>.json"
+JWT_SECRET="<something you choose>"
 ```
+You can also copy the provided file `.env.example`.
 
 If you're using the Mozilla project, the bucket name you can use is
 `profile-store-julien-dev`. Otherwise please use the one you created in the
@@ -119,4 +121,5 @@ Create a file in your project directory, called `.env`. Here is the
 content it should have:
 ```
 GCS_AUTHENTICATION_PATH="MOCKED"
+JWT_SECRET="<something you choose>"
 ```

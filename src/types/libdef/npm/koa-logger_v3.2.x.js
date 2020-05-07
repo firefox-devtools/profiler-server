@@ -1,3 +1,6 @@
+// flow-typed signature: 00dda26f466c2209db551ccbb8beb05e
+// flow-typed version: ac32043d4a/koa-logger_v3.2.x/flow_>=v0.53.x
+
 declare module 'koa-logger' {
   declare type TransporterArguments =
     // This argument can take these 2 forms:

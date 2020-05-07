@@ -8,15 +8,19 @@ describe('config.js', () => {
   it('returns default values', () => {
     expect(config).toEqual({
       env: 'test',
-      httpPort: 4243,
+      httpPort: 5252,
       gcsBucket: 'profile-store',
       googleAuthenticationFilePath: '',
+      jwtSecret: 'secret',
+      bitlyToken: 'FAKE_TOKEN_FOR_TESTS',
     });
     expect(loadConfig()).toEqual({
       env: 'test',
-      httpPort: 4243,
+      httpPort: 5252,
       gcsBucket: 'profile-store',
       googleAuthenticationFilePath: '',
+      jwtSecret: 'secret',
+      bitlyToken: 'FAKE_TOKEN_FOR_TESTS',
     });
   });
 
@@ -24,5 +28,11 @@ describe('config.js', () => {
     process.env.PORT = '12345';
     expect(loadConfig().httpPort).toEqual(12345);
     delete process.env.PORT;
+  });
+
+  it(`when not in tests throws if there's no jwt secret specified`, () => {
+    process.env.NODE_ENV = 'production';
+    expect(() => loadConfig()).toThrow();
+    process.env.NODE_ENV = 'test';
   });
 });

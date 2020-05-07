@@ -5,9 +5,12 @@
 
 import cors from '@koa/cors';
 
+import { rootRoutes } from './root';
 import { dockerFlowRoutes } from './dockerflow';
 import { publishRoutes } from './publish';
 import { cspReportRoutes } from './cspReport';
+import { profileRoutes } from './profile';
+import { shortenRoutes } from './shorten';
 
 import { versioning } from '../middlewares';
 
@@ -48,14 +51,21 @@ export function configureRoutes(app: Koa) {
 }
 
 function configureTechnicalRoutes(app: Koa) {
+  const root = rootRoutes();
   const dockerFlow = dockerFlowRoutes();
   const cspReport = cspReportRoutes();
 
+  app.use(root.routes()).use(root.allowedMethods());
   app.use(dockerFlow.routes()).use(dockerFlow.allowedMethods());
   app.use(cspReport.routes()).use(cspReport.allowedMethods());
 }
 
 function configureUserFacingRoutes(app: Koa) {
   const publish = publishRoutes();
+  const profile = profileRoutes();
+  const shorten = shortenRoutes();
+
   app.use(publish.routes()).use(publish.allowedMethods());
+  app.use(profile.routes()).use(profile.allowedMethods());
+  app.use(shorten.routes()).use(shorten.allowedMethods());
 }

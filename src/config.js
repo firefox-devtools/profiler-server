@@ -18,7 +18,7 @@ function loadConfig() {
     },
     httpPort: {
       format: 'port',
-      default: 4243,
+      default: 5252,
       // The environment variable's name is required by Dockerflow.
       // see https://github.com/mozilla-services/Dockerflow#containerized-app-requirements
       env: 'PORT',
@@ -38,6 +38,18 @@ function loadConfig() {
       default: '',
       env: 'GCS_AUTHENTICATION_PATH',
     },
+    jwtSecret: {
+      doc: `Secret that's used when generating and verifying JWT tokens`,
+      format: String,
+      default: process.env.NODE_ENV === 'test' ? 'secret' : null,
+      env: 'JWT_SECRET',
+    },
+    bitlyToken: {
+      doc: `This token is used to access the bitly API`,
+      format: String,
+      default: process.env.NODE_ENV === 'test' ? 'FAKE_TOKEN_FOR_TESTS' : '',
+      env: 'BITLY_TOKEN',
+    },
   });
 
   conf.validate();
@@ -50,6 +62,8 @@ type Config = {|
   +httpPort: number,
   +gcsBucket: string,
   +googleAuthenticationFilePath: string,
+  +jwtSecret: string,
+  +bitlyToken: string,
 |};
 
 export const config: Config = loadConfig();

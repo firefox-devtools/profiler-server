@@ -35,6 +35,9 @@ module.exports = {
     'no-constant-condition': ['error', { checkLoops: false }],
     'no-console': ['error', { allow: ['log', 'warn', 'error'] }],
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    // This rule gets confused with async functions and setting the
+    // ctx for route responses.
+    'require-atomic-updates': 0,
 
     // possible errors
     'array-callback-return': 'error',

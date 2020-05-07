@@ -8,7 +8,7 @@ The following command uploads a file through the server. Curl will automatically
 send a `Content-Length` header using the file size. Of course, don't forget to
 change the path to the file. Note that the character `@` is important!
 ```
-curl -i -X POST --data-binary @/path/to/file -H 'Accept: application/vnd.firefox-profiler+json;version=1.0' localhost:4243/compressed-store
+curl -i -X POST --data-binary @/path/to/file -H 'Accept: application/vnd.firefox-profiler+json;version=1.0' localhost:5252/compressed-store
 ```
 
 The parameter `-i` outputs the response headers as well as the response.
@@ -24,7 +24,7 @@ Sometimes we want to test uploading without the `Content-Length` header. For
 this we'll used the chunked encoding, like this:
 
 ```
-curl -i -X POST --data-binary @/path/to/file -H 'Accept: application/vnd.firefox-profiler+json;version=1.0' -H 'Transfer-Encoding: chunked' localhost:4243/compressed-store
+curl -i -X POST --data-binary @/path/to/file -H 'Accept: application/vnd.firefox-profiler+json;version=1.0' -H 'Transfer-Encoding: chunked' localhost:5252/compressed-store
 ```
 
 Curl will detect that we use the header for chunked encoding and skip sending
@@ -41,3 +41,22 @@ will generate a file of 33 MiB filled with zeros.
 You can use `/dev/urandom` instead of `/dev/zero` to fill the file with random
 data.
 
+## Delete a profile
+
+To test deleting a profile, first upload one, and get the JWT. Run the following to get the profileToken.
+
+```
+echo '________PUT_JWT_TOKEN_HERE_______' | tools/decode_jwt_payload.py
+```
+
+Then run the following curl.
+
+```sh
+# Delete a profile
+curl \
+  --include \
+  --request DELETE \
+  --header 'Accept: application/vnd.firefox-profiler+json;version=1.0' \
+  --header 'Authorization: Bearer ________PUT_JWT_TOKEN_HERE_______' \
+  http://localhost:5252/profile/PUT_PROFILE_TOKEN_HERE
+```

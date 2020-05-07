@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 // @flow
 import supertest from 'supertest';
+import jwt from 'jsonwebtoken';
 
 import crypto from 'crypto';
 
@@ -19,14 +20,18 @@ import {
 beforeEach(() => MockStorage.cleanUp());
 afterEach(() => MockStorage.cleanUp());
 
+function verifyAndDecodeJwtToken(res) {
+  const token = res.text;
+  const secret = config.jwtSecret;
+  const decodedPayload = jwt.verify(token, secret, { algorithms: ['HS256'] });
+  res.text = decodedPayload.profileToken;
+}
+
 describe('publishing endpoints', () => {
   function getPreconfiguredRequest() {
     const acceptHeader = ACCEPT_VALUE_MIME + ';version=1';
     const agent = supertest(createApp().callback());
-    return agent
-      .post('/compressed-store')
-      .accept(acceptHeader)
-      .type('text');
+    return agent.post('/compressed-store').accept(acceptHeader).type('text');
   }
 
   it('uploads data all the way to google storage when using a content length', async () => {
@@ -35,10 +40,7 @@ describe('publishing endpoints', () => {
 
     // This is the hash for the content. It's returned by the API and used as a
     // file path in GCS.
-    const contentHash = crypto
-      .createHash('sha1')
-      .update(content)
-      .digest('hex');
+    const contentHash = crypto.createHash('sha1').update(content).digest('hex');
 
     // `getPreconfiguredRequest` returns a request already configured with the
     // right path and content type.
@@ -46,7 +48,11 @@ describe('publishing endpoints', () => {
 
     // This checks that we get a 200 status from the server and that it returns
     // the hash.
-    await req.send(content).expect(200, contentHash);
+    await req
+      .send(content)
+      .expect(200)
+      .expect(verifyAndDecodeJwtToken)
+      .expect(contentHash);
 
     // Now we'll look at our mocked GCS library and check it's been called
     // properly.
@@ -80,10 +86,7 @@ describe('publishing endpoints', () => {
     // for more information.
     const content = 'aaaa';
 
-    const contentHash = crypto
-      .createHash('sha1')
-      .update(content)
-      .digest('hex');
+    const contentHash = crypto.createHash('sha1').update(content).digest('hex');
 
     const req = getPreconfiguredRequest();
 
@@ -94,7 +97,7 @@ describe('publishing endpoints', () => {
     // have to rely on the heuristic.
     req.write(content);
 
-    await req.expect(200, contentHash);
+    await req.expect(200).expect(verifyAndDecodeJwtToken).expect(contentHash);
 
     expect(MockStorage.buckets).toHaveProperty(config.gcsBucket);
     const bucket = MockStorage.buckets[config.gcsBucket];
@@ -128,10 +131,7 @@ describe('publishing endpoints', () => {
   it('returns an error when the sent data is bigger than the length', async () => {
     jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
     const req = getPreconfiguredRequest();
-    await req
-      .set('Content-Length', String(3))
-      .send('aaaa')
-      .expect(400); // 400 means Bad Request. It's generated automatically by Koa.
+    await req.set('Content-Length', String(3)).send('aaaa').expect(400); // 400 means Bad Request. It's generated automatically by Koa.
     expect(process.stdout.write).toHaveBeenCalledWith(
       expect.stringContaining('server_error')
     );
@@ -247,13 +247,21 @@ describe('API versioning', () => {
     const req = getPreconfiguredRequest().accept(
       `image/webp,${ACCEPT_VALUE_MIME};version=1`
     );
-    await req.send('a').expect(200, `86f7e437faa5a7fce15d1ddcb9eaeaea377667b8`);
+    await req
+      .send('a')
+      .expect(200)
+      .expect(verifyAndDecodeJwtToken)
+      .expect(`86f7e437faa5a7fce15d1ddcb9eaeaea377667b8`);
   });
 
   it('accepts the request even if the version is specified with spaces before the parameter', async () => {
     const req = getPreconfiguredRequest().accept(
       ACCEPT_VALUE_MIME + '; version=1'
     );
-    await req.send('a').expect(200, `86f7e437faa5a7fce15d1ddcb9eaeaea377667b8`);
+    await req
+      .send('a')
+      .expect(200)
+      .expect(verifyAndDecodeJwtToken)
+      .expect(`86f7e437faa5a7fce15d1ddcb9eaeaea377667b8`);
   });
 });

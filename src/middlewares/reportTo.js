@@ -46,7 +46,7 @@ export function reportTo(options: ReportToOptions) {
   // - https://tools.ietf.org/html/draft-reschke-http-jfv-11#section-2
   const headerValue = JSON.stringify(readyOptions).slice(1, -1);
 
-  return async function(ctx: Context, next: () => Promise<void>) {
+  return async function (ctx: Context, next: () => Promise<void>) {
     ctx.set(HEADER_NAME, headerValue);
 
     await next();

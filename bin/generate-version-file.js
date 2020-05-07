@@ -47,8 +47,19 @@ function writeVersionFile() {
   const repositoryUrl = packageJson.repository;
 
   const commitHash = getGitCommitHash();
-  const buildUrl = process.env.CIRCLE_BUILD_URL;
-  const version = ''; // TODO: generate a proper version when we're on a tag
+  const buildUrl = process.env.CIRCLE_BUILD_URL || '';
+  // Currently we generate the version from the build url. We're confident this
+  // is always increasing, but for sure this isn't monotonic. In the future we
+  // might want to use a tag instead.
+  const circleBuildNumResult = /\d+$/.exec(buildUrl);
+  if (!circleBuildNumResult) {
+    throw new Error(
+      `We couldn't extract a build num from the build URL, this shouldn't happen. The full build url is: ${buildUrl}.`
+    );
+  }
+  // Please keep it in sync with the version used for the docker image in
+  // .circleci/config.yml.
+  const version = `0.0.${circleBuildNumResult[0]}`;
   const distDir = 'dist';
   const targetName = path.join(distDir, 'version.json');
 

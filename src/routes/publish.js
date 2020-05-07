@@ -13,6 +13,7 @@ import util from 'util';
 import { getLogger } from '../log';
 import { config } from '../config';
 import { create as gcsStorageCreate } from '../logic/gcs';
+import * as Jwt from '../logic/jwt';
 import {
   HasherPassThrough,
   LengthCheckerPassThrough,
@@ -27,7 +28,7 @@ export function publishRoutes() {
 
   const router = new Router();
 
-  router.post('/compressed-store', async ctx => {
+  router.post('/compressed-store', async (ctx) => {
     log.verbose('/compressed-store');
     const expectedLength = ctx.request.length;
 
@@ -81,9 +82,9 @@ export function publishRoutes() {
     });
     googleStorageStream.destroy();
 
-    // This should be fine in this case.
-    // eslint-disable-next-line require-atomic-updates
-    ctx.body = hash;
+    const jwtToken = Jwt.generateToken({ profileToken: hash });
+
+    ctx.body = jwtToken;
   });
 
   return router;
