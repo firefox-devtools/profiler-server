@@ -105,7 +105,7 @@ jobs:
             yarn docker:run:detached
             # Wait up to 10 seconds that the server is launched.
             timeout 10s sh \<<'EOF'
-            while ! docker exec profiler-server curl --silent --show-error --fail http://localhost:8000/__version__ ; do
+            while ! docker exec profiler-server curl -i --silent --show-error --fail http://localhost:8000/__version__ ; do
               sleep 1
             done
             EOF
