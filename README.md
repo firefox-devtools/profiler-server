@@ -66,6 +66,14 @@ you can pull latest versions with:
 * for master: `docker pull mozilla/profiler-server:master-latest`
 * for production: `docker pull mozilla/profiler-server:production-latest`
 
+## Discussion
+
+Say hello on Matrix in the [*Firefox Profiler* channel (*#profiler:mozilla.org*)][matrix].
+
+## License
+
+[MPL v2](./LICENSE)
+
 [matrix]: https://chat.mozilla.org/#/room/#profiler:mozilla.org
 <!-- chat.mozilla.org's "real" server is mozilla.modular.im. -->
 [matrix-badge]: https://img.shields.io/matrix/profiler:mozilla.org?server_fqdn=mozilla.modular.im&label=matrix
