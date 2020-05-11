@@ -43,10 +43,26 @@ function getGitCommitHash() /*: string */ {
   return hash.trim();
 }
 
+function findLocalBranch() /*: string */ {
+  const branch = execFileSync(
+    'git',
+    ['symbolic-ref', '--short', '-q', 'HEAD'],
+    {
+      encoding: 'utf8',
+    }
+  );
+  // Because execFileSync can return both a string or a buffer depending on the
+  // `encoding` option, Flow isn't happy about calling `trim` on it. But _we_
+  // know that it's a string.
+  // $FlowExpectError
+  return branch.trim();
+}
+
 function writeVersionFile() {
   const repositoryUrl = packageJson.repository;
 
   const commitHash = getGitCommitHash();
+  const branch = findLocalBranch();
   const buildUrl = process.env.CIRCLE_BUILD_URL || '';
   // Currently we generate the version from the build url. We're confident this
   // is always increasing, but for sure this isn't monotonic. In the future we
@@ -68,6 +84,8 @@ function writeVersionFile() {
     version,
     commit: commitHash,
     build: buildUrl,
+    date: new Date().toISOString(),
+    branch,
   };
 
   console.log(`Writing to ${targetName}:`);
