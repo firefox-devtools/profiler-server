@@ -29,6 +29,10 @@ This makes use of the local file .env to provide environment variables.
 Especially the environment variable `JWT_SECRET` needs to be set.
 **Be careful that the `.env` file doesn't use quotes or superfluous space characters.**
 
+If the variable `GCS_AUTHENTICATION_PATH` is set the pointed file will be
+mounted to the docker instance as well, so that Google Storage authentication
+works.
+
 The app should listen on port 8000. The container is named `profiler-server`.
 
 Pressing Ctrl-C will gracefully close the app and the container, then delete the
@@ -50,9 +54,16 @@ yarn docker:stop
 
 ## More information and troubleshooting
 ### Running the docker image
-`yarn docker:run` is a shortcut for:
+`yarn docker:run` runs the script bin/docker-run.js, which is basically a shortcut for:
 ```
-docker run -t -i -p 8000:8000 --rm --name profiler-server profiler-server:dev
+docker run \
+  -t -i \
+  -p 8000:8000 \
+  --rm \
+  --name profiler-server \
+  --env-file .env \
+  --mount type=bind,source=<path-to-GCS-config>,target=<path-to-GCS-config>,readonly \
+  profiler-server:dev
 ```
 Here is a quick explanation of the command line parameters:
 * `-t` allocates a pseudo-tty, while `-i` makes the container interactive. These
@@ -63,25 +74,36 @@ Here is a quick explanation of the command line parameters:
   container. (Please see below to change this port.)
 * `--rm` removes the container when it stops.
 * `--name` name this container so that it's easier to reference in commands.
+* `--env-file .env` imports environment variable to the newly created instance.
+* `--mount type=bind,source=XXX,target=XXX,readonly`: this makes it possible to
+  authenticate to Google Cloud Storage by sharing the authentication file.
+
+The script can take some parameters. See below and run `yarn docker:run --help`
+to find out more.
 
 ### Running a shell in the image
 It's easy to run a bash shell as the running user:
 ```
 yarn docker:run bash
 ```
-It's possible but less easy to run a shell as root:
+It's also possible to run a shell as root:
 ```
-docker run -t -i --rm -u root profiler-server:dev bash
+yarn docker:run --user root bash
 ```
 
 ### Change the listening port
 Similarly this is how we can change the listening port:
 ```
-docker run -t -i -p <local port>:8000 --rm profiler-server:dev
+yarn docker:run -p <local port>
 ```
-where `<local port>` can also be a range of ports, so that it will use the first
-available port in the range. Then `docker ps` will show which port is used for
-this container.
+
+### Run ready-to-use profiler server images
+He images we use for production [are public](https://hub.docker.com/r/mozilla/profiler-server/tags),
+you can pull latest versions with:
+* for master: `docker pull mozilla/profiler-server:master-latest`
+* for production: `docker pull mozilla/profiler-server:production-latest`
+
+Then run them with the command `node bin/docker-run <name of the image>`.
 
 ### Stopping the docker container
 
