@@ -27,6 +27,7 @@ yarn docker:run
 ```
 This makes use of the local file .env to provide environment variables.
 Especially the environment variable `JWT_SECRET` needs to be set.
+**Be careful that the `.env` file doesn't use quotes or superfluous space characters.**
 
 The app should listen on port 8000. The container is named `profiler-server`.
 
