@@ -77,12 +77,16 @@ describe('DELETE /profile', () => {
       .delete('/profile/FAKE_HASH')
       .accept(acceptHeader)
       .send()
-      .expect(401, 'Authentication Error');
+      .expect(
+        401,
+        'A valid authentication token is needed to execute this operation.'
+      );
 
     expect(process.stdout.write).toHaveBeenCalledWith(
-      expect.stringMatching(
-        /server_error.*UnauthorizedError: Authentication Error/
-      )
+      expect.stringMatching(/WARN.*JsonWebTokenError/)
+    );
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringMatching(/server_error.*ForbiddenError/)
     );
   });
 
@@ -95,12 +99,16 @@ describe('DELETE /profile', () => {
       .accept(acceptHeader)
       .set('Authorization', `Bearer FAKE_TOKEN`)
       .send()
-      .expect(401, 'Authentication Error');
+      .expect(
+        401,
+        'A valid authentication token is needed to execute this operation.'
+      );
 
     expect(process.stdout.write).toHaveBeenCalledWith(
-      expect.stringMatching(
-        /server_error.*UnauthorizedError: Authentication Error/
-      )
+      expect.stringMatching(/WARN.*JsonWebTokenError/)
+    );
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringMatching(/server_error.*ForbiddenError/)
     );
   });
 
@@ -119,12 +127,48 @@ describe('DELETE /profile', () => {
       .accept(acceptHeader)
       .set('Authorization', `Bearer ${badJwtToken}`)
       .send()
-      .expect(401, 'Authentication Error');
+      .expect(
+        401,
+        'A valid authentication token is needed to execute this operation.'
+      );
 
     expect(process.stdout.write).toHaveBeenCalledWith(
-      expect.stringMatching(
-        /server_error.*UnauthorizedError: Authentication Error/
-      )
+      expect.stringMatching(/WARN.*JsonWebTokenError/)
+    );
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringMatching(/server_error.*ForbiddenError/)
+    );
+  });
+
+  it('gives a 401 response when providing a JWT with an unmatched profile token', async function () {
+    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    const { agent, acceptHeader, postProfileToCompressedStore } = setup();
+
+    const { profileToken } = await postProfileToCompressedStore();
+
+    const badJwtToken = jwt.sign(
+      { profileToken: 'DIFFERENT' },
+      config.jwtSecret,
+      {
+        algorithm: 'HS256',
+      }
+    );
+
+    await agent
+      .delete(`/profile/${profileToken}`)
+      .accept(acceptHeader)
+      .set('Authorization', `Bearer ${badJwtToken}`)
+      .send()
+      .expect(
+        401,
+        'The profileToken in the JWT did not match the token provided in the path.'
+      );
+
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringMatching(/WARN.*delete.jwt.profileTokenMismatch/)
+    );
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringMatching(/server_error.*ForbiddenError/)
     );
   });
 
