@@ -24,3 +24,13 @@ describe('/ route', () => {
     await request;
   });
 });
+
+describe('/contribute.json', () => {
+  it('redirects to the main profiler URL', async () => {
+    const agent = supertest(createApp().callback());
+    await agent
+      .get('/contribute.json')
+      .expect(301)
+      .expect('Location', 'https://profiler.firefox.com/contribute.json');
+  });
+});

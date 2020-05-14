@@ -35,6 +35,9 @@ export function profileRoutes() {
       secret: config.jwtSecret,
       algorithms: ['HS256'],
       key: 'jwtData',
+      // If the JWT is missing or invalid, we still enter the route. The route
+      // needs to check that the value is valid.
+      passthrough: true,
     }),
     (async (ctx) => {
       // Verify there is a valid profileToken in the URL path.
@@ -52,19 +55,34 @@ export function profileRoutes() {
         typeof jwtData !== 'object' ||
         typeof jwtData.profileToken !== 'string'
       ) {
-        throw new ForbiddenError(`A profileToken was not found in the JWT.`);
+        if (ctx.state.jwtOriginalError) {
+          const error = ctx.state.jwtOriginalError;
+          // The JWT decoding middleware found an error earlier.
+          log.warn(
+            'delete.jwt.invalid',
+            `An error was thrown while trying to decode the JWT token: (${error.name}) ${error.message}`
+          );
+          throw new ForbiddenError(
+            'A valid authentication token is needed to execute this operation.'
+          );
+        }
+
+        const message = `A profileToken was not found in the JWT.`;
+        log.warn('delete.jwt.profileTokenNotFound', message);
+        throw new ForbiddenError(message);
       } else {
         profileToken = jwtData.profileToken;
       }
 
       // Make sure the profile token from the route and JWT agree.
       if (profileToken !== ctx.params.profileToken) {
-        throw new ForbiddenError(
-          'The profileToken in the JWT did not match the token provided in the path.'
-        );
+        const message =
+          'The profileToken in the JWT did not match the token provided in the path.';
+        log.warn('delete.jwt.profileTokenMismatch', message);
+        throw new ForbiddenError(message);
       }
 
-      log.info(
+      log.debug(
         'delete',
         'Attempt to delete the profile from Google Cloud Storage.'
       );

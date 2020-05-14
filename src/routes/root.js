@@ -28,5 +28,10 @@ export function rootRoutes() {
     `;
   });
 
+  router.get('/contribute.json', async (ctx) => {
+    ctx.status = 301; // Permanent Redirect
+    ctx.redirect('https://profiler.firefox.com/contribute.json');
+  });
+
   return router;
 }

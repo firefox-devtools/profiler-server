@@ -116,6 +116,7 @@ describe('dockerflow endpoints', () => {
       const error = new Error("Can't find the requested file.");
       (error: any).code = 'ENOENT';
 
+      jest.spyOn(fs.promises, 'stat').mockRejectedValue(error);
       jest.spyOn(fs.promises, 'readFile').mockRejectedValue(error);
       // mozlog writes to stdout, let's catch it
       jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
@@ -123,7 +124,7 @@ describe('dockerflow endpoints', () => {
       const agent = setup();
       await agent.get('/__version__').expect(500);
 
-      expect(fs.promises.readFile).toHaveBeenCalledWith('version.json');
+      expect(fs.promises.stat).toHaveBeenCalledWith('version.json');
       expect(process.stdout.write).toHaveBeenCalledWith(
         expect.stringContaining('server_error')
       );
@@ -131,11 +132,16 @@ describe('dockerflow endpoints', () => {
 
     it('answers to the version endpoint when the file is present', async () => {
       const fixture = require('./fixtures/version.json');
+      const fakeLastModifiedDate = new Date('Thu, 01 May 2020 10:20:15 GMT');
       jest.spyOn(fs.promises, 'readFile').mockResolvedValue(fixture);
+      jest
+        .spyOn(fs.promises, 'stat')
+        .mockResolvedValue({ mtime: fakeLastModifiedDate });
       const agent = setup();
       const response = await agent
         .get('/__version__')
         .expect('Content-Type', /^application\/json/)
+        .expect('Last-Modified', fakeLastModifiedDate.toUTCString())
         .expect(200);
 
       expect(fs.promises.readFile).toHaveBeenCalledWith('version.json');
@@ -146,6 +152,7 @@ describe('dockerflow endpoints', () => {
   it('all endpoints uses security headers', async () => {
     const fixture = require('./fixtures/version.json');
     jest.spyOn(fs.promises, 'readFile').mockResolvedValue(fixture);
+    jest.spyOn(fs.promises, 'stat').mockResolvedValue({ mtime: new Date() });
 
     const { agent } = setupForHeartbeat();
     await checkSecurityHeaders(agent.get('/__heartbeat__'));

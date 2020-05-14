@@ -90,9 +90,7 @@ jobs:
   docker:
     executor: node
     steps:
-      # This job doesn't need the cached node_modules because they'll be
-      # redownloaded when building the docker image.
-      - checkout
+      - checkout-and-dependencies
       # This sets up a remote environment that's necessary to run docker commands.
       - setup_remote_docker
       - run:
@@ -105,7 +103,7 @@ jobs:
             yarn docker:run:detached
             # Wait up to 10 seconds that the server is launched.
             timeout 10s sh \<<'EOF'
-            while ! docker exec profiler-server curl --silent --show-error --fail http://localhost:8000/__version__ ; do
+            while ! docker exec profiler-server curl -i --silent --show-error --fail http://localhost:8000/__version__ ; do
               sleep 1
             done
             EOF

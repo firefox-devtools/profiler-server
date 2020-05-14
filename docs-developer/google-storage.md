@@ -4,7 +4,25 @@ This file documents how to configure Google Cloud Storage to use on your
 machine.
 
 To work on this project this isn't mandatory: it's possible to use a mocked
-version of the service.
+version of the service as described below.
+
+## Configure your local development instance to use GCS
+
+Copy the file `.env.example` to `.env`, then edit it in your favorite editor
+following the embedded comments.
+
+If you're using the Mozilla project, the bucket name you can use is
+`profile-store-julien-dev`. Otherwise please use the one you create following
+the section below.
+
+## Configure your local development instance to use a mock version of GCS
+
+Create a file in your project directory, called `.env`. Here is the
+content it should have:
+```
+GCS_AUTHENTICATION_PATH="MOCKED"
+JWT_SECRET="<something you choose>"
+```
 
 ## Configure Google platform for this project.
 
@@ -99,27 +117,3 @@ If you're a Mozilla employee, you can instead request access to the project
 Then you can create a service account and assign the right permissions for this
 new account to the existing bucket in the project as outlined above. Note that
 this bucket will be emptied from time to time.
-
-## Configure your local development instance to use GCS
-
-Create a file in your project directory, called `.env`. Here is the
-content it should have:
-```
-GCS_BUCKET="<bucket name>"
-GCS_AUTHENTICATION_PATH="<path to your key file>.json"
-JWT_SECRET="<something you choose>"
-```
-You can also copy the provided file `.env.example`.
-
-If you're using the Mozilla project, the bucket name you can use is
-`profile-store-julien-dev`. Otherwise please use the one you created in the
-first step above.
-
-## Configure your local development instance to use a mock version of GCS
-
-Create a file in your project directory, called `.env`. Here is the
-content it should have:
-```
-GCS_AUTHENTICATION_PATH="MOCKED"
-JWT_SECRET="<something you choose>"
-```
