@@ -60,6 +60,7 @@ export function createApp() {
         // 2 years according to https://wiki.mozilla.org/Security/Server_Side_TLS
         maxAge: 2 * 365 * 24 * 60 * 60,
       },
+      frameguard: { action: 'deny' },
     })
   );
 
