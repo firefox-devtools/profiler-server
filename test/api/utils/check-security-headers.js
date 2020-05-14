@@ -21,7 +21,7 @@ export function checkSecurityHeaders(request: Test) {
     )
     .expect('Strict-Transport-Security', 'max-age=63072000; includeSubDomains')
     .expect('X-DNS-Prefetch-Control', 'off')
-    .expect('X-Frame-Options', 'SAMEORIGIN')
+    .expect('X-Frame-Options', 'DENY')
     .expect('X-Download-Options', 'noopen')
     .expect('X-Content-Type-Options', 'nosniff')
     .expect('X-XSS-Protection', '1; mode=block');
