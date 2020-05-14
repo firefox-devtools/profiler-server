@@ -90,9 +90,7 @@ jobs:
   docker:
     executor: node
     steps:
-      # This job doesn't need the cached node_modules because they'll be
-      # redownloaded when building the docker image.
-      - checkout
+      - checkout-and-dependencies
       # This sets up a remote environment that's necessary to run docker commands.
       - setup_remote_docker
       - run:

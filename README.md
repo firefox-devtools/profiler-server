@@ -66,6 +66,8 @@ you can pull latest versions with:
 * for master: `docker pull mozilla/profiler-server:master-latest`
 * for production: `docker pull mozilla/profiler-server:production-latest`
 
+Again, look the [dedicated documentation](docs-developers/docker.md) to know more.
+
 ## Discussion
 
 Say hello on Matrix in the [*Firefox Profiler* channel (*#profiler:mozilla.org*)][matrix].
