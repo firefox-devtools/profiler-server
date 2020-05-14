@@ -3,10 +3,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 // @flow
 
+import fs from 'fs';
 import convict from 'convict';
 import { getLogger } from './log';
 
 const log = getLogger('config');
+
+class ConfigurationError extends Error {
+  name = 'ConfigurationError';
+}
 
 function loadConfig() {
   const conf = convict({
@@ -54,7 +59,37 @@ function loadConfig() {
 
   conf.validate();
 
-  return conf.getProperties();
+  const resolvedConfig = conf.getProperties();
+
+  validateConfigValues(resolvedConfig);
+
+  return resolvedConfig;
+}
+
+// This checks if the configured values are valid, and throws otherwise.
+function validateConfigValues(config: Config) {
+  const { googleAuthenticationFilePath } = config;
+
+  if (
+    googleAuthenticationFilePath &&
+    googleAuthenticationFilePath !== 'MOCKED'
+  ) {
+    // If some other value is set, we check it ahead of time so that the lib
+    // doesn't output an error later.
+    // Note that an empty string is a valid value: in that case the lib will try
+    // to find the authentication information from other means.
+    try {
+      fs.accessSync(googleAuthenticationFilePath, fs.constants.R_OK);
+    } catch (e) {
+      log.critical(
+        'gcs_configuration_error',
+        `The authentication file '${googleAuthenticationFilePath}' is missing or not readable.`
+      );
+      throw new ConfigurationError(
+        `The authentication file is missing or not readable.`
+      );
+    }
+  }
 }
 
 type Config = {|
