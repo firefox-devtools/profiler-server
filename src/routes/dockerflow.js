@@ -15,7 +15,7 @@ import { create as gcsStorageCreate } from '../logic/gcs';
 import * as BitLy from '../logic/shorten-url';
 
 export function dockerFlowRoutes() {
-  const log = getLogger('dockerFlowRoutes');
+  const log = getLogger('routes.dockerflow');
 
   const router = new Router();
 

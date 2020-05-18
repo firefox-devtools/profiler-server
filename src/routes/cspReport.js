@@ -11,7 +11,7 @@ import { BadRequestError } from '../utils/errors';
 
 // In this router we implement the service to handle csp reports.
 export function cspReportRoutes() {
-  const log = getLogger('cspReportRoutes');
+  const log = getLogger('routes.csp_report');
 
   const router = new Router();
   router.post('/__cspreport__', body(), async (ctx) => {
@@ -27,7 +27,7 @@ export function cspReportRoutes() {
     }
 
     // Otherwise, just log the request
-    log.info('csp.report', cspReport);
+    log.info('body', cspReport);
     ctx.status = 204; // No Content
   });
 
