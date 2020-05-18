@@ -44,6 +44,11 @@ def setup_api_endpoint():
                 'either uncommenting the right line in the file or specifying '
                 'the env variable API_ENDPOINT.'
                 )
+
+    if _API[-1] == '/':
+        # Remove trailing slash if present.
+        _API = _API[:-1]
+
     print(f"We'll run tests against the endpoint {_API}.")
 
 
