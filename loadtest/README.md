@@ -74,6 +74,52 @@ The [documentation for aiohttp](https://aiohttp.readthedocs.io/en/stable/client_
 is also very useful because this is the underlying module used to actually
 handle queries.
 
+## Docker support
+
+We provide a Dockerfile to build a docker image out of these scripts.
+
+### Building the image
+Run the command:
+```
+docker build -t profiler-server-molotov:dev .
+```
+
+### Running the image
+By default the image will run `molotov --sizing publish.py`. There's no default
+endpoint so you need to provide one:
+```
+docker run -e API_ENDPOINT=http://172.17.0.1:5252 profiler-server-molotov:dev
+```
+
+You can specify other parameters, eg:
+```
+docker run -e API_ENDPOINT=http://172.17.0.1:5252 profiler-server-molotov:dev --sizing shorten.py
+```
+
+And run bash, to debug the image:
+```
+docker run -t -i --entrypoint bash profiler-server-molotov:dev
+```
+
+### Finding the right IP
+If you want to hit your localhost, because docker runs off a network bridge,
+you'll need to find the right IP to use from the docker container. This works
+only if the server on the host listens to all addresses instead of only
+127.0.0.1.
+
+On MacOS and Windows, you can just use `host.docker.internal`. The same is true
+for Linux if you use docker v20 with the option `--add-host
+host.docker.internal:host-gateway`.
+
+On Linux with earlier docker versions, from the host, you can use the following
+command:
+```
+/sbin/ifconfig docker0
+```
+This command will give you the IP inside the bridge docker0, that you can use to
+access the host from the container.
+
+
 ## Appendix
 
 To delete all objects in Google Storage Bucket, here is the useful command:
