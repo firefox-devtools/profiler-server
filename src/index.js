@@ -17,11 +17,11 @@ const server = app.listen(config.httpPort);
 log.info('server_started', { port: config.httpPort });
 
 function gracefulExit() {
-  console.log('Received exit request. Closing app...');
+  log.info('server_exit', 'Received exit request. Closing app...');
 
   server.close((err) => {
     if (err) {
-      console.error('Error while closing the app', err);
+      log.error('server_exit_error', err);
     }
   });
 }

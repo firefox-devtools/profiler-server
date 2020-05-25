@@ -99,7 +99,7 @@ type GcsConfig = {
  * parameter.
  */
 export function create(config: GcsConfig): GcsStorage {
-  const log = getLogger('gcs.create');
+  const log = getLogger('logic.gcs.create');
   const googleAuthenticationFilePath = config.googleAuthenticationFilePath;
   if (googleAuthenticationFilePath === 'MOCKED') {
     log.debug('gcs_mocked', 'Returning the mocked Storage backend.');

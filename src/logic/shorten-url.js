@@ -39,9 +39,12 @@ class BitlyResponseError extends Error {
 }
 
 export async function shortenUrl(longUrl: string): Promise<string> {
-  const log = getLogger('shortenUrl');
+  const log = getLogger('logic.shorten_url.shorten_url');
   if (!config.bitlyToken) {
-    log.error('No access token for bitly has been configured!');
+    log.critical(
+      'no_access_token',
+      'No access token for bitly has been configured!'
+    );
     throw new BitlyConfigurationError(
       'No access token for bitly has been configured!'
     );
@@ -69,9 +72,12 @@ export async function shortenUrl(longUrl: string): Promise<string> {
 }
 
 export async function expandUrl(urlToExpand: string): Promise<string> {
-  const log = getLogger('expandUrl');
+  const log = getLogger('logic.shorten_url.expand_url');
   if (!config.bitlyToken) {
-    log.error('No access token for bitly has been configured!');
+    log.error(
+      'no_access_token',
+      'No access token for bitly has been configured!'
+    );
     throw new BitlyConfigurationError(
       'No access token for bitly has been configured!'
     );
@@ -116,9 +122,12 @@ type UserInfo = {|
 |};
 
 export async function retrieveCurrentUser(): Promise<UserInfo> {
-  const log = getLogger('expandUrl');
+  const log = getLogger('shorten_url.retrieve_current_user');
   if (!config.bitlyToken) {
-    log.error('No access token for bitly has been configured!');
+    log.critical(
+      'no_access_token',
+      'No access token for bitly has been configured!'
+    );
     throw new BitlyConfigurationError(
       'No access token for bitly has been configured!'
     );
