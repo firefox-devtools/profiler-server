@@ -21,7 +21,7 @@ import {
 } from '../utils/streams';
 import { PayloadTooLargeError } from '../utils/errors';
 
-const MAX_BODY_LENGTH = 32 * 1024 * 1024; // 32MB
+const MAX_BODY_LENGTH = 50 * 1024 * 1024; // 50MB
 
 export function publishRoutes() {
   const log = getLogger('routes.publish');
