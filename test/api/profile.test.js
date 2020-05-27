@@ -165,7 +165,7 @@ describe('DELETE /profile', () => {
       );
 
     expect(process.stdout.write).toHaveBeenCalledWith(
-      expect.stringMatching(/WARN.*delete.jwt.profileTokenMismatch/)
+      expect.stringMatching(/delete.*WARN.*jwt_profileTokenMismatch/)
     );
     expect(process.stdout.write).toHaveBeenCalledWith(
       expect.stringMatching(/server_error.*ForbiddenError/)

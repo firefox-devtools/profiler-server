@@ -20,7 +20,6 @@ import type { ErrorResponse } from '@google-cloud/storage';
 import type { Middleware } from '@koa/router';
 
 export function profileRoutes() {
-  const log = getLogger('routes.profile');
   const router = new Router();
 
   /**
@@ -40,6 +39,8 @@ export function profileRoutes() {
       passthrough: true,
     }),
     (async (ctx) => {
+      const log = getLogger('routes.profile.delete');
+
       // Verify there is a valid profileToken in the URL path.
       if (!ctx.params.profileToken) {
         throw new BadRequestError(
@@ -59,7 +60,7 @@ export function profileRoutes() {
           const error = ctx.state.jwtOriginalError;
           // The JWT decoding middleware found an error earlier.
           log.warn(
-            'delete.jwt.invalid',
+            'jwt_invalid',
             `An error was thrown while trying to decode the JWT token: (${error.name}) ${error.message}`
           );
           throw new ForbiddenError(
@@ -68,7 +69,7 @@ export function profileRoutes() {
         }
 
         const message = `A profileToken was not found in the JWT.`;
-        log.warn('delete.jwt.profileTokenNotFound', message);
+        log.warn('jwt_profileTokenNotFound', message);
         throw new ForbiddenError(message);
       } else {
         profileToken = jwtData.profileToken;
@@ -78,12 +79,12 @@ export function profileRoutes() {
       if (profileToken !== ctx.params.profileToken) {
         const message =
           'The profileToken in the JWT did not match the token provided in the path.';
-        log.warn('delete.jwt.profileTokenMismatch', message);
+        log.warn('jwt_profileTokenMismatch', message);
         throw new ForbiddenError(message);
       }
 
       log.debug(
-        'delete',
+        'attempting',
         'Attempt to delete the profile from Google Cloud Storage.'
       );
       const storage = gcsStorageCreate(config);
