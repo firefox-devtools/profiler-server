@@ -144,8 +144,8 @@ describe('publishing endpoints', () => {
     // When using the low-level API "write", Node generates a "chunked encoding"
     // request without a Content-Length. This is exactly what we want to check
     // here.
-    // We generate a Buffer of 33MB, but our limit is 32MB.
-    await req.write(Buffer.alloc(33 * 1024 * 1024));
+    // We generate a Buffer of 51MB, but our limit is 50MB.
+    await req.write(Buffer.alloc(51 * 1024 * 1024));
     await req.expect(413, /The length is bigger than the configured maximum/);
 
     // This check asserts that we get the error using the
