@@ -5,7 +5,7 @@
 
 // This file holds various utilities about streams.
 
-import { Transform, Writable } from 'stream';
+import { Transform, Writable, Readable } from 'stream';
 import crypto from 'crypto';
 import { StringDecoder } from 'string_decoder';
 import { createGunzip, type Gunzip } from 'zlib';
@@ -278,4 +278,36 @@ export class GunzipWrapper extends Transform {
     this.gunzipStream.destroy(err);
     callback(err);
   }
+}
+
+// This tool simply forward an error happening on a stream to other streams, by
+// destroying them.
+export function forwardErrors(
+  ...streams: $ReadOnlyArray<Readable | Writable>
+): void {
+  const log = getLogger('utils.streams.forwardErrors');
+  streams.forEach((stream, i) => {
+    // Note that we leave the "error" handler even after we receive one.
+    //
+    // The reason is that a stream can output errors several times, and if a
+    // stream outputs an error but there's no error handler, node forcefully
+    // crashes (mozlog generates instead a critical log, and jest fails tests).
+    //
+    // When we call "destroy" on the other streams they themselves emit errors,
+    // and so we call "destroy" on all streams again.
+    // The "destroy" function itself has a mechanism that writable strams won't
+    // emit an error more than once through destroy, but some error cases of
+    // some streams don't take part to this mechanism (eg: errors when
+    // ungzipping). As a result errors can be emitted twice through this
+    // mechanism.
+    //
+    // We could try to remember which stream we handled already, but this is
+    // simpler.
+    stream.on('error', (err) => {
+      log.verbose('error', `stream ${i} received an error ${err.toString()}`);
+      streams.forEach((stream) => {
+        stream.destroy(err);
+      });
+    });
+  });
 }
