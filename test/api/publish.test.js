@@ -155,6 +155,28 @@ describe('publishing endpoints', () => {
     );
   });
 
+  it('returns an error when the pushed buffer does not look like JSON', async () => {
+    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    const req = getPreconfiguredRequest();
+
+    const payload = gzipSync('aaaa');
+    await req.send(payload).expect(400, /The payload isn't a JSON object/);
+
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringContaining('server_error')
+    );
+  });
+
+  it('returns an error when the pushed buffer is not gzip-compressed', async () => {
+    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    const req = getPreconfiguredRequest();
+    await req.send('aaaa').expect(400, /The payload isn't gzip-compressed/);
+
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringContaining('server_error')
+    );
+  });
+
   it('implements security headers', async () => {
     const corsHeaderValue = 'http://example.org';
     let req = getPreconfiguredRequest()
