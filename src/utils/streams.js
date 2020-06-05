@@ -25,7 +25,7 @@ export class HasherPassThrough extends Transform {
 
   _transform(
     chunk: string | Buffer,
-    encoding: mixed,
+    encoding: string,
     callback: (error?: Error) => mixed
   ) {
     this.sha1Hasher.update(chunk);
@@ -36,7 +36,7 @@ export class HasherPassThrough extends Transform {
   // This method returns the computed sha1 from the data that passed through the
   // transform.
   sha1(): string {
-    this.log.verbose('sha1()');
+    this.log.trace('sha1()');
     if (this.sha1Result === null) {
       this.sha1Result = this.sha1Hasher.digest('hex');
     }
@@ -60,7 +60,7 @@ export class LengthCheckerPassThrough extends Transform {
 
   _transform(
     chunk: string | Buffer,
-    encoding: mixed,
+    encoding: string,
     callback: (error?: Error) => mixed
   ) {
     this.length += chunk.length;
@@ -97,7 +97,7 @@ export class Concatenator extends Writable {
 
   _write(
     chunk: string | Buffer,
-    encoding: mixed,
+    encoding: string,
     callback: (error?: Error) => mixed
   ) {
     if (!(chunk instanceof Buffer)) {
@@ -110,18 +110,26 @@ export class Concatenator extends Writable {
   }
 
   _destroy(err: ?Error, callback: (error?: Error) => mixed) {
+    this.log.trace('_destroy()');
     this.chunks.length = 0;
     this.contents = null;
-    callback();
+
+    // Passthrough the error information, if present.
+    // This line is needed because of the slightly inconsistent
+    // signature of callback vs err, and that we can't change.
+    err = err || undefined;
+    callback(err);
   }
 
   _final(callback: (error?: Error) => mixed) {
+    this.log.trace('_final()');
     this.contents = Buffer.concat(this.chunks);
     this.chunks.length = 0;
     callback();
   }
 
   transferContents(): Buffer {
+    this.log.trace('transferContents()');
     const contents = this.contents;
     if (contents === null) {
       throw new Error(`Can't transfer before the stream has been closed.`);
