@@ -8,6 +8,7 @@
 import { Transform, Writable } from 'stream';
 import crypto from 'crypto';
 import { StringDecoder } from 'string_decoder';
+import { createGunzip, type Gunzip } from 'zlib';
 
 import { getLogger, type Logger } from '../log';
 import { assertExhaustiveCheck } from '../utils/flow';
@@ -228,5 +229,53 @@ export class CheapJsonChecker extends Writable {
     // If we're coming here, this means we never finished checking. Let's
     // happily throw, then!
     callback(new BadRequestError(this.errorMessage));
+  }
+}
+
+// This simple wrapper simply encapsulates the native gunzip stream and rewrite
+// errors to make them more compatible with our code and koa's error handling.
+export class GunzipWrapper extends Transform {
+  gunzipStream: Gunzip = createGunzip();
+  canPushData: true;
+
+  constructor() {
+    super();
+    this.gunzipStream.on('error', (err) => {
+      this.emit(
+        'error',
+        new BadRequestError(`The payload isn't gzip-compressed (${err}).`)
+      );
+    });
+    this.gunzipStream.on('data', (data) => {
+      this.push(data);
+    });
+  }
+
+  _transform(
+    chunk: string | Buffer,
+    encoding: string,
+    callback: (error?: Error) => mixed
+  ) {
+    const shouldWriteMore = this.gunzipStream.write(chunk, encoding);
+    if (shouldWriteMore) {
+      callback();
+    } else {
+      this.gunzipStream.once('drain', callback);
+    }
+  }
+
+  _flush(callback: (error?: Error) => mixed) {
+    this.gunzipStream.end();
+    // It's important to wait for the end event in case ending the gzip stream
+    // brings more errors.
+    this.gunzipStream.once('end', callback);
+  }
+
+  _destroy(err: ?Error, callback: (error?: Error) => mixed) {
+    // This line is needed because of the slightly inconsistent
+    // signature of callback vs err, and that we can't change.
+    err = err || undefined;
+    this.gunzipStream.destroy(err);
+    callback(err);
   }
 }

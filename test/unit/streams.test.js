@@ -7,7 +7,9 @@ import Stream, { PassThrough } from 'stream';
 import { gzipSync } from 'zlib';
 
 import {
+  Concatenator,
   CheapJsonChecker,
+  GunzipWrapper,
 } from '../../src/utils/streams';
 
 // In this test file, we're using the pipeline function, mainly because that's
@@ -74,5 +76,57 @@ describe('EarlyContentChecker', () => {
     await nextTick();
     input.end(fixture.slice(3));
     await expect(pipelinePromise).resolves.toBe(undefined);
+  });
+});
+
+describe('GunzipWrapper', () => {
+  it('can unzip things', async () => {
+    const fixture = '{"foo": "aaaa"}';
+    const payload = gzipSync(fixture);
+    const gunzipStream = new GunzipWrapper();
+    const concatenator = new Concatenator();
+    const pipelinePromise = pipeline(gunzipStream, concatenator);
+
+    gunzipStream.write(payload);
+    gunzipStream.end();
+
+    await pipelinePromise;
+    expect(concatenator.transferContents().toString()).toBe(fixture);
+  });
+
+  it('wraps gzip errors', (done) => {
+    const payload = '{"foo": "aaaa"}';
+    const gunzipStream = new GunzipWrapper();
+    gunzipStream.resume();
+    gunzipStream.on('end', () =>
+      done(new Error('We should have had an error.'))
+    );
+    gunzipStream.on('error', (err) => {
+      expect(err.name).toBe('BadRequestError');
+      expect(err.message).toMatch(/The payload isn't gzip-compressed/);
+      done();
+    });
+
+    gunzipStream.write(payload);
+    gunzipStream.end();
+  });
+
+  it('errors for truncated gzip streams too', (done) => {
+    const fixture = '{"foo": "aaaa"}';
+    const payload = gzipSync(fixture);
+    const gunzipStream = new GunzipWrapper();
+    gunzipStream.resume();
+    gunzipStream.on('end', () =>
+      done(new Error('We should have had an error.'))
+    );
+    gunzipStream.on('error', (err) => {
+      expect(err.name).toBe('BadRequestError');
+      expect(err.message).toMatch(/The payload isn't gzip-compressed/);
+      expect(err.message).toMatch(/unexpected end of file/);
+      done();
+    });
+
+    gunzipStream.write(payload.slice(0, fixture.length - 5));
+    gunzipStream.end();
   });
 });
