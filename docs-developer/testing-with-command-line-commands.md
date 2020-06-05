@@ -32,14 +32,13 @@ the `Content-Length` header.
 
 ## Generate big files
 
-You can use the utility `dd` to generate big files. For example:
+You can use the utility [tools/generate-file.js](../tools/generate-file.js) to generate
+big files suitable to use with the server. For example:
 ```
-dd if=/dev/zero of=/path/to/file bs=1M count=33
+node tools/generate-file.js 52m /path/to/file
 ```
-will generate a file of 33 MiB filled with zeros.
-
-You can use `/dev/urandom` instead of `/dev/zero` to fill the file with random
-data.
+will generate a file of 52 MiB that the server will accept. This is a JSON file
+filled in with random values.
 
 ## Delete a profile
 
