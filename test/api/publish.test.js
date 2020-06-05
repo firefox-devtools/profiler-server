@@ -6,6 +6,7 @@ import supertest from 'supertest';
 import jwt from 'jsonwebtoken';
 
 import crypto from 'crypto';
+import { gzipSync } from 'zlib';
 
 import { Storage as MockStorage } from '../../__mocks__/@google-cloud/storage';
 
@@ -27,6 +28,15 @@ function verifyAndDecodeJwtToken(res) {
   res.text = decodedPayload.profileToken;
 }
 
+// This is the payload we'll send in most of the requests in this test.
+const BASIC_PAYLOAD = gzipSync('{"foo": "aaaa"}');
+// This is the hash for the content. It's returned by the API and used as a
+// file path in GCS.
+const BASIC_PAYLOAD_HASH = crypto
+  .createHash('sha1')
+  .update(BASIC_PAYLOAD)
+  .digest('hex');
+
 describe('publishing endpoints', () => {
   function getPreconfiguredRequest() {
     const acceptHeader = ACCEPT_VALUE_MIME + ';version=1';
@@ -35,13 +45,6 @@ describe('publishing endpoints', () => {
   }
 
   it('uploads data all the way to google storage when using a content length', async () => {
-    // This is the content we want to send.
-    const content = 'aaaa';
-
-    // This is the hash for the content. It's returned by the API and used as a
-    // file path in GCS.
-    const contentHash = crypto.createHash('sha1').update(content).digest('hex');
-
     // `getPreconfiguredRequest` returns a request already configured with the
     // right path and content type.
     const req = getPreconfiguredRequest();
@@ -49,10 +52,10 @@ describe('publishing endpoints', () => {
     // This checks that we get a 200 status from the server and that it returns
     // the hash.
     await req
-      .send(content)
+      .send(BASIC_PAYLOAD)
       .expect(200)
       .expect(verifyAndDecodeJwtToken)
-      .expect(contentHash);
+      .expect(BASIC_PAYLOAD_HASH);
 
     // Now we'll look at our mocked GCS library and check it's been called
     // properly.
@@ -63,13 +66,13 @@ describe('publishing endpoints', () => {
     const bucket = MockStorage.buckets[config.gcsBucket];
 
     // Do we have a file whose name is the hash in that bucket?
-    expect(bucket.files).toHaveProperty(contentHash);
+    expect(bucket.files).toHaveProperty(BASIC_PAYLOAD_HASH);
 
-    const file = bucket.files[contentHash];
+    const file = bucket.files[BASIC_PAYLOAD_HASH];
 
     // Let's check that file's content, name and metadata information.
-    expect(file).toHaveProperty('contents', Buffer.from(content));
-    expect(file).toHaveProperty('name', contentHash);
+    expect(file).toHaveProperty('contents', Buffer.from(BASIC_PAYLOAD));
+    expect(file).toHaveProperty('name', BASIC_PAYLOAD_HASH);
     expect(file).toHaveProperty(
       'metadata',
       expect.objectContaining({
@@ -84,10 +87,6 @@ describe('publishing endpoints', () => {
     // Except the use of `write` below, this test follows the same scenario and
     // checks the same things as the test above. Please refer to the test above
     // for more information.
-    const content = 'aaaa';
-
-    const contentHash = crypto.createHash('sha1').update(content).digest('hex');
-
     const req = getPreconfiguredRequest();
 
     // When using the low-level API "write", Node generates a "chunked encoding"
@@ -95,18 +94,21 @@ describe('publishing endpoints', () => {
     // here.
     // Unfortunately there's no easy way to assert we're in this node, we'll
     // have to rely on the heuristic.
-    req.write(content);
+    req.write(BASIC_PAYLOAD);
 
-    await req.expect(200).expect(verifyAndDecodeJwtToken).expect(contentHash);
+    await req
+      .expect(200)
+      .expect(verifyAndDecodeJwtToken)
+      .expect(BASIC_PAYLOAD_HASH);
 
     expect(MockStorage.buckets).toHaveProperty(config.gcsBucket);
     const bucket = MockStorage.buckets[config.gcsBucket];
 
-    expect(bucket.files).toHaveProperty(contentHash);
-    const file = bucket.files[contentHash];
+    expect(bucket.files).toHaveProperty(BASIC_PAYLOAD_HASH);
+    const file = bucket.files[BASIC_PAYLOAD_HASH];
 
-    expect(file).toHaveProperty('contents', Buffer.from(content));
-    expect(file).toHaveProperty('name', contentHash);
+    expect(file).toHaveProperty('contents', Buffer.from(BASIC_PAYLOAD));
+    expect(file).toHaveProperty('name', BASIC_PAYLOAD_HASH);
     expect(file).toHaveProperty(
       'metadata',
       expect.objectContaining({
@@ -128,15 +130,6 @@ describe('publishing endpoints', () => {
     );
   });
 
-  it('returns an error when the sent data is bigger than the length', async () => {
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
-    const req = getPreconfiguredRequest();
-    await req.set('Content-Length', String(3)).send('aaaa').expect(400); // 400 means Bad Request. It's generated automatically by Koa.
-    expect(process.stdout.write).toHaveBeenCalledWith(
-      expect.stringContaining('server_error')
-    );
-  });
-
   it('returns an error when the pushed buffer is too big', async () => {
     jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
     const req = getPreconfiguredRequest();
@@ -144,8 +137,11 @@ describe('publishing endpoints', () => {
     // When using the low-level API "write", Node generates a "chunked encoding"
     // request without a Content-Length. This is exactly what we want to check
     // here.
-    // We generate a Buffer of 51MB, but our limit is 50MB.
-    await req.write(Buffer.alloc(51 * 1024 * 1024));
+    // We generate a Buffer of ~51MB, but our limit is 50MB.
+    const payload = gzipSync(`{"foo": "${'#'.repeat(51 * 1024 * 1024)}"}`, {
+      level: 0,
+    });
+    await req.write(payload);
     await req.expect(413, /The length is bigger than the configured maximum/);
 
     // This check asserts that we get the error using the
@@ -163,7 +159,8 @@ describe('publishing endpoints', () => {
     const corsHeaderValue = 'http://example.org';
     let req = getPreconfiguredRequest()
       .set('Origin', corsHeaderValue)
-      .send('a');
+      .send(BASIC_PAYLOAD)
+      .expect(200);
     req = checkSecurityHeaders(req);
     req = checkCorsHeader(req, corsHeaderValue);
     await req;
@@ -248,10 +245,10 @@ describe('API versioning', () => {
       `image/webp,${ACCEPT_VALUE_MIME};version=1`
     );
     await req
-      .send('a')
+      .send(BASIC_PAYLOAD)
       .expect(200)
       .expect(verifyAndDecodeJwtToken)
-      .expect(`86f7e437faa5a7fce15d1ddcb9eaeaea377667b8`);
+      .expect(BASIC_PAYLOAD_HASH);
   });
 
   it('accepts the request even if the version is specified with spaces before the parameter', async () => {
@@ -259,9 +256,9 @@ describe('API versioning', () => {
       ACCEPT_VALUE_MIME + '; version=1'
     );
     await req
-      .send('a')
+      .send(BASIC_PAYLOAD)
       .expect(200)
       .expect(verifyAndDecodeJwtToken)
-      .expect(`86f7e437faa5a7fce15d1ddcb9eaeaea377667b8`);
+      .expect(BASIC_PAYLOAD_HASH);
   });
 });
