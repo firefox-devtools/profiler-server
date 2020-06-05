@@ -7,9 +7,11 @@
 
 import { Transform, Writable } from 'stream';
 import crypto from 'crypto';
+import { StringDecoder } from 'string_decoder';
 
 import { getLogger, type Logger } from '../log';
-import { PayloadTooLargeError } from './errors';
+import { assertExhaustiveCheck } from '../utils/flow';
+import { BadRequestError, PayloadTooLargeError } from './errors';
 
 /**
  * This transform computes a sha1 of the data passing through it, but otherwise
@@ -136,5 +138,95 @@ export class Concatenator extends Writable {
     }
     this.contents = null;
     return contents;
+  }
+}
+
+// This Transform cheaply checks that a gzipped stream looks like a json.
+export class CheapJsonChecker extends Writable {
+  log: Logger = getLogger('CheapJsonChecker');
+  stringDecoder = new StringDecoder('utf8');
+  // We allow either only spaces, or only spaces followed by a bracket, or just a bracket.
+  onlySpacesRe = /^\s+$/;
+  spacesAndBracketRe = /^\s*{/;
+  checkEnded: boolean = false;
+
+  errorMessage = `The payload isn't a JSON object.`;
+
+  checkIsContentAllowed(content: string): 'notfound' | 'found' | 'error' {
+    const gotOnlySpaces = this.onlySpacesRe.test(content);
+    if (gotOnlySpaces) {
+      return 'notfound';
+    }
+
+    const gotBracket = this.spacesAndBracketRe.test(content);
+    if (gotBracket) {
+      return 'found';
+    }
+
+    // Else this means we got something that doesn't look like the start of a
+    // JSON object.
+    return 'error';
+  }
+
+  _write(
+    chunk: string | Buffer,
+    encoding: string,
+    callback: (error?: Error) => void
+  ) {
+    if (!(chunk instanceof Buffer)) {
+      callback(new Error(`This stream doesn't support strings.`));
+      return;
+    }
+
+    if (this.checkEnded) {
+      callback();
+      return;
+    }
+
+    const stringedChunk = this.stringDecoder.write(chunk);
+    if (stringedChunk) {
+      const checkResult = this.checkIsContentAllowed(stringedChunk);
+      switch (checkResult) {
+        case 'notfound':
+          this.log.verbose(
+            'json-not-found',
+            'We still do not know if this is a json.'
+          );
+          callback();
+          return;
+        case 'found':
+          this.log.verbose('json-found', 'This stream looks like a JSON.');
+          this.checkEnded = true;
+          callback();
+          // This stream did what it's for so let's clean it up.
+          // Calling end will also stop any piping gracefully.
+          // Using nextTick allows some bufferred write to finish.
+          process.nextTick(() => this.end());
+          return;
+        case 'error':
+          this.log.verbose(
+            'json-error',
+            'This stream does not look like a JSON.'
+          );
+          callback(new BadRequestError(this.errorMessage));
+          return;
+        default:
+          throw assertExhaustiveCheck(checkResult);
+      }
+    }
+  }
+
+  // This is called when all the data has been given to _transform and the
+  // stream is ended.
+  _final(callback: (error?: Error) => void) {
+    this.log.trace('_final()');
+    if (this.checkEnded) {
+      callback();
+      return;
+    }
+
+    // If we're coming here, this means we never finished checking. Let's
+    // happily throw, then!
+    callback(new BadRequestError(this.errorMessage));
   }
 }
