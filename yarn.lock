@@ -3847,7 +3847,7 @@ inquirer@^7.0.0:
     strip-ansi "^6.0.0"
     through "^2.3.6"
 
-intel@^1.0.0:
+intel@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/intel/-/intel-1.2.0.tgz#11d1147eb6b3f4582bdf5337b37d541584e9e41e"
   integrity sha1-EdEUfraz9Fgr31M3s31UFYTp5B4=
@@ -5132,7 +5132,7 @@ merge-stream@^2.0.0:
   resolved "https://registry.yarnpkg.com/merge-stream/-/merge-stream-2.0.0.tgz#52823629a14dd00c9770fb6ad47dc6310f2c1f60"
   integrity sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==
 
-merge@^1.2.0:
+merge@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.1.tgz#38bebf80c3220a8a487b6fcfb3941bb11720c145"
   integrity sha512-VjFo4P5Whtj4vsLzsYBu5ayHhoHJ0UqNm7ibvShmbmoz7tGi0vXaoJbGdB+GmDMLUdg8DpQXEIeVDAe8MaABvQ==
@@ -5243,13 +5243,13 @@ moment@2.24.0:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
-mozlog@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/mozlog/-/mozlog-2.2.0.tgz#47093c5c712e2810de727098305164d12c8ae923"
-  integrity sha1-Rwk8XHEuKBDecnCYMFFk0SyK6SM=
+mozlog@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/mozlog/-/mozlog-3.0.0.tgz#777ad4fc7ea08841e5c65ff7765c30aa8e4a7066"
+  integrity sha512-Uycw83Teeq8p1+d2kSj0SX1Svm9rMfQWjIZ1x6uDXKriF+5UKqB9+oNnu2jf0QwCMr0qs2MtJkEPOqbpEMqlwQ==
   dependencies:
-    intel "^1.0.0"
-    merge "^1.2.0"
+    intel "^1.2.0"
+    merge "^1.2.1"
 
 ms@2.0.0:
   version "2.0.0"
