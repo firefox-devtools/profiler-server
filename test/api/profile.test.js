@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 // @flow
 import supertest from 'supertest';
+import { gzipSync } from 'zlib';
+
 import { Storage as MockStorage } from '../../__mocks__/@google-cloud/storage';
 import { createApp } from '../../src/app';
 import { ACCEPT_VALUE_MIME } from '../../src/middlewares/versioning';
@@ -18,6 +20,9 @@ beforeEach(() => MockStorage.cleanUp());
 afterEach(() => MockStorage.cleanUp());
 
 describe('DELETE /profile', () => {
+  // This is the payload we'll send in most of the requests in this test.
+  const BASIC_PAYLOAD = gzipSync('{"foo": "aaaa"}');
+
   function setup() {
     const acceptHeader = ACCEPT_VALUE_MIME + ';version=1';
     const agent = supertest(createApp().callback());
@@ -28,7 +33,7 @@ describe('DELETE /profile', () => {
         .post('/compressed-store')
         .accept(acceptHeader)
         .type('text')
-        .send('SOME_RANDOM_CONTENT')
+        .send(BASIC_PAYLOAD)
         .expect(200);
 
       if (!result.text) {
