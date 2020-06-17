@@ -6,6 +6,7 @@ endpoints of the profiler server.
 import json
 import os
 import base64
+import gzip
 from molotov import scenario, setup, global_setup, teardown, global_teardown
 from molotov import set_var, get_var
 
@@ -25,6 +26,12 @@ _API = None
 
 # This is the various file sizes we'll generate in the global setup.
 _FILE_SIZES = (512, 1024, 5 * 1024, 20 * 1024)
+
+# These are gzip-compressed chunks of json that we'll concatenate later to
+# generate our payload. This takes advantage that a gzip stream is made of
+# concatenated gzip chunks.
+_COMPRESSED_JSON_PREFIX = gzip.compress(b'{"foo":"')
+_COMPRESSED_JSON_SUFFIX = gzip.compress(b'"}')
 
 
 def setup_api_endpoint():
@@ -62,7 +69,11 @@ def test_starts(args):
     * we generate the various files to be sent in the tests.
     """
     setup_api_endpoint()
-    files = {x: os.urandom(x * 1024) for x in _FILE_SIZES}
+    # "512" instead of "1024" because writing in hexadecimal takes 2 bytes.
+    files = {x: gzip.compress(
+                 os.urandom(x * 512).hex().encode(),
+                 compresslevel=0)
+             for x in _FILE_SIZES}
     set_var("files", files)
 
 
@@ -131,6 +142,25 @@ def jwt_base64_decode(payload):
     return decoded_str
 
 
+def payload_from_raw_data(raw_data):
+    """Returns a data suitable to publish, that's accepted by the profiler server.
+
+    This concatenates separate pre-created gzip-compressed chunks, because we
+    want that we do as less work as possible at runtime. Here at runtime we
+    only compress a very small chunk and otherwise concatenate everything.
+    """
+    # By adding some random bytes, the content will change for each test and
+    # therefore the filename too. This prevents google from erroring while we
+    # stress test.
+    unique_data = gzip.compress(os.urandom(10).hex().encode(), compresslevel=0)
+    return (
+            _COMPRESSED_JSON_PREFIX +
+            raw_data +
+            unique_data +
+            _COMPRESSED_JSON_SUFFIX
+           )
+
+
 async def publish(session, data_size):
     """Publishes a profile with the passed data size
     """
@@ -143,10 +173,7 @@ async def publish(session, data_size):
                 )
 
     data = get_var('files')[data_size]
-    # By adding some random bytes, the content will change for each test and
-    # therefore the filename too. This prevents google from erroring while we
-    # stress test.
-    data = data + os.urandom(10)
+    data = payload_from_raw_data(data)
 
     async with session.post(_API + '/compressed-store', data=data) as resp:
         assert resp.status == 200
