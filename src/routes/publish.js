@@ -22,7 +22,7 @@ import {
   forwardErrors,
   GunzipWrapper,
 } from '../utils/streams';
-import { PayloadTooLargeError } from '../utils/errors';
+import { PayloadTooLargeError, BadRequestError } from '../utils/errors';
 
 const MAX_BODY_LENGTH = 50 * 1024 * 1024; // 50MB
 
@@ -128,6 +128,14 @@ export function publishRoutes() {
     // We don't use `pipeline` because we want to cleanly unpipe and cleanup
     // when the request is aborted.
     concatener.pipe(googleStorageStream);
+
+    ctx.req.on('aborted', () => {
+      log.debug('request-aborted', 'The request has been aborted!');
+      concatener.unpipe(googleStorageStream);
+      const error = new BadRequestError('The request has been aborted.');
+      googleStorageStream.destroy(error);
+      concatener.destroy(error);
+    });
 
     // We can't use Stream.finished here either because of a problem with Google's
     // library. For more information, you can see
