@@ -5,7 +5,7 @@
 
 // This file holds various utilities about streams.
 
-import { Transform, Writable, Readable } from 'stream';
+import { Transform, Duplex, Writable, Readable } from 'stream';
 import crypto from 'crypto';
 import { StringDecoder } from 'string_decoder';
 import { createGunzip, type Gunzip } from 'zlib';
@@ -89,7 +89,7 @@ export class LengthCheckerPassThrough extends Transform {
  * This writable stream keeps all received chunks until the stream is closed.
  * Then the chunks are concatenated into a unique Buffer that can be retrieved.
  */
-export class Concatenator extends Writable {
+export class Concatenator extends Duplex {
   log: Logger = getLogger('Concatenator');
   chunks: Buffer[] = [];
   contents: Buffer | null = null;
@@ -112,10 +112,23 @@ export class Concatenator extends Writable {
     callback();
   }
 
+  _read() {
+    let continueReading = true;
+    while (continueReading) {
+      if (this.chunks.length) {
+        // While we have chunks we push them until the subsystem says "stop!".
+        continueReading = this.push(this.chunks.shift());
+      } else {
+        // This is the end of this stream! Pushing null notifies this.
+        this.push(null);
+        break;
+      }
+    }
+  }
+
   _destroy(err: ?Error, callback: (error?: Error) => mixed) {
     this.log.trace('_destroy()');
     this.chunks.length = 0;
-    this.contents = null;
 
     // Passthrough the error information, if present.
     // This line is needed because of the slightly inconsistent
@@ -124,20 +137,10 @@ export class Concatenator extends Writable {
     callback(err);
   }
 
-  _final(callback: (error?: Error) => mixed) {
-    this.log.trace('_final()');
-    this.contents = Buffer.concat(this.chunks);
-    this.chunks.length = 0;
-    callback();
-  }
-
   transferContents(): Buffer {
     this.log.trace('transferContents()');
-    const contents = this.contents;
-    if (contents === null) {
-      throw new Error(`Can't transfer before the stream has been closed.`);
-    }
-    this.contents = null;
+    const contents = Buffer.concat(this.chunks);
+    this.chunks.length = 0;
     return contents;
   }
 }

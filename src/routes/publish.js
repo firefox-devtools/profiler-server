@@ -118,21 +118,26 @@ export function publishRoutes() {
     // Koa which will expose it appropriately to the caller.
     await Promise.all([pipelinePromise, jsonCheckerPromise]);
 
+    // Step 2: Upload the data to Google Cloud Storage.
+    // All data chunks have been stored in the concatener, that we'll read from
+    // to feed the google write stream.
     const storage = gcsStorageCreate(config);
     const hash = hasherTransform.sha1();
-
     const googleStorageStream = storage.getWriteStreamForFile(hash);
 
-    // We can't use Stream.finished here because of a problem with Google's
+    // We don't use `pipeline` because we want to cleanly unpipe and cleanup
+    // when the request is aborted.
+    concatener.pipe(googleStorageStream);
+
+    // We can't use Stream.finished here either because of a problem with Google's
     // library. For more information, you can see
     // https://github.com/googleapis/nodejs-storage/issues/937
     await new Promise((resolve, reject) => {
-      const fullContent = concatener.transferContents();
       googleStorageStream.once('error', reject);
       googleStorageStream.once('finish', resolve);
-      googleStorageStream.end(fullContent);
     });
     googleStorageStream.destroy();
+    concatener.destroy();
 
     const jwtToken = Jwt.generateToken({ profileToken: hash });
 
