@@ -21,7 +21,7 @@ import {
   forwardErrors,
   GunzipWrapper,
 } from '../utils/streams';
-import { toBase64url } from '../utils/base64url';
+import { encode as toBase32 } from '../utils/base32';
 import { PayloadTooLargeError } from '../utils/errors';
 
 const MAX_BODY_LENGTH = 50 * 1024 * 1024; // 50MB
@@ -34,7 +34,7 @@ async function generateTokenForProfile(): Promise<string> {
   // bits), which should be enough according to the Wikipedia page about UUID:
   // https://en.wikipedia.org/wiki/Universally_unique_identifier#Collisions
   const randomBuffer = await randomBytes(16);
-  return toBase64url(randomBuffer);
+  return toBase32(randomBuffer);
 }
 
 export function publishRoutes() {

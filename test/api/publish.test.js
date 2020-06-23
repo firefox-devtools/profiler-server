@@ -34,7 +34,7 @@ function verifyAndDecodeJwtToken(res): string {
 
   // The token is 22 characters long, that are either letters (lower or
   // uppercase), digits, '_' or '-'. '\w' represents all this except '-'.
-  expect(profileToken).toMatch(/^[\w-]{22}$/);
+  expect(profileToken).toMatch(/^[abcdefghjkmnpqrstvwxyz0-9]{26}$/);
 
   return profileToken;
 }
