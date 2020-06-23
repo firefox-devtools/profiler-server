@@ -54,10 +54,17 @@ Please clean up afterwards :-)
 
 To run only one test:
 ```
-molotov --max-runs 1 --single-mode <name of scenario> -v publish.py
+molotov --max-runs 1 --single-mode <scenario_name> -v publish.py
 ```
 Notice `-v` enables verbose mode, which outputs errors. This is especially
 useful while finalizing a specific scenario.
+
+To run only one test, but with several workers in parallel:
+```
+molotov -v --single <scenario_name> -w <parallel_workers> --max-runs 1 publish.py
+```
+By running this command with `time` it's possible to accurately measure how the
+server behaves with a lot of parallel calls.
 
 To run the scenarios during 5 seconds, with 50 workers, this is how we can do it:
 ```
