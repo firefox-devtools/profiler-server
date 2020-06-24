@@ -9,22 +9,33 @@
 import Router from '@koa/router';
 import Stream from 'stream';
 import { promisify } from 'util';
+import crypto from 'crypto';
 
 import { getLogger } from '../log';
 import { config } from '../config';
 import { create as gcsStorageCreate } from '../logic/gcs';
 import * as Jwt from '../logic/jwt';
 import {
-  HasherPassThrough,
   LengthCheckerPassThrough,
-  Concatenator,
   CheapJsonChecker,
   forwardErrors,
   GunzipWrapper,
 } from '../utils/streams';
+import { encode as toBase32 } from '../utils/base32';
 import { PayloadTooLargeError } from '../utils/errors';
 
 const MAX_BODY_LENGTH = 50 * 1024 * 1024; // 50MB
+
+const randomBytes = promisify(crypto.randomBytes);
+
+async function generateTokenForProfile(): Promise<string> {
+  // We're more interested in avoiding collision than having a completely
+  // unguessable token here. That's why we use the number of 16 bytes (128
+  // bits), which should be enough according to the Wikipedia page about UUID:
+  // https://en.wikipedia.org/wiki/Universally_unique_identifier#Collisions
+  const randomBuffer = await randomBytes(16);
+  return toBase32(randomBuffer);
+}
 
 export function publishRoutes() {
   const log = getLogger('routes.publish');
@@ -43,12 +54,15 @@ export function publishRoutes() {
       throw new PayloadTooLargeError(MAX_BODY_LENGTH);
     }
 
-    const hasherTransform = new HasherPassThrough();
+    const profileToken = await generateTokenForProfile();
+
     const lengthChecker = new LengthCheckerPassThrough(MAX_BODY_LENGTH);
     // The payload should "look like" a json object.
     const jsonChecker = new CheapJsonChecker();
     const gunzipStream = new GunzipWrapper();
-    const concatener = new Concatenator();
+
+    const storage = gcsStorageCreate(config);
+    const googleStorageStream = storage.getWriteStreamForFile(profileToken);
 
     // The "pipeline" utility conveniently destroys all streams when there's an
     // error. However the HTTP request isn't part of the pipeline because we
@@ -59,24 +73,18 @@ export function publishRoutes() {
 
     // We create 2 interconnected pipelines:
     //
-    //     request
-    //        |
-    //  lengthChecker --- gunzipStream --- jsonChecker
-    //        |
-    // hasherTransform
-    //        |
-    //   concatener
+    //       request
+    //          |
+    //    lengthChecker --- gunzipStream --- jsonChecker
+    //          |
+    // googleStorageStream
     //
     // These streams' possible errors are handled partly by nodejs' pipeline
     // function, and some special error handlers to forward errors between
     // pipelines.
 
     // 1. First and main pipeline
-    const pipelinePromise = pipeline(
-      lengthChecker,
-      hasherTransform,
-      concatener
-    );
+    const pipelinePromise = pipeline(lengthChecker, googleStorageStream);
 
     // 2. "Gunzip and check" json pipeline
     // This pipeline will stop quite early, once we know this looks like a json.
@@ -118,23 +126,7 @@ export function publishRoutes() {
     // Koa which will expose it appropriately to the caller.
     await Promise.all([pipelinePromise, jsonCheckerPromise]);
 
-    const storage = gcsStorageCreate(config);
-    const hash = hasherTransform.sha1();
-
-    const googleStorageStream = storage.getWriteStreamForFile(hash);
-
-    // We can't use Stream.finished here because of a problem with Google's
-    // library. For more information, you can see
-    // https://github.com/googleapis/nodejs-storage/issues/937
-    await new Promise((resolve, reject) => {
-      const fullContent = concatener.transferContents();
-      googleStorageStream.once('error', reject);
-      googleStorageStream.once('finish', resolve);
-      googleStorageStream.end(fullContent);
-    });
-    googleStorageStream.destroy();
-
-    const jwtToken = Jwt.generateToken({ profileToken: hash });
+    const jwtToken = Jwt.generateToken({ profileToken });
 
     ctx.body = jwtToken;
   });
