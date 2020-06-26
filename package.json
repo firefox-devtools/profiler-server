@@ -78,7 +78,7 @@
     "dotenv": "^8.2.0",
     "fast-crc32c": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
-    "koa": "^2.12.1",
+    "koa": "^2.13.0",
     "koa-helmet": "^5.2.0",
     "koa-json-body": "^5.3.0",
     "koa-jwt": "^4.0.0",
