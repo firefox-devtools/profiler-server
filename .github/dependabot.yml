@@ -23,3 +23,6 @@ updates:
       - "julienw"
       - "canova"
       - "gregtatum"
+    ignore:
+      - dependency-name: "node"
+        versions: [">12"]

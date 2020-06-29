@@ -11,9 +11,13 @@
 # instead of the default. See docs-developer/docker.md for more information.
 
 # Setup a container and build the project in it
-# We set up a node 10 running in latest Debian stable called buster, in the
+# We set up a node 12 running in latest Debian stable called buster, in the
 # "slim" flavor because we don't need the big version.
-FROM node:12-buster-slim AS builder
+# By specifying an exact node version, we let dependabot update the version when
+# there's a new one, so that a new docker image is generated. Make sure to use
+# the exact same version for the second part of the Dockerfile.
+# /!\ Make sure to update dependabot.yml when switching to a new major version. /!\
+FROM node:12.18.0-buster-slim AS builder
 
 # Create the user we'll run the build commands with. Its home is configured to
 # be the directory /app. It helps avoiding warnings when running tests and
@@ -87,7 +91,7 @@ RUN du -khs node_modules
 RUN ls -la
 
 # ----- And now, let's build the runtime container -----
-FROM node:12-buster-slim
+FROM node:12.18.0-buster-slim
 ENV NODE_ENV="production"
 ENV PORT=8000
 
