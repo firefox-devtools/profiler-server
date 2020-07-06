@@ -43,6 +43,7 @@ workflows:
       - python
       - lint
       - build
+      - yarn_lock
       - flow
       - docker
       - docker-publish:
@@ -99,6 +100,12 @@ jobs:
     steps:
       - checkout-and-dependencies
       - run: yarn flow:ci
+
+  yarn_lock:
+    executor: node
+    steps:
+      - checkout-and-dependencies
+      - run: yarn test-lockfile
 
   build:
     executor: node

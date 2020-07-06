@@ -16,7 +16,7 @@
     "lint": "run-p lint-js lint-python",
     "lint-fix": "run-p lint-fix-js",
     "lint-js": "eslint src bin test",
-    "lint-fix-js": "yarn lint --fix",
+    "lint-fix-js": "yarn lint-js --fix",
     "lint-python": "flake8 tools loadtest",
     "preinstall": "node bin/pre-install.js",
     "build:clean": "rimraf dist && mkdirp dist",
@@ -31,7 +31,8 @@
     "start:prod": "run-s build:clean build serve",
     "test": "jest",
     "test-python": "./tools/test_decode_jwt_payload.py",
-    "test-all": "run-p flow lint test test-python"
+    "test-lockfile": "lockfile-lint --path yarn.lock --allowed-hosts yarn --validate-https",
+    "test-all": "run-p flow lint test test-python test-lockfile"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.4",
@@ -53,6 +54,7 @@
     "flow-typed": "^3.1.0",
     "husky": "^4.2.5",
     "jest": "^26.1.0",
+    "lockfile-lint": "^4.3.7",
     "mkdirp": "^1.0.4",
     "nock": "^13.0.2",
     "nodemon": "^2.0.4",
