@@ -29,16 +29,18 @@ Output:
 * A JWT token if successful (HTTP status is 200)
 
 Possible errors:
+* 400: Bad Request if the pushed data isn't a gzipped JSON
 * 413: Payload Too Large if the pushed data is too big
 * 500: unexpected error
 
 ### How to use it from the command-line
-How to generate a 5M file to upload:
+You can use the utility [tools/generate-file.js](../tools/generate-file.js) to generate
+big files suitable to use with the server. For example:
 ```
-dd if=/dev/urandom of=_____PATH_TO_FILE____ bs=1M count=5
+node tools/generate-file.js 5m ____PATH_TO_FILE____
 ```
-
-You can change the values for `bs` or `count` to get files from different sizes.
+will generate a file of 5 MiB that the server will accept. This is a JSON file
+filled in with random values.
 
 Then you can push the file to the storage:
 ```

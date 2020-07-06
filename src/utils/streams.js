@@ -6,46 +6,12 @@
 // This file holds various utilities about streams.
 
 import { Transform, Writable, Readable } from 'stream';
-import crypto from 'crypto';
 import { StringDecoder } from 'string_decoder';
 import { createGunzip, type Gunzip } from 'zlib';
 
 import { getLogger, type Logger } from '../log';
 import { assertExhaustiveCheck } from '../utils/flow';
 import { BadRequestError, PayloadTooLargeError } from './errors';
-
-/**
- * This transform computes a sha1 of the data passing through it, but otherwise
- * doesn't alter the data.
- */
-export class HasherPassThrough extends Transform {
-  log: Logger = getLogger('HasherPassThrough');
-  sha1Hasher = crypto.createHash('sha1');
-
-  // This variable holds the result of the sha operation, because `hash.digest`
-  // can be called only once.
-  sha1Result: string | null = null;
-
-  _transform(
-    chunk: string | Buffer,
-    encoding: string,
-    callback: (error?: Error) => mixed
-  ) {
-    this.sha1Hasher.update(chunk);
-    this.push(chunk);
-    callback();
-  }
-
-  // This method returns the computed sha1 from the data that passed through the
-  // transform.
-  sha1(): string {
-    this.log.trace('sha1()');
-    if (this.sha1Result === null) {
-      this.sha1Result = this.sha1Hasher.digest('hex');
-    }
-    return this.sha1Result;
-  }
-}
 
 /**
  * This transform's sole goal is to check that the size of the streamed data
@@ -88,6 +54,8 @@ export class LengthCheckerPassThrough extends Transform {
 /**
  * This writable stream keeps all received chunks until the stream is closed.
  * Then the chunks are concatenated into a unique Buffer that can be retrieved.
+ *
+ * This is used in tests only.
  */
 export class Concatenator extends Writable {
   log: Logger = getLogger('Concatenator');

@@ -39,7 +39,7 @@ function getGitCommitHash() /*: string */ {
   // Because execFileSync can return both a string or a buffer depending on the
   // `encoding` option, Flow isn't happy about calling `trim` on it. But _we_
   // know that it's a string.
-  // $FlowExpectError
+  // $FlowExpectedError
   return hash.trim();
 }
 
@@ -54,7 +54,7 @@ function findLocalBranch() /*: string */ {
   // Because execFileSync can return both a string or a buffer depending on the
   // `encoding` option, Flow isn't happy about calling `trim` on it. But _we_
   // know that it's a string.
-  // $FlowExpectError
+  // $FlowExpectedError
   return branch.trim();
 }
 

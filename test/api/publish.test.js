@@ -5,7 +5,6 @@
 import supertest from 'supertest';
 import jwt from 'jsonwebtoken';
 
-import crypto from 'crypto';
 import { gzipSync } from 'zlib';
 
 import { Storage as MockStorage } from '../../__mocks__/@google-cloud/storage';
@@ -21,27 +20,57 @@ import {
 beforeEach(() => MockStorage.cleanUp());
 afterEach(() => MockStorage.cleanUp());
 
-function verifyAndDecodeJwtToken(res) {
+function verifyAndDecodeJwtToken(res): string {
+  if (!res.text) {
+    throw new Error(
+      `There was no 'text' property in the response, which shouldn't happen.`
+    );
+  }
+
   const token = res.text;
   const secret = config.jwtSecret;
   const decodedPayload = jwt.verify(token, secret, { algorithms: ['HS256'] });
-  res.text = decodedPayload.profileToken;
+  const profileToken = decodedPayload.profileToken;
+
+  // The token is 39 characters long, that are either letters (lowercase)
+  // or digits.
+  expect(profileToken).toMatch(/^[abcdefghjkmnpqrstvwxyz0-9]{39}$/);
+
+  return profileToken;
 }
 
 // This is the payload we'll send in most of the requests in this test.
 const BASIC_PAYLOAD = gzipSync('{"foo": "aaaa"}');
-// This is the hash for the content. It's returned by the API and used as a
-// file path in GCS.
-const BASIC_PAYLOAD_HASH = crypto
-  .createHash('sha1')
-  .update(BASIC_PAYLOAD)
-  .digest('hex');
 
 describe('publishing endpoints', () => {
   function getPreconfiguredRequest() {
     const acceptHeader = ACCEPT_VALUE_MIME + ';version=1';
     const agent = supertest(createApp().callback());
     return agent.post('/compressed-store').accept(acceptHeader).type('text');
+  }
+
+  function expectBucketHasProfile(profileToken: string) {
+    // Do we have the bucket configured in our config file?
+    expect(MockStorage.buckets).toHaveProperty(config.gcsBucket);
+
+    const bucket = MockStorage.buckets[config.gcsBucket];
+
+    // Do we have a file whose name is the hash in that bucket?
+    expect(bucket.files).toHaveProperty(profileToken);
+
+    const file = bucket.files[profileToken];
+
+    // Let's check that file's content, name and metadata information.
+    expect(file).toHaveProperty('contents', Buffer.from(BASIC_PAYLOAD));
+    expect(file).toHaveProperty('name', profileToken);
+    expect(file).toHaveProperty(
+      'metadata',
+      expect.objectContaining({
+        cacheControl: 'max-age: 365000000, immutable',
+        contentEncoding: 'gzip',
+        contentType: 'text/plain',
+      })
+    );
   }
 
   it('uploads data all the way to google storage when using a content length', async () => {
@@ -51,36 +80,12 @@ describe('publishing endpoints', () => {
 
     // This checks that we get a 200 status from the server and that it returns
     // the hash.
-    await req
-      .send(BASIC_PAYLOAD)
-      .expect(200)
-      .expect(verifyAndDecodeJwtToken)
-      .expect(BASIC_PAYLOAD_HASH);
+    const res = await req.send(BASIC_PAYLOAD).expect(200);
+    const profileToken = verifyAndDecodeJwtToken(res);
 
     // Now we'll look at our mocked GCS library and check it's been called
     // properly.
-
-    // Do we have the bucket configured in our config file?
-    expect(MockStorage.buckets).toHaveProperty(config.gcsBucket);
-
-    const bucket = MockStorage.buckets[config.gcsBucket];
-
-    // Do we have a file whose name is the hash in that bucket?
-    expect(bucket.files).toHaveProperty(BASIC_PAYLOAD_HASH);
-
-    const file = bucket.files[BASIC_PAYLOAD_HASH];
-
-    // Let's check that file's content, name and metadata information.
-    expect(file).toHaveProperty('contents', Buffer.from(BASIC_PAYLOAD));
-    expect(file).toHaveProperty('name', BASIC_PAYLOAD_HASH);
-    expect(file).toHaveProperty(
-      'metadata',
-      expect.objectContaining({
-        cacheControl: 'max-age: 365000000, immutable',
-        contentEncoding: 'gzip',
-        contentType: 'text/plain',
-      })
-    );
+    expectBucketHasProfile(profileToken);
   });
 
   it('uploads data all the way to google storage when using chunked encoding', async () => {
@@ -96,27 +101,10 @@ describe('publishing endpoints', () => {
     // have to rely on the heuristic.
     req.write(BASIC_PAYLOAD);
 
-    await req
-      .expect(200)
-      .expect(verifyAndDecodeJwtToken)
-      .expect(BASIC_PAYLOAD_HASH);
+    const res = await req.expect(200);
+    const profileToken = verifyAndDecodeJwtToken(res);
 
-    expect(MockStorage.buckets).toHaveProperty(config.gcsBucket);
-    const bucket = MockStorage.buckets[config.gcsBucket];
-
-    expect(bucket.files).toHaveProperty(BASIC_PAYLOAD_HASH);
-    const file = bucket.files[BASIC_PAYLOAD_HASH];
-
-    expect(file).toHaveProperty('contents', Buffer.from(BASIC_PAYLOAD));
-    expect(file).toHaveProperty('name', BASIC_PAYLOAD_HASH);
-    expect(file).toHaveProperty(
-      'metadata',
-      expect.objectContaining({
-        cacheControl: 'max-age: 365000000, immutable',
-        contentEncoding: 'gzip',
-        contentType: 'text/plain',
-      })
-    );
+    expectBucketHasProfile(profileToken);
   });
 
   it('returns an error when the length header is too big', async () => {
@@ -266,21 +254,17 @@ describe('API versioning', () => {
     const req = getPreconfiguredRequest().accept(
       `image/webp,${ACCEPT_VALUE_MIME};version=1`
     );
-    await req
-      .send(BASIC_PAYLOAD)
-      .expect(200)
-      .expect(verifyAndDecodeJwtToken)
-      .expect(BASIC_PAYLOAD_HASH);
+
+    const res = await req.send(BASIC_PAYLOAD).expect(200);
+    verifyAndDecodeJwtToken(res);
   });
 
   it('accepts the request even if the version is specified with spaces before the parameter', async () => {
     const req = getPreconfiguredRequest().accept(
       ACCEPT_VALUE_MIME + '; version=1'
     );
-    await req
-      .send(BASIC_PAYLOAD)
-      .expect(200)
-      .expect(verifyAndDecodeJwtToken)
-      .expect(BASIC_PAYLOAD_HASH);
+
+    const res = await req.send(BASIC_PAYLOAD).expect(200);
+    verifyAndDecodeJwtToken(res);
   });
 });
