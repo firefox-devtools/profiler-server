@@ -5489,10 +5489,10 @@ mkdirp@^1.0.3, mkdirp@^1.0.4:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-mozlog@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/mozlog/-/mozlog-3.0.0.tgz#777ad4fc7ea08841e5c65ff7765c30aa8e4a7066"
-  integrity sha512-Uycw83Teeq8p1+d2kSj0SX1Svm9rMfQWjIZ1x6uDXKriF+5UKqB9+oNnu2jf0QwCMr0qs2MtJkEPOqbpEMqlwQ==
+mozlog@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/mozlog/-/mozlog-3.0.1.tgz#4aab944bf570170ba8ab72ce34f82db3826d2251"
+  integrity sha512-wt24ehNPJ1Y2ulxUFWFcS9QJhRBKv4cSBbZoPI/VNutT2XTtc8T3ZsjDnN9Rh4+KWO1QsmEwBT9uhSMSPPrV0Q==
   dependencies:
     intel "^1.2.0"
     merge "^1.2.1"
