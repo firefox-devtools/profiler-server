@@ -32,9 +32,9 @@ function verifyAndDecodeJwtToken(res): string {
   const decodedPayload = jwt.verify(token, secret, { algorithms: ['HS256'] });
   const profileToken = decodedPayload.profileToken;
 
-  // The token is 22 characters long, that are either letters (lower or
-  // uppercase), digits, '_' or '-'. '\w' represents all this except '-'.
-  expect(profileToken).toMatch(/^[abcdefghjkmnpqrstvwxyz0-9]{26}$/);
+  // The token is 39 characters long, that are either letters (lowercase)
+  // or digits.
+  expect(profileToken).toMatch(/^[abcdefghjkmnpqrstvwxyz0-9]{39}$/);
 
   return profileToken;
 }

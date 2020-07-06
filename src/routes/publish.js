@@ -29,11 +29,17 @@ const MAX_BODY_LENGTH = 50 * 1024 * 1024; // 50MB
 const randomBytes = promisify(crypto.randomBytes);
 
 async function generateTokenForProfile(): Promise<string> {
-  // We're more interested in avoiding collision than having a completely
-  // unguessable token here. That's why we use the number of 16 bytes (128
-  // bits), which should be enough according to the Wikipedia page about UUID:
-  // https://en.wikipedia.org/wiki/Universally_unique_identifier#Collisions
-  const randomBuffer = await randomBytes(16);
+  // We're especially interested in avoiding collision, but also interested that
+  // we can't easily find a random profile by exhaustively crawling the token
+  // space. That's why we use the number of 24 bytes (192
+  // bits).
+  // * This should be more then enough to avoid collisions, according to the Wikipedia page about UUID:
+  //   https://en.wikipedia.org/wiki/Universally_unique_identifier#Collisions
+  // * This should be also enough for crawlers, even if 32 bytes is usually
+  //   recommended, because we'll expire the data soon, most uploaded profiles
+  //   are sanitized by default, and only a fraction have useful information for
+  //   an attacker.
+  const randomBuffer = await randomBytes(24);
   return toBase32(randomBuffer);
 }
 
