@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "This is the server-side part of the Firefox Profiler.",
   "main": "index.js",
-  "repository": "https://github.com/firefox-devtools/profiler",
+  "repository": "https://github.com/firefox-devtools/profiler-server",
   "author": "Mozilla",
-  "license": "MPL2",
+  "license": "MPL-2.0",
   "private": true,
   "scripts": {
     "flow": "flow --max-warnings 0",
@@ -13,6 +13,7 @@
     "flow-stop": "flow stop",
     "flow-coverage": "flow-coverage-report -i '**/*.js' -t html -t text",
     "flow-generate-libdefs": "flow-typed install --libdefDir src/types/libdef",
+    "license-check": "devtools-license-check",
     "lint": "run-p lint-js lint-python",
     "lint-fix": "run-p lint-fix-js",
     "lint-js": "eslint src bin test",
@@ -32,7 +33,7 @@
     "test": "jest",
     "test-python": "./tools/test_decode_jwt_payload.py",
     "test-lockfile": "lockfile-lint --path yarn.lock --allowed-hosts yarn --validate-https",
-    "test-all": "run-p flow lint test test-python test-lockfile"
+    "test-all": "run-p flow lint test test-python test-lockfile license-check"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.5",
@@ -44,6 +45,7 @@
     "@babel/preset-flow": "^7.10.4",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.2.2",
+    "devtools-license-check": "^0.8.0",
     "eslint": "^7.6.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-babel": "^5.3.1",
