@@ -67,6 +67,7 @@ RUN set -x \
 # we run all test commands separately.
   && yarn flow:ci \
   && yarn lint \
+  && yarn test-lockfile \
   && yarn test \
 # Actually build the project.
   && yarn build:clean \

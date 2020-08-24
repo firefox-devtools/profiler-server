@@ -43,7 +43,9 @@ workflows:
       - python
       - lint
       - build
+      - yarn_lock
       - flow
+      - license-check
       - docker
       - docker-publish:
           requires:
@@ -100,6 +102,12 @@ jobs:
       - checkout-and-dependencies
       - run: yarn flow:ci
 
+  yarn_lock:
+    executor: node
+    steps:
+      - checkout-and-dependencies
+      - run: yarn test-lockfile
+
   build:
     executor: node
     steps:
@@ -107,6 +115,12 @@ jobs:
       - run: |
           yarn build:clean
           yarn build
+
+  license-check:
+    executor: node
+    steps:
+      - checkout-and-dependencies
+      - run: yarn license-check
 
   docker:
     executor: node
