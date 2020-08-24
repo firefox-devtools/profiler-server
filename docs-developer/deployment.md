@@ -3,7 +3,12 @@
 ## Servers
 
 * The `master` branch deploys to https://dev.firefoxprofiler.nonprod.cloudops.mozgcp.net.
-* The `production` branch deploys to https://api.profiler.firefox.com.
+* The `production` branch deploys to 2 servers:
+  * configured with a sandbox storage: https://stage.firefoxprofiler.nonprod.cloudops.mozgcp.net.
+  * configured with the production storage: https://api.profiler.firefox.com.
+
+The "stage" server is useful to run load testing runs and compare results with
+the current development server.
 
 ## Environment
 

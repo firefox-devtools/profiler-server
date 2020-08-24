@@ -23,6 +23,9 @@ _API = None
 # This is the staging server.
 # _API = 'https://dev.firefoxprofiler.nonprod.cloudops.mozgcp.net'
 
+# This is a production code deployment configured with a sandbox storage.
+# _API = 'https://stage.firefoxprofiler.nonprod.cloudops.mozgcp.net'
+
 # This is a profile URL that we want to shorten. By using always the same one
 # bitly won't create a new one.
 _LONG_URL = 'https://profiler.firefox.com/public/00cbf186938d721bf168ad036930c09cf641eb40/calltree/?globalTrackOrder=0&invertCallstack&localTrackOrderByPid=5898-0-1~&search=const&thread=0&v=4'  # noqa: E501
