@@ -127,7 +127,8 @@ jobs:
     steps:
       - checkout-and-dependencies
       # This sets up a remote environment that's necessary to run docker commands.
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 19.03.12
       - run:
           name: "Build the Docker image"
           command: yarn docker:build --pull --build-arg circle_build_url=$CIRCLE_BUILD_URL
@@ -159,7 +160,8 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       # This sets up a remote environment that's necessary to run docker commands.
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 19.03.12
       - run:
           name: Load archived Docker image
           command: docker load -i /tmp/workspace/image.tar
