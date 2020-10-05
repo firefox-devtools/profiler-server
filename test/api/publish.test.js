@@ -207,7 +207,7 @@ describe('API versioning', () => {
   });
 
   it('returns an error when an invalid `accept` header is specified', async () => {
-    const req = getPreconfiguredRequest().accept('INVALID_VALUE');
+    const req = getPreconfiguredRequest().accept('invalid/mime-type');
     await req
       .send('a')
       .expect(
