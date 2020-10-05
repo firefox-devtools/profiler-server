@@ -13,7 +13,7 @@ export function checkSecurityHeaders(request: Test) {
   return request
     .expect(
       'Content-Security-Policy',
-      `default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; report-uri /__cspreport__; report-to cspreport`
+      `default-src 'none';frame-ancestors 'none';base-uri 'none';form-action 'self';report-uri /__cspreport__;report-to cspreport`
     )
     .expect(
       'Report-To',
@@ -23,8 +23,7 @@ export function checkSecurityHeaders(request: Test) {
     .expect('X-DNS-Prefetch-Control', 'off')
     .expect('X-Frame-Options', 'DENY')
     .expect('X-Download-Options', 'noopen')
-    .expect('X-Content-Type-Options', 'nosniff')
-    .expect('X-XSS-Protection', '1; mode=block');
+    .expect('X-Content-Type-Options', 'nosniff');
 }
 
 export function checkCorsHeader(request: Test, expectedValue: string) {
