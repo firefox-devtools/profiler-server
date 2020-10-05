@@ -1,5 +1,7 @@
 [options]
 include_warnings=true
+# Opt out of types-first checking, see https://github.com/firefox-devtools/profiler-server/issues/156
+types_first=false
 
 [ignore]
 .*node_modules/.*
