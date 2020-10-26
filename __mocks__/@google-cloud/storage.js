@@ -66,7 +66,7 @@ class MockFile {
     this._exists = false;
   }
 
-  get() {
+  get(): [MockFile, Metadata] {
     return [this, this.metadata];
   }
 
