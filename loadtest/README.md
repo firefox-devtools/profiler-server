@@ -30,6 +30,11 @@ Note: to exit the virtualenv, just run `deactivate`.
 pip install -r requirements.txt
 ```
 
+Upgrading later, when `requirements.txt` changes, is done like this:
+```
+pip install -U -r requirements.txt
+```
+
 ## Running
 
 Enable the virtualenv if that's not done yet:
@@ -58,6 +63,11 @@ molotov --max-runs 1 --single-mode <scenario_name> -v publish.py
 ```
 Notice `-v` enables verbose mode, which outputs errors. This is especially
 useful while finalizing a specific scenario.
+
+It's also possible to run all scenarios in one specific file:
+```
+molotov --single-run -v publish.py
+```
 
 To run only one test, but with several workers in parallel:
 ```
