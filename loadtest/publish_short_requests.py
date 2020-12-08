@@ -25,6 +25,9 @@ _API = None
 # This is the staging server.
 # _API = 'https://dev.firefoxprofiler.nonprod.cloudops.mozgcp.net'
 
+# This is a production code deployment configured with a sandbox storage.
+# _API = 'https://stage.firefoxprofiler.nonprod.cloudops.mozgcp.net'
+
 # This is the various file sizes we'll generate in the global setup.
 _FILE_SIZES = (1, 10, 50)
 
