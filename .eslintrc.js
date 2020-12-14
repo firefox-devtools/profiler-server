@@ -1,3 +1,4 @@
+// @flow
 module.exports = {
   env: {
     es6: true,
@@ -9,6 +10,7 @@ module.exports = {
     'plugin:flowtype/recommended',
     'prettier',
     'prettier/flowtype',
+    'prettier/prettier', // This works with the prettier plugin, remove this when removing it
   ],
   parserOptions: {
     ecmaVersion: '2017',
@@ -25,7 +27,11 @@ module.exports = {
     'import/no-default-export': 'error',
     'import/named': 'error',
     'prettier/prettier': 'error',
-    'flowtype/require-valid-file-annotation': [ 'error', 'always', { annotationStyle: 'line' } ],
+    'flowtype/require-valid-file-annotation': [
+      'error',
+      'always',
+      { annotationStyle: 'line' },
+    ],
     // no-dupe-keys crashes with recent eslint. See
     // https://github.com/gajus/eslint-plugin-flowtype/pull/266 and
     // https://github.com/gajus/eslint-plugin-flowtype/pull/302
