@@ -16,7 +16,7 @@ import {
 // how we'll use these streams in the app code.
 const pipeline = util.promisify(Stream.pipeline);
 const nextTick = util.promisify(process.nextTick);
-describe('EarlyContentChecker', () => {
+describe('CheapJsonChecker', () => {
   it('accepts normal content', async () => {
     const fixture = '{ "foo": "bar" }';
     const checker = new CheapJsonChecker();

@@ -63,7 +63,10 @@ export class Concatenator extends Writable {
   contents: Buffer | null = null;
 
   constructor() {
-    super({ decodeStrings: false });
+    super({
+      // This stream needs to be explicitely destroyed.
+      autoDestroy: false,
+    });
   }
 
   _write(
@@ -185,7 +188,7 @@ export class CheapJsonChecker extends Writable {
     }
   }
 
-  // This is called when all the data has been given to _transform and the
+  // This is called when all the data has been given to _write and the
   // stream is ended.
   _final(callback: (error?: Error) => void) {
     this.log.trace('_final()');
