@@ -69,3 +69,8 @@ and `production-latest`. Note you need to log in to docker to see this page.
 our servers run in.
 
 [Our Dockerfile recipe](https://github.com/firefox-devtools/profiler-server/blob/master/Dockerfile).
+
+## Mozilla internal contacts
+
+You can find the Mozilla contacts about our deployment in [this Mozilla-only
+document](https://docs.google.com/document/d/16YRafdIbk4aFgu4EZjMEjX4F6jIcUJQsazW9AORNvfY/edit).
