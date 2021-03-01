@@ -8,9 +8,9 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:flowtype/recommended',
-    'prettier',
-    'prettier/flowtype',
-    'prettier/prettier', // This works with the prettier plugin, remove this when removing it
+    // This works with the prettier plugin, this needs to be at the end always.
+    // Replace it with the "prettier" config if we remove the plugin.
+    'plugin:prettier/recommended',
   ],
   parserOptions: {
     ecmaVersion: '2017',
@@ -26,7 +26,6 @@ module.exports = {
     'import/no-unresolved': 'error',
     'import/no-default-export': 'error',
     'import/named': 'error',
-    'prettier/prettier': 'error',
     'flowtype/require-valid-file-annotation': [
       'error',
       'always',
