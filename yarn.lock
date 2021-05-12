@@ -5286,10 +5286,10 @@ merge-stream@^2.0.0:
   resolved "https://registry.yarnpkg.com/merge-stream/-/merge-stream-2.0.0.tgz#52823629a14dd00c9770fb6ad47dc6310f2c1f60"
   integrity sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==
 
-merge@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.1.tgz#38bebf80c3220a8a487b6fcfb3941bb11720c145"
-  integrity sha512-VjFo4P5Whtj4vsLzsYBu5ayHhoHJ0UqNm7ibvShmbmoz7tGi0vXaoJbGdB+GmDMLUdg8DpQXEIeVDAe8MaABvQ==
+merge@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/merge/-/merge-2.1.1.tgz#59ef4bf7e0b3e879186436e8481c06a6c162ca98"
+  integrity sha512-jz+Cfrg9GWOZbQAnDQ4hlVnQky+341Yk5ru8bZSe6sIDTCIg8n9i/u7hSQGSVOF3C7lH6mGtqjkiT9G4wFLL0w==
 
 methods@^1.1.2:
   version "1.1.2"
@@ -5392,13 +5392,13 @@ mkdirp@^1.0.3, mkdirp@^1.0.4:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-mozlog@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/mozlog/-/mozlog-3.0.1.tgz#4aab944bf570170ba8ab72ce34f82db3826d2251"
-  integrity sha512-wt24ehNPJ1Y2ulxUFWFcS9QJhRBKv4cSBbZoPI/VNutT2XTtc8T3ZsjDnN9Rh4+KWO1QsmEwBT9uhSMSPPrV0Q==
+mozlog@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/mozlog/-/mozlog-3.0.2.tgz#ffa4502a630a7ac3f279528ff0340aba1d943ba3"
+  integrity sha512-nu2pJV98gT0KFWE3sIHopR+QcSxZ2vCgnV+dvAAcCcOLjRoT3obtcINS4Vl0oc7zGEdhm0/MfE7D2MJGIwD/Ag==
   dependencies:
     intel "^1.2.0"
-    merge "^1.2.1"
+    merge "^2.1.1"
 
 ms@2.0.0:
   version "2.0.0"
