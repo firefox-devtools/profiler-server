@@ -14,6 +14,9 @@ executors:
     docker:
       - image: cimg/python:3.10-node
 
+orbs:
+  shellcheck: circleci/shellcheck@3.0.0
+
 commands:
   checkout-and-dependencies:
     description: "Checkout and install dependencies, managing a cache"
@@ -46,6 +49,8 @@ workflows:
       - yarn_lock
       - flow
       - license-check
+      - shellcheck/check:
+          name: "Shellcheck"
       - docker
       - docker-publish:
           requires:
