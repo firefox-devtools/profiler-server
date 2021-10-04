@@ -14,7 +14,7 @@ const log = getLogger('index');
 const app = createApp();
 
 const server = app.listen(config.httpPort);
-log.info('server_started', { port: config.httpPort });
+log.info('server_started', { port: server.address().port });
 
 function gracefulExit() {
   log.info('server_exit', 'Received exit request. Closing app...');
