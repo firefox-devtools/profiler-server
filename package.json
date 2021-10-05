@@ -36,34 +36,34 @@
     "test-all": "run-p flow lint test test-python test-lockfile license-check"
   },
   "devDependencies": {
-    "@babel/cli": "^7.14.8",
-    "@babel/core": "^7.15.0",
-    "@babel/node": "^7.14.9",
+    "@babel/cli": "^7.15.7",
+    "@babel/core": "^7.15.5",
+    "@babel/node": "^7.15.4",
     "@babel/plugin-proposal-class-properties": "^7.14.5",
     "@babel/plugin-proposal-object-rest-spread": "^7.14.7",
-    "@babel/preset-env": "^7.15.0",
+    "@babel/preset-env": "^7.15.6",
     "@babel/preset-flow": "^7.14.5",
     "babel-eslint": "^10.1.0",
-    "babel-jest": "^27.0.6",
+    "babel-jest": "^27.1.0",
     "devtools-license-check": "^0.9.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-babel": "^5.3.1",
-    "eslint-plugin-flowtype": "^5.8.2",
-    "eslint-plugin-import": "^2.24.0",
-    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-flowtype": "^6.1.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-prettier": "^4.0.0",
     "flow-bin": "^0.142.0",
     "flow-typed": "^3.3.1",
     "husky": "^4.3.8",
-    "jest": "^27.0.6",
+    "jest": "^27.1.0",
     "lockfile-lint": "^4.6.2",
     "mkdirp": "^1.0.4",
-    "nock": "^13.1.1",
-    "nodemon": "^2.0.12",
+    "nock": "^13.1.3",
+    "nodemon": "^2.0.13",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.3.2",
+    "prettier": "^2.4.1",
     "rimraf": "^3.0.2",
-    "supertest": "^6.1.4"
+    "supertest": "^6.1.6"
   },
   "husky": {
     "hooks": {
@@ -74,20 +74,20 @@
     }
   },
   "dependencies": {
-    "@google-cloud/storage": "^5.13.1",
+    "@google-cloud/storage": "^5.14.2",
     "@koa/cors": "^3.1.0",
-    "@koa/router": "^10.1.0",
+    "@koa/router": "^10.1.1",
     "content-type": "^1.0.4",
     "convict": "^6.2.0",
     "dotenv": "^10.0.0",
     "fast-crc32c": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
-    "koa": "^2.13.1",
+    "koa": "^2.13.3",
     "koa-helmet": "^6.1.0",
     "koa-json-body": "^5.3.0",
-    "koa-jwt": "^4.0.1",
+    "koa-jwt": "^4.0.3",
     "koa-logger": "^3.2.1",
     "mozlog": "^3.0.2",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.2"
   }
 }
