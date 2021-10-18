@@ -4,7 +4,7 @@ module.exports = {
     es6: true,
     node: true,
   },
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   extends: [
     'eslint:recommended',
     'plugin:flowtype/recommended',
@@ -19,7 +19,7 @@ module.exports = {
     },
     sourceType: 'module',
   },
-  plugins: ['babel', 'flowtype', 'import', 'prettier'],
+  plugins: ['@babel', 'flowtype', 'import', 'prettier'],
   rules: {
     // Plugin rules:
     'import/no-duplicates': 'error',
@@ -60,7 +60,7 @@ module.exports = {
     'no-implied-eval': 'error',
     // We use the version from the babel plugin so that `this` in a function
     // class property doesn't give a false positive.
-    'babel/no-invalid-this': 'error',
+    '@babel/no-invalid-this': 'error',
     'no-return-await': 'error',
     'no-self-compare': 'error',
     'no-throw-literal': 'error',
