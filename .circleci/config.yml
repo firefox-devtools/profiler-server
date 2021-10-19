@@ -7,12 +7,12 @@ executors:
     environment:
       IMAGE_NAME: mozilla/profiler-server
 
-  # This executor is used for the lint job. We want `pip` so that we can
-  # install `flake8`. It probably has a more recent node than the one we use in
-  # the other image, but this is probably OK for what we have to do here.
+  # This executor is used for the python jobs (obviously). We want `pip` so that
+  # we can install `flake8`. We use the node flavor so that we have `yarn`
+  # preinstalled, but otherwise the exact version for node isn't important.
   python:
     docker:
-      - image: circleci/python:3.7-node
+      - image: cimg/python:3.10-node
 
 commands:
   checkout-and-dependencies:
@@ -41,7 +41,7 @@ workflows:
     jobs:
       - tests
       - python
-      - lint
+      - lint-js
       - build
       - yarn_lock
       - flow
@@ -75,14 +75,11 @@ workflows:
             - docker
 
 jobs:
-  lint:
-    executor: python
+  lint-js:
+    executor: node
     steps:
       - checkout-and-dependencies
-      # This job needs flake8 to lint python code, let's install it here only
-      # It's fairly quick (2s) so we won't try to cache it.
-      - run: pip install --user flake8
-      - run: yarn lint
+      - run: yarn lint-js
 
   tests:
     executor: node
@@ -91,10 +88,14 @@ jobs:
       - run: yarn test --runInBand
 
   python:
-    executor: node
+    executor: python
     steps:
-      - checkout-and-dependencies
+      - checkout
+      # This job needs flake8 to lint python code, let's install it here only
+      # It's fairly quick (2s) so we won't try to cache it.
+      - run: pip install --user flake8
       - run: yarn test-python
+      - run: yarn lint-python
 
   flow:
     executor: node
