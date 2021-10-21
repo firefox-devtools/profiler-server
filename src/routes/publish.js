@@ -10,6 +10,7 @@ import Router from '@koa/router';
 import Stream from 'stream';
 import { promisify } from 'util';
 import crypto from 'crypto';
+import events from 'events';
 
 import { getLogger } from '../log';
 import { config } from '../config';
@@ -75,7 +76,6 @@ export function publishRoutes() {
     // don't want to destroy it. Indeed if it's destroyed, the socket is closed
     // and we can't send a nice error to the caller.
     const pipeline = promisify(Stream.pipeline);
-    const finished = promisify(Stream.finished);
 
     // We create 2 interconnected pipelines:
     //
@@ -99,24 +99,26 @@ export function publishRoutes() {
     // "premature close" errors when the length checker errors out.
     lengthChecker.pipe(gunzipStream);
     gunzipStream.pipe(jsonChecker);
-    const jsonCheckerPromise = finished(jsonChecker);
 
     // Stop the flow by unpiping when we're done checking the JSON.
-    jsonChecker.on('finish', () => {
-      log.verbose(
-        'json-checker-pipeline-done',
-        'The stream pipeline to check the json content is finished.'
-      );
+    // (Too bad that Flow doesn't know events.once)
+    const jsonCheckerPromise = (events: any)
+      .once(jsonChecker, 'profiler:checkEnded')
+      .then(() => {
+        log.verbose(
+          'json-checker-pipeline-done',
+          'The stream pipeline to check the json content is finished.'
+        );
 
-      // Note this is important to unpipe, because jsonChecker stopped consuming
-      // the data, and so if we don't stop the flow, the main pipeline will also
-      // stop flowing once the buffers in the second pipeline are full.
-      lengthChecker.unpipe(gunzipStream);
-      gunzipStream.destroy();
-    });
+        gunzipStream.unpipe(jsonChecker);
+        lengthChecker.unpipe(gunzipStream);
+        jsonChecker.destroy();
+        gunzipStream.destroy();
+      });
 
     // Forward errors between streams in the second pipeline, as well as the
-    // first pipeline through lengthChecker.
+    // first pipeline through lengthChecker. We want errors to be forwarded so
+    // that the main pipeline is interrupted too.
     // Note that errors inside the first pipeline are forwarded thanks to the
     // `pipeline` thingie.
     forwardErrors(lengthChecker, gunzipStream, jsonChecker);
