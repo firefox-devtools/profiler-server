@@ -63,7 +63,10 @@ export class Concatenator extends Writable {
   contents: Buffer | null = null;
 
   constructor() {
-    super({ decodeStrings: false });
+    super({
+      // This stream needs to be explicitely destroyed.
+      autoDestroy: false,
+    });
   }
 
   _write(
@@ -103,7 +106,9 @@ export class Concatenator extends Writable {
     this.log.trace('transferContents()');
     const contents = this.contents;
     if (contents === null) {
-      throw new Error(`Can't transfer before the stream has been closed.`);
+      throw new Error(
+        `Can't transfer before the stream has been ended or after it's been destroyed.`
+      );
     }
     this.contents = null;
     return contents;
