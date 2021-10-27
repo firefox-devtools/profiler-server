@@ -11,9 +11,9 @@
 # instead of the default. See docs-developer/docker.md for more information.
 
 # Setup a container and build the project in it
-# We set up a node 10 running in latest Debian stable called buster, in the
+# We set up a node 16 running in latest Debian stable called bullseye, in the
 # "slim" flavor because we don't need the big version.
-FROM node:16-buster-slim AS builder
+FROM node:16-bullseye-slim AS builder
 
 # Create the user we'll run the build commands with. Its home is configured to
 # be the directory /app. It helps avoiding warnings when running tests and
@@ -88,7 +88,7 @@ RUN du -khs node_modules
 RUN ls -la
 
 # ----- And now, let's build the runtime container -----
-FROM node:16-buster-slim
+FROM node:16-bullseye-slim
 ENV NODE_ENV="production"
 ENV PORT=8000
 
