@@ -1036,10 +1036,10 @@
   resolved "https://registry.yarnpkg.com/@google-cloud/promisify/-/promisify-2.0.1.tgz#79f722463a5779197267c6870362b1d7927081f7"
   integrity sha512-82EQzwrNauw1fkbUSr3f+50Bcq7g4h0XvLOk8C5e9ABkXYHei7ZPi9tiMMD7Vh3SfcdH97d1ibJ3KBWp2o1J+w==
 
-"@google-cloud/storage@^5.16.0":
-  version "5.16.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-5.16.0.tgz#1c88d4a48afbadf750369723ca8db7eafa35ff3e"
-  integrity sha512-I/1lA78v9c5EbOM/KfcYsjzA7YlHQmhpzHYdKLKdYC8X5fFaQrw5nK+FU8GbEwdPxmREAF2qPbN7Ccq+A/ndWA==
+"@google-cloud/storage@^5.16.1":
+  version "5.16.1"
+  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-5.16.1.tgz#6a9a2c160282676d2725d3426e97417753426354"
+  integrity sha512-C2li/2PUfLSGEetebLL70uQRwqm6PS+kBtFEjr5AnAn/Qv0UnD8V+rI9Y4RmwxWFvhlPAgg+ZRqa4bkK4eUxlA==
   dependencies:
     "@google-cloud/common" "^3.8.1"
     "@google-cloud/paginator" "^3.0.0"
@@ -1050,7 +1050,7 @@
     date-and-time "^2.0.0"
     duplexify "^4.0.0"
     extend "^3.0.2"
-    gcs-resumable-upload "^3.5.1"
+    gcs-resumable-upload "^3.6.0"
     get-stream "^6.0.0"
     hash-stream-validation "^0.2.2"
     mime "^3.0.0"
@@ -3283,7 +3283,7 @@ gcp-metadata@^4.2.0:
     gaxios "^4.0.0"
     json-bigint "^1.0.0"
 
-gcs-resumable-upload@^3.5.1:
+gcs-resumable-upload@^3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/gcs-resumable-upload/-/gcs-resumable-upload-3.6.0.tgz#6a2fdf3ba1bc00d956d119427b5fc963d1fcdb79"
   integrity sha512-IyaNs4tx3Mp2UKn0CltRUiW/ZXYFlBNuK/V+ixs80chzVD+BJq3+8bfiganATFfCoMluAjokF9EswNJdVuOs8A==
