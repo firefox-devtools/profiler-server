@@ -81,7 +81,6 @@
     "content-type": "^1.0.4",
     "convict": "^6.2.1",
     "dotenv": "^16.0.0",
-    "fast-crc32c": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.4",
     "koa-helmet": "^6.1.0",
@@ -90,5 +89,8 @@
     "koa-logger": "^3.2.1",
     "mozlog": "^3.0.2",
     "node-fetch": "^2.6.7"
+  },
+  "optionalDependencies": {
+    "fast-crc32c": "^2.0.0"
   }
 }

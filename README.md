@@ -35,6 +35,10 @@ cd profiler-server
 yarn install
 ```
 
+#### For Apple M1 chips
+
+There is an optional dependency that doesn't support M1 chips. Run `yarn install --ignore-optional` instead to skip installing it.
+
 ### Configure the server
 
 Then you'll need to configure the server. We use environment variables for this,
