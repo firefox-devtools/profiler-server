@@ -11,9 +11,10 @@
 # runtime with the env variable API_ENDPOINT.
 
 # Setup a container and download the project in it
-# We set up a python 3 running in latest Debian stable called buster, in the
+# We set up a python 3 running in latest Debian stable called bullseye, in the
 # "slim" flavor because we don't need the big version.
-FROM python:3-slim-buster
+# We use version 3.9 because 3.10 is failing for now, see https://github.com/loads/molotov/issues/137
+FROM python:3.9-slim-bullseye
 
 # Create the user we'll run the build commands with. Its home is configured to
 # be the directory /app. It helps avoiding warnings when running tests and
