@@ -36,7 +36,7 @@
     "test-all": "run-p flow lint test test-python test-lockfile license-check"
   },
   "devDependencies": {
-    "@babel/cli": "^7.17.0",
+    "@babel/cli": "^7.17.6",
     "@babel/core": "^7.17.5",
     "@babel/eslint-parser": "^7.17.0",
     "@babel/eslint-plugin": "^7.16.5",
@@ -54,7 +54,7 @@
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "^4.0.0",
     "flow-bin": "^0.142.0",
-    "flow-typed": "^3.6.1",
+    "flow-typed": "^3.7.0",
     "husky": "^4.3.8",
     "jest": "^27.5.1",
     "lockfile-lint": "^4.6.2",
