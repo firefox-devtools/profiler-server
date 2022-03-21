@@ -2799,10 +2799,10 @@ escodegen@^2.0.0:
   optionalDependencies:
     source-map "~0.6.1"
 
-eslint-config-prettier@^8.4.0:
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-8.4.0.tgz#8e6d17c7436649e98c4c2189868562921ef563de"
-  integrity sha512-CFotdUcMY18nGRo5KGsnNxpznzhkopOcOo0InID+sgQssPrzjvsyKZPvOgymTFeHrFuC3Tzdf2YndhXtULK9Iw==
+eslint-config-prettier@^8.5.0:
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-8.5.0.tgz#5a81680ec934beca02c7b1a61cf8ca34b66feab1"
+  integrity sha512-obmWKLUNCnhtQRKc+tmnYuQl0pFU1ibYJQ5BGhTVB08bHe9wC8qUeG7c08dj9XX+AuPj1YSGSQIHl1pnDHZR0Q==
 
 eslint-import-resolver-node@^0.3.6:
   version "0.3.6"
@@ -4701,23 +4701,23 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
-lockfile-lint-api@^5.1.7:
-  version "5.1.7"
-  resolved "https://registry.yarnpkg.com/lockfile-lint-api/-/lockfile-lint-api-5.1.7.tgz#052f615ab85ac3ad69f8c90b03eb3b64dbd6ebd9"
-  integrity sha512-o10D4DiLUFXl/8UqYBsuNnye3DcNtAuIm6+vCsnSwHONIQqR6etWUA0v94lMhh5tIDqPOV08Gc8Ds+A3bMqW4g==
+lockfile-lint-api@^5.2.4:
+  version "5.2.4"
+  resolved "https://registry.yarnpkg.com/lockfile-lint-api/-/lockfile-lint-api-5.2.4.tgz#6bfebb56d7b5c6e1d0779a1f1a06e611a3c8dc3e"
+  integrity sha512-AvZiJ17CfTzv6ufEo9JHhv8STGRhQevBu3tpsunB/DE1ZV1asaR5xzDzV1PnfwCDYt/mCjg4dWQpr07v+/M0ow==
   dependencies:
     "@yarnpkg/lockfile" "^1.1.0"
     debug "^4.1.1"
     object-hash "^2.0.1"
 
-lockfile-lint@^4.6.2:
-  version "4.6.2"
-  resolved "https://registry.yarnpkg.com/lockfile-lint/-/lockfile-lint-4.6.2.tgz#ca4a896f702ea22b04d4084246ce0ecfb2b4ff74"
-  integrity sha512-TvWN2Yfc/dvSy1GKdpy0wJ6GCvq/9Qj457D+QQtP+eYvsX4zNp3vaaB2LS1d+TK1lO/7I0VQ0qqRCRCOzSj2wQ==
+lockfile-lint@^4.7.4:
+  version "4.7.4"
+  resolved "https://registry.yarnpkg.com/lockfile-lint/-/lockfile-lint-4.7.4.tgz#6ff95453f973840583e64835402656ee597bf04a"
+  integrity sha512-5IS+KqWDK0V7H3NiOh7sgO1fJ0t8RiuLCE+YFNlHBu5nVs1KagGbJ1eipEgQm9DtgzqBIR90X33RSKPOTAVczg==
   dependencies:
     cosmiconfig "^6.0.0"
     debug "^4.1.1"
-    lockfile-lint-api "^5.1.7"
+    lockfile-lint-api "^5.2.4"
     yargs "^16.0.0"
 
 lodash.clonedeep@^4.5.0:
