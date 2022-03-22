@@ -35,6 +35,10 @@ cd profiler-server
 yarn install
 ```
 
+#### For Apple M1 chips
+
+There is an optional dependency that doesn't support M1 chips. Run `yarn install --ignore-optional` instead to skip installing it.
+
 ### Configure the server
 
 Then you'll need to configure the server. We use environment variables for this,
@@ -59,14 +63,14 @@ This will start the server on port 5252.
 ## Build or pull a docker image
 
 We provide a Dockerfile, the very same one we use to build our official docker
-image. Find more [in the dedicated documentation](docs-developers/docker.md).
+image. Find more [in the dedicated documentation](docs-developer/docker.md).
 
 Also the images we use for production [are public](https://hub.docker.com/r/mozilla/profiler-server/tags),
 you can pull latest versions with:
 * for master: `docker pull mozilla/profiler-server:master-latest`
 * for production: `docker pull mozilla/profiler-server:production-latest`
 
-Again, look the [dedicated documentation](docs-developers/docker.md) to know more.
+Again, look the [dedicated documentation](docs-developer/docker.md) to know more.
 
 ## Discussion
 

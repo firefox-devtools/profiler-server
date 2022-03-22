@@ -1,14 +1,16 @@
+// @flow
 module.exports = {
   env: {
     es6: true,
     node: true,
   },
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   extends: [
     'eslint:recommended',
     'plugin:flowtype/recommended',
-    'prettier',
-    'prettier/flowtype',
+    // This works with the prettier plugin, this needs to be at the end always.
+    // Replace it with the "prettier" config if we remove the plugin.
+    'plugin:prettier/recommended',
   ],
   parserOptions: {
     ecmaVersion: '2017',
@@ -17,15 +19,18 @@ module.exports = {
     },
     sourceType: 'module',
   },
-  plugins: ['babel', 'flowtype', 'import', 'prettier'],
+  plugins: ['@babel', 'flowtype', 'import', 'prettier'],
   rules: {
     // Plugin rules:
     'import/no-duplicates': 'error',
     'import/no-unresolved': 'error',
     'import/no-default-export': 'error',
     'import/named': 'error',
-    'prettier/prettier': 'error',
-    'flowtype/require-valid-file-annotation': [ 'error', 'always', { annotationStyle: 'line' } ],
+    'flowtype/require-valid-file-annotation': [
+      'error',
+      'always',
+      { annotationStyle: 'line' },
+    ],
     // no-dupe-keys crashes with recent eslint. See
     // https://github.com/gajus/eslint-plugin-flowtype/pull/266 and
     // https://github.com/gajus/eslint-plugin-flowtype/pull/302
@@ -55,7 +60,7 @@ module.exports = {
     'no-implied-eval': 'error',
     // We use the version from the babel plugin so that `this` in a function
     // class property doesn't give a false positive.
-    'babel/no-invalid-this': 'error',
+    '@babel/no-invalid-this': 'error',
     'no-return-await': 'error',
     'no-self-compare': 'error',
     'no-throw-literal': 'error',

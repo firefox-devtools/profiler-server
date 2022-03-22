@@ -2,13 +2,19 @@
 
 ## Servers
 
-* The `master` branch deploys to https://dev.firefoxprofiler.nonprod.cloudops.mozgcp.net.
+* The `master` branch deploys to https://dev.firefoxprofiler.nonprod.cloudops.mozgcp.net. The storage bucket for this deployment is `moz-fx-dev-firefoxprofiler-bucket`.
 * The `production` branch deploys to 2 servers:
-  * configured with a sandbox storage: https://stage.firefoxprofiler.nonprod.cloudops.mozgcp.net.
-  * configured with the production storage: https://api.profiler.firefox.com.
+  * configured with a sandbox storage: https://stage.firefoxprofiler.nonprod.cloudops.mozgcp.net. The storage bucket for this deployment is `moz-fx-stage-firefoxprofiler-bucket`.
+  * configured with the production storage: https://api.profiler.firefox.com.  The storage bucket for this deployment is `profile-store`.
 
 The "stage" server is useful to run load testing runs and compare results with
-the current development server.
+the current development server. The helper script
+[`tools/load-testing-before-deployment.sh`](../tools/load-testing-before-deployment.sh) will do just this.
+
+Note that the two "non production" servers run on the same cluster and are
+configured to not auto-scale, so be careful to test them separately. Using the
+script, typical results are between 110000 and 130000 successful requests at the
+full throughput for these non prod environments.
 
 ## Environment
 
@@ -69,3 +75,8 @@ and `production-latest`. Note you need to log in to docker to see this page.
 our servers run in.
 
 [Our Dockerfile recipe](https://github.com/firefox-devtools/profiler-server/blob/master/Dockerfile).
+
+## Mozilla internal contacts
+
+You can find the Mozilla contacts about our deployment in [this Mozilla-only
+document](https://docs.google.com/document/d/16YRafdIbk4aFgu4EZjMEjX4F6jIcUJQsazW9AORNvfY/edit).

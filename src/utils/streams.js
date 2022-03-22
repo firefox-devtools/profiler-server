@@ -63,7 +63,10 @@ export class Concatenator extends Writable {
   contents: Buffer | null = null;
 
   constructor() {
-    super({ decodeStrings: false });
+    super({
+      // This stream needs to be explicitely destroyed.
+      autoDestroy: false,
+    });
   }
 
   _write(
@@ -103,7 +106,9 @@ export class Concatenator extends Writable {
     this.log.trace('transferContents()');
     const contents = this.contents;
     if (contents === null) {
-      throw new Error(`Can't transfer before the stream has been closed.`);
+      throw new Error(
+        `Can't transfer before the stream has been ended or after it's been destroyed.`
+      );
     }
     this.contents = null;
     return contents;
@@ -166,11 +171,9 @@ export class CheapJsonChecker extends Writable {
         case 'found':
           this.log.verbose('json-found', 'This stream looks like a JSON.');
           this.checkEnded = true;
+          // This stream did what it's for. Let's emit an event to specify it.
+          this.emit('profiler:checkEnded');
           callback();
-          // This stream did what it's for so let's clean it up.
-          // Calling end will also stop any piping gracefully.
-          // Using nextTick allows some bufferred write to finish.
-          process.nextTick(() => this.end());
           return;
         case 'error':
           this.log.verbose(
@@ -185,7 +188,7 @@ export class CheapJsonChecker extends Writable {
     }
   }
 
-  // This is called when all the data has been given to _transform and the
+  // This is called when all the data has been given to _write and the
   // stream is ended.
   _final(callback: (error?: Error) => void) {
     this.log.trace('_final()');
