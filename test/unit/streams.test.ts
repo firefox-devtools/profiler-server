@@ -1,11 +1,10 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-// @flow
+
 import util from 'util';
 import Stream, { PassThrough } from 'stream';
 import { gzipSync } from 'zlib';
-// $FlowExpectedError[missing-export] Flow doesn't know about events.once, that's too bad.
 import { once } from 'events';
 
 import {

@@ -47,7 +47,7 @@ workflows:
       - lint-js
       - build
       - yarn_lock
-      - flow
+      - ts
       - license-check
       - shellcheck/check:
           name: "Shellcheck"
@@ -102,11 +102,11 @@ jobs:
       - run: yarn test-python
       - run: yarn lint-python
 
-  flow:
+  ts:
     executor: node
     steps:
       - checkout-and-dependencies
-      - run: yarn flow:ci
+      - run: yarn ts
 
   yarn_lock:
     executor: node

@@ -1,4 +1,3 @@
-// @flow
 // This was mostly stolen from https://gist.github.com/nfarina/90ba99a5187113900c86289e67586aaa.
 // And then rewritten to remove the dependency to stream-buffers and add the
 // `exists` method.

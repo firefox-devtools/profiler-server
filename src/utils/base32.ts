@@ -16,8 +16,6 @@ all copies or substantial portions of the Software.
 // https://raw.githubusercontent.com/agnoster/base32-js/40f5ae8eba3d432cdfdd6a53dae38aaff78ee96d/lib/base32.js
 // and has been adapted for usage in the profiler server.
 // Its licence is the MIT licence: https://raw.githubusercontent.com/agnoster/base32-js/40f5ae8eba3d432cdfdd6a53dae38aaff78ee96d/LICENSE
-//
-// @flow
 
 // This would be the place to edit if you want a different
 // Base32 implementation

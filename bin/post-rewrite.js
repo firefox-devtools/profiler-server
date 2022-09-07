@@ -1,5 +1,3 @@
-// @noflow
-
 // This is either 'rebase' or 'amend'.
 if (process.env.HUSKY_GIT_PARAMS !== 'rebase') {
   process.exit();

@@ -1,7 +1,6 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-// @flow
 
 // In this router we implement the services required by the dockerflow mozilla
 // best practices, as described in https://github.com/mozilla-services/Dockerflow.

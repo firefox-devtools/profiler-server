@@ -1,11 +1,10 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-// @flow
 
 /**
- * This file contains utils that help Flow understand things better. Occasionally
- * statements can be logically equivalent, but Flow infers them in a specific way. Most
+ * This file contains utils that help Typescript understand things better. Occasionally
+ * statements can be logically equivalent, but Typescript infers them in a specific way. Most
  * of the time tweaks can be done by editing the type system, but occasionally functions
  * are needed to get the desired result.
  */

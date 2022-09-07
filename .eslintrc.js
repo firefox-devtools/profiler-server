@@ -1,4 +1,3 @@
-// @flow
 module.exports = {
   env: {
     es6: true,
@@ -7,7 +6,6 @@ module.exports = {
   parser: '@babel/eslint-parser',
   extends: [
     'eslint:recommended',
-    'plugin:flowtype/recommended',
     // This works with the prettier plugin, this needs to be at the end always.
     // Replace it with the "prettier" config if we remove the plugin.
     'plugin:prettier/recommended',
@@ -19,7 +17,7 @@ module.exports = {
     },
     sourceType: 'module',
   },
-  plugins: ['@babel', 'flowtype', 'import', 'prettier'],
+  plugins: ['@babel', 'import', 'prettier'],
   settings: {
     'import/resolver': {
       node: {
@@ -33,15 +31,6 @@ module.exports = {
     'import/no-unresolved': 'error',
     'import/no-default-export': 'error',
     'import/named': 'error',
-    'flowtype/require-valid-file-annotation': [
-      'error',
-      'always',
-      { annotationStyle: 'line' },
-    ],
-    // no-dupe-keys crashes with recent eslint. See
-    // https://github.com/gajus/eslint-plugin-flowtype/pull/266 and
-    // https://github.com/gajus/eslint-plugin-flowtype/pull/302
-    // 'flowtype/no-dupe-keys': 'error',
 
     // overriding recommended rules
     'no-constant-condition': ['error', { checkLoops: false }],
@@ -72,9 +61,6 @@ module.exports = {
     'no-self-compare': 'error',
     'no-throw-literal': 'error',
     'no-unmodified-loop-condition': 'error',
-    // We use the version from the flowtype plugin so that flow assertions don't
-    // output an error.
-    'flowtype/no-unused-expressions': 'error',
     'no-useless-call': 'error',
     'no-useless-computed-key': 'error',
     'no-useless-concat': 'error',
