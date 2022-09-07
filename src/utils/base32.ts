@@ -42,71 +42,72 @@ const alias = { o: 0, i: 1, l: 1, u: 'v' };
  *     var lastoutput = encode.update(lastinput, true)
  */
 
-export function Encoder() {
-  let skip = 0; // how many bits we will skip from the first byte
-  let bits = 0; // 5 high bits, carry from one byte to the next
+export class Encoder {
+  skip = 0; // how many bits we will skip from the first byte
+  bits = 0; // 5 high bits, carry from one byte to the next
 
-  this.output = '';
+  output = '';
 
   // Read one byte of input
   // Should not really be used except by "update"
-  this.readByte = function (byte: number | string) {
+  readByte(byte: number | string) {
     // coerce the byte to an int
     if (typeof byte === 'string') byte = byte.charCodeAt(0);
 
-    if (skip < 0) {
+    if (this.skip < 0) {
       // we have a carry from the previous byte
-      bits |= byte >> -skip;
+      this.bits |= byte >> -this.skip;
     } else {
       // no carry
-      bits = (byte << skip) & 248;
+      this.bits = (byte << this.skip) & 248;
     }
 
-    if (skip > 3) {
+    if (this.skip > 3) {
       // not enough data to produce a character, get us another one
-      skip -= 8;
+      this.skip -= 8;
       return 1;
     }
 
-    if (skip < 4) {
+    if (this.skip < 4) {
       // produce a character
-      this.output += alphabet[bits >> 3];
-      skip += 5;
+      this.output += alphabet[this.bits >> 3];
+      this.skip += 5;
     }
 
     return 0;
-  };
+  }
 
   // Flush any remaining bits left in the stream
-  this.finish = function (check) {
+  finish(check: boolean = false) {
     const output =
-      this.output + (skip < 0 ? alphabet[bits >> 3] : '') + (check ? '$' : '');
+      this.output +
+      (this.skip < 0 ? alphabet[this.bits >> 3] : '') +
+      (check ? '$' : '');
     this.output = '';
     return output;
-  };
+  }
+
+  /**
+   * Process additional input
+   *
+   * input: string of bytes to convert
+   * flush: boolean, should we flush any trailing bits left
+   *        in the stream
+   * returns: a string of characters representing 'input' in base32
+   */
+  update(input: Buffer, flush: boolean) {
+    for (let i = 0; i < input.length; ) {
+      i += this.readByte(input[i]);
+    }
+    // consume all output
+    let output = this.output;
+    this.output = '';
+    if (flush) {
+      output += this.finish();
+    }
+    return output;
+  }
 }
-
-/**
- * Process additional input
- *
- * input: string of bytes to convert
- * flush: boolean, should we flush any trailing bits left
- *        in the stream
- * returns: a string of characters representing 'input' in base32
- */
-
-Encoder.prototype.update = function (input, flush) {
-  for (let i = 0; i < input.length; ) {
-    i += this.readByte(input[i]);
-  }
-  // consume all output
-  let output = this.output;
-  this.output = '';
-  if (flush) {
-    output += this.finish();
-  }
-  return output;
-};
 
 /** Convenience functions
  *
@@ -116,8 +117,7 @@ Encoder.prototype.update = function (input, flush) {
 
 // String of data goes in, Base32-encoded string comes out.
 export function encode(input: Buffer): string {
-  // TODO: We should convert the Encoder to a proper class.
-  const encoder = new (Encoder as any)();
+  const encoder = new Encoder();
   const output = encoder.update(input, true);
   return output;
 }
