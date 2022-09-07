@@ -1,9 +1,11 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-// @flow
+// @ts-check
 
-/*:: type AgentsVersion = { [agentName: string]: string }; */
+/**
+ * @typedef {Object.<string, string>} AgentsVersion
+ */
 
 /*
  * This file is run when a user runs `yarn install`, before doing anything else.
@@ -22,13 +24,18 @@ function checkVersions() {
     return;
   }
 
-  const agents /*: AgentsVersion */ = userAgent
-    .split(' ')
-    .reduce((agents, agent) => {
-      const [key, value] = agent.split('/');
-      agents[key] = value;
-      return agents;
-    }, {});
+  /**
+   * @type {AgentsVersion}
+   */
+  const init = {};
+  /**
+   * @type {AgentsVersion}
+   */
+  const agents = userAgent.split(' ').reduce((agents, agent) => {
+    const [key, value] = agent.split('/');
+    agents[key] = value;
+    return agents;
+  }, init);
 
   const checks = [checkNode(agents), checkYarn(agents)];
 
@@ -42,13 +49,23 @@ function checkVersions() {
   process.exit(-1);
 }
 
-// This function compares two string versions. This compares only major.minor
-// and disrespect any textual prevision (like pre or beta).
+/**
+ * This function compares two string versions. This compares only major.minor
+ * and disrespect any textual prevision (like pre or beta).
+ *
+ * @param {string} a
+ * @param {string} b
+ * @returns {number}
+ */
 function versionCompare(a, b) {
   return a.localeCompare(b, undefined, { numeric: true });
 }
 
-function checkNode(agents /*: AgentsVersion */) {
+/**
+ * @param {AgentsVersion} agents
+ * @returns {boolean}
+ */
+function checkNode(agents) {
   // Node versions usually have a starting `v`.
   const nodeVersion = agents.node.replace(/^v/, '');
   const expectedNodeVersion = parseExpectedNodeVersion();
@@ -76,7 +93,11 @@ function checkNode(agents /*: AgentsVersion */) {
   return true;
 }
 
-function checkYarn(agents /*: AgentsVersion */) {
+/**
+ * @param {AgentsVersion} agents
+ * @returns {boolean}
+ */
+function checkYarn(agents) {
   if (!('yarn' in agents)) {
     console.error(
       'This project uses Yarn instead of npm, please run `yarn install` instead of `npm install`.\n'

@@ -1,5 +1,5 @@
 #! /usr/bin/env node
-// @flow
+// @ts-check
 
 const crypto = require('crypto');
 const fs = require('fs');
@@ -24,7 +24,11 @@ function printUsageAndExit() {
   process.exit(-1);
 }
 
-function lengthFromArgs(aLength /*: ?string */) /*: number */ {
+/**
+ * @param {?string} aLength
+ * @returns {number}
+ */
+function lengthFromArgs(aLength) {
   if (!aLength) {
     throw printUsageAndExit(); // Throwing because Flow doesn't know that the function will exit.
   }
@@ -48,6 +52,10 @@ function lengthFromArgs(aLength /*: ?string */) /*: number */ {
   return faceValue;
 }
 
+/**
+ * @param {?string} fileName
+ * @returns {string}
+ */
 function fileNameFromArgs(fileName) {
   if (!fileName) {
     throw printUsageAndExit();
@@ -62,10 +70,14 @@ function fileNameFromArgs(fileName) {
 
 function getRandomStringReadable() {
   return new Readable({
-    // Flow libdefs make the number optional when it's really not.
-    // See https://github.com/facebook/flow/pull/8385
-    read(size /*: ?number */) {
-      const pushData = (size /*: number */) => {
+    /**
+     * @param {number} size
+     */
+    read(size) {
+      /**
+       * @param {number} size
+       */
+      const pushData = (size) => {
         crypto.randomBytes(Math.ceil(size * 0.5), (err, buffer) => {
           if (err) {
             this.destroy(err);
@@ -95,6 +107,9 @@ function getRandomStringReadable() {
   });
 }
 
+/**
+ * @param {any[]} streams
+ */
 function handleEventsOnStreams(...streams) {
   const allFinished = streams.map((stream) => finished(stream));
   return Promise.all(allFinished).then(
@@ -133,7 +148,10 @@ async function run() {
   // Pipe some randomness until we have enough data
   randomStringReadable.pipe(gzipTransform);
 
-  await new Promise((resolve) => {
+  /**
+   * @type {Promise<void>}
+   */
+  const gzipPromise = new Promise((resolve) => {
     gzipTransform.on('data', () => {
       // Checking what we wrote already
       if (
@@ -145,6 +163,7 @@ async function run() {
       }
     });
   });
+  await gzipPromise;
 
   // End it now.
   randomStringReadable.unpipe(gzipTransform);
