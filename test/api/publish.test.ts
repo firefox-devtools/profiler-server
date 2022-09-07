@@ -110,7 +110,9 @@ describe('publishing endpoints', () => {
   });
 
   it('returns an error when the length header is too big', async () => {
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
     const req = getPreconfiguredRequest();
     await req
       .set('Content-Length', String(1024 * 1024 * 1024))
@@ -121,7 +123,9 @@ describe('publishing endpoints', () => {
   });
 
   it('returns an error when the pushed buffer is too big', async () => {
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
     const req = getPreconfiguredRequest();
 
     // When using the low-level API "write", Node generates a "chunked encoding"
@@ -146,7 +150,9 @@ describe('publishing endpoints', () => {
   });
 
   it('returns an error when the pushed buffer does not look like JSON', async () => {
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
     const req = getPreconfiguredRequest();
 
     const payload = gzipSync('aaaa');
@@ -158,7 +164,9 @@ describe('publishing endpoints', () => {
   });
 
   it('returns an error when the pushed buffer is not gzip-compressed', async () => {
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
     const req = getPreconfiguredRequest();
     await req.send('aaaa').expect(400, /The payload isn't gzip-compressed/);
 
@@ -197,7 +205,9 @@ describe('API versioning', () => {
   function getPreconfiguredRequest() {
     // In these tests we'll generate errors, which triggers a lot of output from
     // the log. Let's silence that.
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
 
     const agent = supertest(createApp().callback());
     return agent.post('/compressed-store').type('text');

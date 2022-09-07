@@ -54,7 +54,9 @@ describe('config.js', () => {
 
   it('rejects google authentication paths that are not readable', () => {
     const filePath = '/path/to/file';
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
     jest.spyOn(fs, 'accessSync').mockImplementation(() => {
       throw new Error();
     });

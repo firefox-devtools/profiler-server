@@ -75,7 +75,9 @@ describe('DELETE /profile', () => {
   });
 
   it('gives a 401 response when not providing a JWT', async function () {
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
     const { agent, acceptHeader } = setup();
 
     await agent
@@ -96,7 +98,9 @@ describe('DELETE /profile', () => {
   });
 
   it('gives a 401 response when providing an invalid JWT', async function () {
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
     const { agent, acceptHeader } = setup();
 
     await agent
@@ -118,7 +122,9 @@ describe('DELETE /profile', () => {
   });
 
   it('gives a 401 response when using the wrong JWT algorithm', async function () {
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
     const { agent, acceptHeader, postProfileToCompressedStore } = setup();
 
     const { profileToken } = await postProfileToCompressedStore();
@@ -146,7 +152,9 @@ describe('DELETE /profile', () => {
   });
 
   it('gives a 401 response when providing a JWT with an unmatched profile token', async function () {
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
     const { agent, acceptHeader, postProfileToCompressedStore } = setup();
 
     const { profileToken } = await postProfileToCompressedStore();
@@ -178,7 +186,9 @@ describe('DELETE /profile', () => {
   });
 
   it('gives a 404 response when requesting to delete a profile that does not exist', async function () {
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
     const { agent, acceptHeader } = setup();
 
     // Generate a random token.

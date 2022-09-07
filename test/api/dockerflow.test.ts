@@ -74,7 +74,9 @@ describe('dockerflow endpoints', () => {
       jest
         .spyOn(Bucket.prototype, 'exists')
         .mockReturnValue(Promise.resolve([false]));
-      jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+      jest
+        .spyOn(process.stdout, 'write')
+        .mockImplementation((_: string | Uint8Array) => true);
       const { agent } = setupForHeartbeat();
       await agent.get('/__heartbeat__').expect(500);
       expect(process.stdout.write).toHaveBeenCalledWith(
@@ -86,7 +88,9 @@ describe('dockerflow endpoints', () => {
       jest.spyOn(Bucket.prototype, 'exists').mockImplementation(() => {
         throw new Error('3rd party server error');
       });
-      jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+      jest
+        .spyOn(process.stdout, 'write')
+        .mockImplementation((_: string | Uint8Array) => true);
       const { agent } = setupForHeartbeat();
       await agent.get('/__heartbeat__').expect(500);
       expect(process.stdout.write).toHaveBeenCalledWith(
@@ -96,7 +100,9 @@ describe('dockerflow endpoints', () => {
 
     it('answers an error to the heartbeat if bitly is down', async () => {
       // Silence out server errors
-      jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+      jest
+        .spyOn(process.stdout, 'write')
+        .mockImplementation((_: string | Uint8Array) => true);
       const { agent, nockScope } = setupForHeartbeat({ failBitly: true });
       await agent.get('/__heartbeat__').expect(500, /temporary unavailable/);
       nockScope.done();
@@ -121,7 +127,9 @@ describe('dockerflow endpoints', () => {
       jest.spyOn(fs.promises, 'stat').mockRejectedValue(error);
       jest.spyOn(fs.promises, 'readFile').mockRejectedValue(error);
       // mozlog writes to stdout, let's catch it
-      jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+      jest
+        .spyOn(process.stdout, 'write')
+        .mockImplementation((_: string | Uint8Array) => true);
 
       const agent = setup();
       await agent.get('/__version__').expect(500);

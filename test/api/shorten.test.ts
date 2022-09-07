@@ -48,7 +48,9 @@ describe('shorten url', () => {
 
   it('rejects with an error if the request is badly formed', async () => {
     // Silence the error reporter.
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
 
     const { request, nockScope } = setup();
 
@@ -66,7 +68,9 @@ describe('shorten url', () => {
 
   it('rejects with an error if the request does not have the expected properties', async () => {
     // Silence the error reporter.
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
 
     const { request, nockScope } = setup();
 
@@ -84,7 +88,9 @@ describe('shorten url', () => {
 
   it(`rejects with an error when the request isn't for the profiler domain`, async () => {
     // Silence the error reporter.
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
 
     const { request, nockScope } = setup();
 
@@ -101,7 +107,9 @@ describe('shorten url', () => {
   });
 
   it('rejects with an error when bitly answers an error', async () => {
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
 
     const errorMessage = 'This request is invalid.';
     nock(BITLY_HOSTNAME, {
@@ -173,7 +181,9 @@ describe('expand url', () => {
 
   it('rejects with an error if the request is badly formed', async () => {
     // Silence the error reporter.
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
 
     const { request, nockScope } = setup();
 
@@ -191,7 +201,9 @@ describe('expand url', () => {
 
   it('rejects with an error if the request does not have the expected properties', async () => {
     // Silence the error reporter.
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
 
     const { request, nockScope } = setup();
 
@@ -209,7 +221,9 @@ describe('expand url', () => {
 
   it(`rejects with an error when the expanded url isn't in the profiler domain`, async () => {
     // Silence the error reporter.
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
 
     const shortUrl = 'https://share.firefox.dev/BITLYHASH';
     const longUrl = 'https://www.example.org';
@@ -230,7 +244,9 @@ describe('expand url', () => {
   });
 
   it('rejects with an error when bitly answers an error', async () => {
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
 
     const errorMessage = 'This request is invalid.';
     nock(BITLY_HOSTNAME, {

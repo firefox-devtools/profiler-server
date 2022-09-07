@@ -10,7 +10,9 @@ import { checkSecurityHeaders } from './utils/check-security-headers';
 
 describe('cspreport endpoint', () => {
   function getPreconfiguredRequest() {
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
 
     const agent = supertest(createApp().callback()).post('/__cspreport__');
     return agent;
