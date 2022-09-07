@@ -34,7 +34,8 @@
     "test-python": "./tools/test_decode_jwt_payload.py",
     "test-lockfile": "lockfile-lint --path yarn.lock --allowed-hosts yarn --validate-https",
     "test-all": "run-p flow lint test test-python test-lockfile license-check",
-    "ts": "tsc"
+    "ts": "tsc",
+    "ts-generate-types": "dts-gen -m"
   },
   "devDependencies": {
     "@babel/cli": "^7.18.10",
@@ -56,6 +57,7 @@
     "@types/node-fetch": "^2.6.2",
     "babel-jest": "^29.0.1",
     "devtools-license-check": "^0.9.0",
+    "dts-gen": "^0.6.1",
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-flowtype": "^8.0.3",
