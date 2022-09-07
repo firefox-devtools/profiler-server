@@ -16,7 +16,7 @@ type LowerCasedLogLevel =
   | 'error' //     This is for non-fatal errors.
   | 'critical'; // This is for fatal errors.
 
-function toValidLogLevel(logLevel: ?string) {
+function toValidLogLevel(logLevel?: string) {
   if (!logLevel) {
     return null;
   }
@@ -56,5 +56,4 @@ export const getLogger = mozlog({
   debug: !isProduction, // This asserts a correct usage of the library
 });
 
-type ExtractReturnType = <T>((...rest: any) => T) => T;
-export type Logger = $Call<ExtractReturnType, typeof getLogger>;
+export type Logger = ReturnType<typeof getLogger>;

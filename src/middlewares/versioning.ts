@@ -7,7 +7,7 @@
 // its value is the expected value.
 // In the future we'll want to implement an upgrade mechanism.
 
-import type { Context } from 'koa';
+import { Context } from 'koa';
 
 import contentType from 'content-type';
 
@@ -33,7 +33,7 @@ export function versioning(expectedVersion: number) {
 
     const acceptValues = acceptValue.split(',');
 
-    const hasAcceptableValue = acceptValues.some((acceptValue) => {
+    const hasAcceptableValue = acceptValues.some((acceptValue: string) => {
       const parsedAcceptValue = contentType.parse(acceptValue);
       const receivedVersion = +parsedAcceptValue.parameters.version;
       const isAcceptableValue =

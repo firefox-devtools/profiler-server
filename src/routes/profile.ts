@@ -16,8 +16,8 @@ import {
 } from '../utils/errors';
 import { config } from '../config';
 import { create as gcsStorageCreate } from '../logic/gcs';
-import type { ErrorResponse } from '@google-cloud/storage';
-import type { Middleware } from '@koa/router';
+import { ErrorResponse } from '@google-cloud/storage';
+import { Middleware } from '@koa/router';
 
 export function profileRoutes() {
   const router = new Router();
@@ -38,7 +38,7 @@ export function profileRoutes() {
       // needs to check that the value is valid.
       passthrough: true,
     }),
-    (async (ctx) => {
+    async (ctx) => {
       const log = getLogger('routes.profile.delete');
 
       // Verify there is a valid profileToken in the URL path.
@@ -50,7 +50,7 @@ export function profileRoutes() {
 
       // Verify there is a valid JWT token.
       let profileToken: string;
-      const jwtData: mixed = ctx.state.jwtData;
+      const jwtData: unknown = ctx.state.jwtData;
       if (
         !jwtData ||
         typeof jwtData !== 'object' ||
@@ -92,7 +92,7 @@ export function profileRoutes() {
         await storage.deleteFile(profileToken);
       } catch (error) {
         if ('code' in error && 'message' in error) {
-          const { code } = (error: ErrorResponse);
+          const { code } = (error as ErrorResponse);
           if (code === 404) {
             throw new NotFoundError(
               'That profile was most likely already deleted.'
@@ -104,7 +104,7 @@ export function profileRoutes() {
       }
 
       ctx.body = 'Profile successfully deleted.';
-    }: Middleware)
+    }
   );
 
   return router;

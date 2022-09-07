@@ -17,9 +17,9 @@
 import jwt from 'jsonwebtoken';
 import { config } from '../config';
 
-type Payload = {|
-  +profileToken: string,
-|};
+type Payload = Readonly<{
+  profileToken: string,
+}>;
 
 class JwtConfigurationError extends Error {
   name = 'JwtConfigurationError';
@@ -41,7 +41,7 @@ export function generateToken(payload: Payload): string {
 /**
  * The JWT can return any valid JSON, so the result will be of type "mixed".
  */
-export function decodeToken(token: string): mixed {
+export function decodeToken(token: string): unknown {
   if (config.jwtSecret) {
     // Verify and decode the token, only allowing the HS256 algorithm.
     return jwt.verify(token, config.jwtSecret, { algorithms: ['HS256'] });

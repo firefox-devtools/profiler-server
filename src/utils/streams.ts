@@ -7,9 +7,9 @@
 
 import { Transform, Writable, Readable } from 'stream';
 import { StringDecoder } from 'string_decoder';
-import { createGunzip, type Gunzip } from 'zlib';
+import { createGunzip, Gunzip } from 'zlib';
 
-import { getLogger, type Logger } from '../log';
+import { getLogger, Logger } from '../log';
 import { assertExhaustiveCheck } from '../utils/flow';
 import { BadRequestError, PayloadTooLargeError } from './errors';
 
@@ -30,7 +30,7 @@ export class LengthCheckerPassThrough extends Transform {
   _transform(
     chunk: string | Buffer,
     encoding: string,
-    callback: (error?: Error) => mixed
+    callback: (error?: Error) => unknown
   ) {
     this.length += chunk.length;
     this.log.verbose(
@@ -72,7 +72,7 @@ export class Concatenator extends Writable {
   _write(
     chunk: string | Buffer,
     encoding: string,
-    callback: (error?: Error) => mixed
+    callback: (error?: Error) => unknown
   ) {
     if (!(chunk instanceof Buffer)) {
       callback(new Error(`This stream doesn't support strings.`));
@@ -83,7 +83,7 @@ export class Concatenator extends Writable {
     callback();
   }
 
-  _destroy(err: ?Error, callback: (error?: Error) => mixed) {
+  _destroy(err: Error | undefined, callback: (error?: Error) => unknown) {
     this.log.trace('_destroy()');
     this.chunks.length = 0;
     this.contents = null;
@@ -95,7 +95,7 @@ export class Concatenator extends Writable {
     callback(err);
   }
 
-  _final(callback: (error?: Error) => mixed) {
+  _final(callback: (error?: Error) => unknown) {
     this.log.trace('_final()');
     this.contents = Buffer.concat(this.chunks);
     this.chunks.length = 0;
@@ -207,7 +207,7 @@ export class CheapJsonChecker extends Writable {
 // errors to make them more compatible with our code and koa's error handling.
 export class GunzipWrapper extends Transform {
   gunzipStream: Gunzip = createGunzip();
-  canPushData: true;
+  canPushData = true;
 
   constructor() {
     super();
@@ -225,7 +225,7 @@ export class GunzipWrapper extends Transform {
   _transform(
     chunk: string | Buffer,
     encoding: string,
-    callback: (error?: Error) => mixed
+    callback: (error?: Error) => unknown
   ) {
     const shouldWriteMore = this.gunzipStream.write(chunk, encoding);
     if (shouldWriteMore) {
@@ -235,14 +235,14 @@ export class GunzipWrapper extends Transform {
     }
   }
 
-  _flush(callback: (error?: Error) => mixed) {
+  _flush(callback: (error?: Error) => unknown) {
     this.gunzipStream.end();
     // It's important to wait for the end event in case ending the gzip stream
     // brings more errors.
     this.gunzipStream.once('end', callback);
   }
 
-  _destroy(err: ?Error, callback: (error?: Error) => mixed) {
+  _destroy(err: Error | undefined, callback: (error?: Error) => unknown) {
     // This line is needed because of the slightly inconsistent
     // signature of callback vs err, and that we can't change.
     err = err || undefined;
@@ -254,7 +254,7 @@ export class GunzipWrapper extends Transform {
 // This tool simply forward an error happening on a stream to other streams, by
 // destroying them.
 export function forwardErrors(
-  ...streams: $ReadOnlyArray<Readable | Writable>
+  ...streams: ReadonlyArray<Readable | Writable>
 ): void {
   const log = getLogger('utils.streams.forwardErrors');
   streams.forEach((stream, i) => {

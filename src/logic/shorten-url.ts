@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 // @flow
-import fetch, { type Response } from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
 
 import { config } from '../config';
 import { getLogger } from '../log';
@@ -105,7 +105,7 @@ export async function expandUrl(urlToExpand: string): Promise<string> {
   return json.long_url;
 }
 
-type UserInfo = {|
+type UserInfo = {
   default_group_guid: string,
   name: string,
   created: string,
@@ -114,12 +114,12 @@ type UserInfo = {|
   is_sso_user: boolean,
   is_2fa_enabled: boolean,
   login: string,
-  emails: Array<{|
+  emails: Array<{
     is_primary: boolean,
     is_verified: boolean,
     email: string,
-  |}>,
-|};
+  }>,
+};
 
 export async function retrieveCurrentUser(): Promise<UserInfo> {
   const log = getLogger('shorten_url.retrieve_current_user');

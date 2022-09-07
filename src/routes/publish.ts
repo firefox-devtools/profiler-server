@@ -100,9 +100,7 @@ export function publishRoutes() {
     lengthChecker.pipe(gunzipStream);
     gunzipStream.pipe(jsonChecker);
 
-    // Stop the flow by unpiping when we're done checking the JSON.
-    // (Too bad that Flow doesn't know events.once)
-    const jsonCheckerPromise = (events: any)
+    const jsonCheckerPromise = events
       .once(jsonChecker, 'profiler:checkEnded')
       .then(() => {
         log.verbose(

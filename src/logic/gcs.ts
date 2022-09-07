@@ -8,7 +8,7 @@
 // the real GCS backend while the other class provides a fake service, suitable
 // when developing without network or without a GCS account.
 
-import { Storage, type Bucket } from '@google-cloud/storage';
+import { Storage, Bucket } from '@google-cloud/storage';
 import { Writable } from 'stream';
 
 import { getLogger } from '../log';
@@ -20,7 +20,7 @@ import { getLogger } from '../log';
 interface GcsStorage {
   ping(): Promise<void>;
   getWriteStreamForFile(filePath: string): Writable;
-  deleteFile(filePath: string): Promise<mixed>;
+  deleteFile(filePath: string): Promise<unknown>;
 }
 
 /**
@@ -59,7 +59,7 @@ class RealGcsStorage implements GcsStorage {
     return googleStorageStream;
   }
 
-  deleteFile(filePath: string): Promise<mixed> {
+  deleteFile(filePath: string): Promise<unknown> {
     const file = this.bucket.file(filePath);
     return file.delete();
   }
@@ -83,16 +83,16 @@ class MockGcsStorage implements GcsStorage {
     return sinkWriteStream;
   }
 
-  deleteFile(_filePath: string): Promise<mixed> {
+  deleteFile(_filePath: string): Promise<unknown> {
     return Promise.resolve();
   }
 }
 
-type GcsConfig = {
+type GcsConfig = Readonly<{
   // If the string 'MOCKED' is passed then the mocked service is returned.
-  +googleAuthenticationFilePath: string,
-  +gcsBucket: string,
-};
+  googleAuthenticationFilePath: string,
+  gcsBucket: string,
+}>;
 
 /**
  * This is the way to access one of the two implementations, depending on the

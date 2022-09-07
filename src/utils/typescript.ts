@@ -17,7 +17,7 @@
  * more readable.
  */
 export function assertExhaustiveCheck(
-  notValid: empty,
+  notValid: never,
   errorMessage: string = `There was an unhandled case for the value: "${notValid}"`
 ): void {
   throw new Error(errorMessage);
@@ -27,7 +27,7 @@ export function assertExhaustiveCheck(
  * This function makes it easier to deal with nullable objects, especially in
  * tests.
  */
-export function ensureExists<T>(item: ?T, message: ?string): T {
+export function ensureExists<T>(item?: T, message?: string): T {
   if (item === null) {
     throw new Error(message || 'Expected an item to exist, and it was null.');
   }

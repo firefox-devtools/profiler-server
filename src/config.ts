@@ -92,14 +92,14 @@ function validateConfigValues(config: Config) {
   }
 }
 
-type Config = {|
-  +env: string,
-  +httpPort: number,
-  +gcsBucket: string,
-  +googleAuthenticationFilePath: string,
-  +jwtSecret: string,
-  +bitlyToken: string,
-|};
+type Config = Readonly<{
+  env: string,
+  httpPort: number,
+  gcsBucket: string,
+  googleAuthenticationFilePath: string,
+  jwtSecret: string,
+  bitlyToken: string,
+}>;
 
 export const config: Config = loadConfig();
 log.info(

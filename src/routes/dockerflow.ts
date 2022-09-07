@@ -35,7 +35,7 @@ export function dockerFlowRoutes() {
       const content = await fs.promises.readFile(versionFilePath);
       ctx.body = content;
       ctx.type = 'json';
-    } catch (e) {
+    } catch (e: any) {
       if (e.code === 'ENOENT') {
         // ENOENT means "No such file or directory"
         throw new Error(

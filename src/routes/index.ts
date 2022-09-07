@@ -14,7 +14,7 @@ import { shortenRoutes } from './shorten';
 
 import { versioning } from '../middlewares';
 
-import type Koa from 'koa';
+import Koa from 'koa';
 
 /**
  * This function adds the main endpoints for this app.

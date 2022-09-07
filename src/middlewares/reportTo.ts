@@ -9,20 +9,22 @@
 // To read more about it, here is the spec:
 // https://w3c.github.io/reporting/
 
-import type { Context } from 'koa';
+import { Context } from 'koa';
 
-type Endpoint = {|
-  +url: string,
-  +priority?: number,
-  +weight?: number,
-|};
+type Endpoint = Readonly<{
+  url: string,
+  priority?: number,
+  weight?: number,
+}>;
 
-type ReportToOptions = Array<{|
-  +group: string,
-  +maxAge: number,
-  +includeSubdomains?: boolean,
-  +endpoints: Array<Endpoint>,
-|}>;
+type ReportToOptions = Array<
+  Readonly<{
+    group: string,
+    maxAge: number,
+    includeSubdomains?: boolean,
+    endpoints: Array<Endpoint>,
+  }>
+>;
 
 const HEADER_NAME = 'Report-To';
 
