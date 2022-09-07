@@ -30,7 +30,7 @@ const alphabet = '0123456789abcdefghjkmnpqrstvwxyz';
 // This alias object is used only in the decoder, that we removed in the
 // profiler-server code. We're keeping it to make it clear which characters we
 // decide are confusing.
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const alias = { o: 0, i: 1, l: 1, u: 'v' };
 
 /**
@@ -78,7 +78,7 @@ export class Encoder {
   }
 
   // Flush any remaining bits left in the stream
-  finish(check: boolean = false) {
+  finish(check = false) {
     const output =
       this.output +
       (this.skip < 0 ? alphabet[this.bits >> 3] : '') +

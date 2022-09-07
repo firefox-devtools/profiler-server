@@ -18,7 +18,7 @@
  */
 export function assertExhaustiveCheck(
   notValid: never,
-  errorMessage: string = `There was an unhandled case for the value: "${notValid}"`
+  errorMessage = `There was an unhandled case for the value: "${notValid}"`
 ): void {
   throw new Error(errorMessage);
 }

@@ -20,7 +20,7 @@ import { BadRequestError, PayloadTooLargeError } from './errors';
 export class LengthCheckerPassThrough extends Transform {
   log: Logger = getLogger('LengthCheckerPassThrough');
   maxLength: number;
-  length: number = 0;
+  length = 0;
 
   constructor(maxLength: number) {
     super();
@@ -119,7 +119,7 @@ export class CheapJsonChecker extends Writable {
   // We allow either only spaces, or only spaces followed by a bracket, or just a bracket.
   onlySpacesRe = /^\s+$/;
   spacesAndBracketRe = /^\s*{/;
-  checkEnded: boolean = false;
+  checkEnded = false;
 
   errorMessage = `The payload isn't a JSON object.`;
 

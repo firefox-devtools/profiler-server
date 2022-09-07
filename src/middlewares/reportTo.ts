@@ -12,17 +12,17 @@
 import { Context } from 'koa';
 
 type Endpoint = Readonly<{
-  url: string,
-  priority?: number,
-  weight?: number,
+  url: string;
+  priority?: number;
+  weight?: number;
 }>;
 
 type ReportToOptions = Array<
   Readonly<{
-    group: string,
-    maxAge: number,
-    includeSubdomains?: boolean,
-    endpoints: Array<Endpoint>,
+    group: string;
+    maxAge: number;
+    includeSubdomains?: boolean;
+    endpoints: Array<Endpoint>;
   }>
 >;
 

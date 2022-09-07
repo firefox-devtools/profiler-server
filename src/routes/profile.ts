@@ -17,7 +17,6 @@ import {
 import { config } from '../config';
 import { create as gcsStorageCreate } from '../logic/gcs';
 import { ErrorResponse } from '@google-cloud/storage';
-import { Middleware } from '@koa/router';
 
 export function profileRoutes() {
   const router = new Router();
@@ -92,7 +91,7 @@ export function profileRoutes() {
         await storage.deleteFile(profileToken);
       } catch (error: any) {
         if ('code' in error && 'message' in error) {
-          const { code } = (error as ErrorResponse);
+          const { code } = error as ErrorResponse;
           if (code === 404) {
             throw new NotFoundError(
               'That profile was most likely already deleted.'

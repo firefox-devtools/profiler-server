@@ -90,8 +90,8 @@ class MockGcsStorage implements GcsStorage {
 
 type GcsConfig = Readonly<{
   // If the string 'MOCKED' is passed then the mocked service is returned.
-  googleAuthenticationFilePath: string,
-  gcsBucket: string,
+  googleAuthenticationFilePath: string;
+  gcsBucket: string;
 }>;
 
 /**

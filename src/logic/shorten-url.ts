@@ -106,19 +106,19 @@ export async function expandUrl(urlToExpand: string): Promise<string> {
 }
 
 type UserInfo = {
-  default_group_guid: string,
-  name: string,
-  created: string,
-  is_active: boolean,
-  modified: string,
-  is_sso_user: boolean,
-  is_2fa_enabled: boolean,
-  login: string,
+  default_group_guid: string;
+  name: string;
+  created: string;
+  is_active: boolean;
+  modified: string;
+  is_sso_user: boolean;
+  is_2fa_enabled: boolean;
+  login: string;
   emails: Array<{
-    is_primary: boolean,
-    is_verified: boolean,
-    email: string,
-  }>,
+    is_primary: boolean;
+    is_verified: boolean;
+    email: string;
+  }>;
 };
 
 export async function retrieveCurrentUser(): Promise<UserInfo> {

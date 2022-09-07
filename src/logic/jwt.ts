@@ -18,7 +18,7 @@ import jwt from 'jsonwebtoken';
 import { config } from '../config';
 
 type Payload = Readonly<{
-  profileToken: string,
+  profileToken: string;
 }>;
 
 class JwtConfigurationError extends Error {
