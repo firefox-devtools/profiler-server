@@ -6,9 +6,10 @@
 module.exports = {
   collectCoverageFrom: [
     'src/**/*.js',
+    'src/**/*.ts',
     '!**/node_modules/**',
     '!src/types/libdef/**',
   ],
-  setupFilesAfterEnv: ['./test/setup.js'],
+  setupFilesAfterEnv: ['./test/setup.ts'],
   verbose: false,
 };

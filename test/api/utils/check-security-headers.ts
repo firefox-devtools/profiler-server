@@ -2,10 +2,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 // @flow
-import { typeof Test } from 'supertest';
+import { Test } from 'supertest';
 
 export function checkSecurityHeaders(request: Test) {
-  if (request.called) {
+  if ((request as any).called) {
     throw new Error(
       `This function needs to be called before the 'await' line so that the request is still pending.`
     );
@@ -27,7 +27,7 @@ export function checkSecurityHeaders(request: Test) {
 }
 
 export function checkCorsHeader(request: Test, expectedValue: string) {
-  if (request.called) {
+  if ((request as any).called) {
     throw new Error(
       `This function needs to be called before the 'await' line so that the request is still pending.`
     );

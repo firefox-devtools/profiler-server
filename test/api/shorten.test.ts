@@ -22,7 +22,10 @@ describe('shorten url', () => {
     return agent.post('/shorten').accept(acceptHeader).type('json');
   }
 
-  function setup({ longUrl, shortUrl } = {}) {
+  function setup({
+    longUrl,
+    shortUrl,
+  }: Partial<{ longUrl: string; shortUrl: string }> = {}) {
     const nockScope = nock(BITLY_HOSTNAME, {
       reqheaders: { authorization: `Bearer ${config.bitlyToken}` },
     })
@@ -140,7 +143,10 @@ describe('expand url', () => {
     return agent.post('/expand').accept(acceptHeader).type('json');
   }
 
-  function setup({ longUrl, shortUrl } = {}) {
+  function setup({
+    longUrl,
+    shortUrl,
+  }: Partial<{ longUrl: string; shortUrl: string }> = {}) {
     if (!shortUrl) {
       shortUrl = '';
     }

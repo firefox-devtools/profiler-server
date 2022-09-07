@@ -44,7 +44,7 @@ describe('DELETE /profile', () => {
       }
       const jwtToken = result.text;
 
-      const profileToken: string = (decodeToken(jwtToken): any).profileToken;
+      const profileToken: string = (decodeToken(jwtToken) as any).profileToken;
 
       return { profileToken, jwtToken };
     }

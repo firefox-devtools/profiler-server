@@ -46,15 +46,14 @@ class MockBucket {
 }
 
 type Metadata = {
-  +metadata: { ... },
-  ...
+  metadata: Object;
 };
 
 class MockFile {
   bucket: MockBucket;
   name: string;
   contents: Buffer;
-  metadata: Metadata;
+  metadata: any;
   _exists: boolean;
 
   // The constructor doesn't follow the same API as the real type.
@@ -82,7 +81,7 @@ class MockFile {
     return readable;
   }
 
-  createWriteStream({ metadata }: Object) {
+  createWriteStream({ metadata }: any) {
     this._exists = true;
     this.setMetadata(metadata);
     const writable = new Concatenator();

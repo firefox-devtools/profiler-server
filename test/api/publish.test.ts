@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 // @flow
-import supertest from 'supertest';
-import jwt from 'jsonwebtoken';
+import supertest, { Response } from 'supertest';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 import { gzipSync } from 'zlib';
 
@@ -20,7 +20,7 @@ import {
 beforeEach(() => MockStorage.cleanUp());
 afterEach(() => MockStorage.cleanUp());
 
-function verifyAndDecodeJwtToken(res): string {
+function verifyAndDecodeJwtToken(res: Response): string {
   if (!res.text) {
     throw new Error(
       `There was no 'text' property in the response, which shouldn't happen.`
@@ -29,7 +29,9 @@ function verifyAndDecodeJwtToken(res): string {
 
   const token = res.text;
   const secret = config.jwtSecret;
-  const decodedPayload = jwt.verify(token, secret, { algorithms: ['HS256'] });
+  const decodedPayload = jwt.verify(token, secret, {
+    algorithms: ['HS256'],
+  }) as JwtPayload;
   const profileToken = decodedPayload.profileToken;
 
   // The token is 39 characters long, that are either letters (lowercase)
