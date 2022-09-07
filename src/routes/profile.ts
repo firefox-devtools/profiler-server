@@ -50,7 +50,7 @@ export function profileRoutes() {
 
       // Verify there is a valid JWT token.
       let profileToken: string;
-      const jwtData: unknown = ctx.state.jwtData;
+      const jwtData: any = ctx.state.jwtData;
       if (
         !jwtData ||
         typeof jwtData !== 'object' ||
@@ -90,7 +90,7 @@ export function profileRoutes() {
       const storage = gcsStorageCreate(config);
       try {
         await storage.deleteFile(profileToken);
-      } catch (error) {
+      } catch (error: any) {
         if ('code' in error && 'message' in error) {
           const { code } = (error as ErrorResponse);
           if (code === 404) {

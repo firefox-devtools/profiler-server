@@ -116,7 +116,8 @@ Encoder.prototype.update = function (input, flush) {
 
 // String of data goes in, Base32-encoded string comes out.
 export function encode(input: Buffer): string {
-  const encoder = new Encoder();
+  // TODO: We should convert the Encoder to a proper class.
+  const encoder = new (Encoder as any)();
   const output = encoder.update(input, true);
   return output;
 }

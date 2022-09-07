@@ -5,6 +5,7 @@
 
 // Import dotenv configuration as early as possible, so that other modules that
 // depend on environment variables can access the values specified in .env.
+import { AddressInfo } from 'net';
 import './dotenv';
 import { createApp } from './app';
 import { config } from './config';
@@ -14,7 +15,7 @@ const log = getLogger('index');
 const app = createApp();
 
 const server = app.listen(config.httpPort);
-log.info('server_started', { port: server.address().port });
+log.info('server_started', { port: (server.address() as AddressInfo).port });
 
 function gracefulExit() {
   log.info('server_exit', 'Received exit request. Closing app...');

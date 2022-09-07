@@ -83,15 +83,12 @@ export class Concatenator extends Writable {
     callback();
   }
 
-  _destroy(err: Error | undefined, callback: (error?: Error) => unknown) {
+  _destroy(err: Error | null, callback: (error?: Error | null) => unknown) {
     this.log.trace('_destroy()');
     this.chunks.length = 0;
     this.contents = null;
 
     // Passthrough the error information, if present.
-    // This line is needed because of the slightly inconsistent
-    // signature of callback vs err, and that we can't change.
-    err = err || undefined;
     callback(err);
   }
 
@@ -224,7 +221,7 @@ export class GunzipWrapper extends Transform {
 
   _transform(
     chunk: string | Buffer,
-    encoding: string,
+    encoding: BufferEncoding,
     callback: (error?: Error) => unknown
   ) {
     const shouldWriteMore = this.gunzipStream.write(chunk, encoding);
@@ -242,11 +239,10 @@ export class GunzipWrapper extends Transform {
     this.gunzipStream.once('end', callback);
   }
 
-  _destroy(err: Error | undefined, callback: (error?: Error) => unknown) {
+  _destroy(err: Error | null, callback: (error: Error | null) => unknown) {
     // This line is needed because of the slightly inconsistent
     // signature of callback vs err, and that we can't change.
-    err = err || undefined;
-    this.gunzipStream.destroy(err);
+    this.gunzipStream.destroy(err || undefined);
     callback(err);
   }
 }

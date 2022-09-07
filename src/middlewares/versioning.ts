@@ -45,7 +45,7 @@ export function versioning(expectedVersion: number) {
     if (!hasAcceptableValue) {
       const expectedValue = contentType.format({
         type: ACCEPT_VALUE_MIME,
-        parameters: { version: expectedVersion },
+        parameters: { version: `${expectedVersion}` },
       });
       ctx.throw(
         406,
