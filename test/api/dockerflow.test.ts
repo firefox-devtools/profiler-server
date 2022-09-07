@@ -25,19 +25,20 @@ describe('dockerflow endpoints', () => {
   }: Partial<{
     failBitly: boolean;
   }> = {}) {
-    let nockScope = nock(BITLY_HOSTNAME, {
+    const nockInterceptor = nock(BITLY_HOSTNAME, {
       reqheaders: { authorization: `Bearer ${config.bitlyToken}` },
     }).get('/v4/user');
 
+    let nockScope;
     if (failBitly) {
-      nockScope = nockScope.reply(503, {
+      nockScope = nockInterceptor.reply(503, {
         message: 'TEMPORARY_UNAVAILABLE',
         errors: [{}],
         resource: 'user',
         description: 'The resource is temporary unavailable.',
       });
     } else {
-      nockScope = nockScope.reply(200, {
+      nockScope = nockInterceptor.reply(200, {
         default_group_guid: 'string',
         name: 'string',
         created: 'string',
