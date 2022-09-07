@@ -72,17 +72,26 @@ describe('dockerflow endpoints', () => {
     });
 
     it('answers an error to the heartbeat if the bucket does not exist', async () => {
-      jest
-        .spyOn(Bucket.prototype, 'exists')
+      // We can't use jest.spyOn here because of a typescript issue with jest.
+      // When we use jest.spyOn, the typescript compiler complains that the
+      // mock return value must be void. This is happening because apparently
+      // typescript doesn't understand the overloaded Bucket.prototype.exists method.
+      const bucketExists = Bucket.prototype.exists;
+      Bucket.prototype.exists = jest
+        .fn()
         .mockReturnValue(Promise.resolve([false]));
       jest
         .spyOn(process.stdout, 'write')
         .mockImplementation((_: string | Uint8Array) => true);
+
       const { agent } = setupForHeartbeat();
       await agent.get('/__heartbeat__').expect(500);
       expect(process.stdout.write).toHaveBeenCalledWith(
         expect.stringContaining('server_error')
       );
+
+      // Reset the mock function to its real implementation.
+      Bucket.prototype.exists = bucketExists;
     });
 
     it('answers an error to the heartbeat if google server server is down', async () => {
