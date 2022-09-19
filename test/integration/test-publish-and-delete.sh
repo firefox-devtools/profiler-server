@@ -22,7 +22,7 @@ fi
 ### And now, let's move on with the actual tasks.
 
 echo ">>> Starting the server."
-node_modules/.bin/babel-node src/index.js &
+node_modules/.bin/babel-node --extensions ".ts" src/index.ts &
 server_pid=$!
 
 cleanup() {
