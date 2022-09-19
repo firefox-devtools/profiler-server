@@ -52,7 +52,7 @@ class MockFile {
   bucket: MockBucket;
   name: string;
   contents: Buffer;
-  metadata: any;
+  metadata: Partial<Metadata>;
   _exists: boolean;
 
   // The constructor doesn't follow the same API as the real type.
@@ -65,7 +65,7 @@ class MockFile {
   }
 
   get(): [MockFile, Metadata] {
-    return [this, this.metadata];
+    return [this, this.metadata as Metadata];
   }
 
   setMetadata(metadata: Metadata) {
