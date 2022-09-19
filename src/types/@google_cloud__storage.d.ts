@@ -1,17 +1,17 @@
 import * as storage from '@google-cloud/storage';
 
 declare module '@google-cloud/storage' {
-  declare type Error = {
+  type Error = {
     message: string;
     domain: string;
     reason: string;
   };
 
-  declare type ErrorResponse = {
+  type ErrorResponse = {
     // Status code like 404.
     code: number;
     errors: Error[];
-    response: mixed;
+    response: any;
     message: string;
   };
 }
