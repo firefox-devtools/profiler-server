@@ -4,8 +4,8 @@
 
 // Import dotenv configuration as early as possible, so that other modules that
 // depend on environment variables can access the values specified in .env.
-import { AddressInfo } from 'net';
 import './dotenv';
+import { AddressInfo } from 'net';
 import { createApp } from './app';
 import { config } from './config';
 import { getLogger } from './log';

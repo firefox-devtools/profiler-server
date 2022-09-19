@@ -203,7 +203,6 @@ export class CheapJsonChecker extends Writable {
 // errors to make them more compatible with our code and koa's error handling.
 export class GunzipWrapper extends Transform {
   gunzipStream: Gunzip = createGunzip();
-  canPushData = true;
 
   constructor() {
     super();
@@ -239,8 +238,6 @@ export class GunzipWrapper extends Transform {
   }
 
   _destroy(err: Error | null, callback: (error: Error | null) => unknown) {
-    // This line is needed because of the slightly inconsistent
-    // signature of callback vs err, and that we can't change.
     this.gunzipStream.destroy(err || undefined);
     callback(err);
   }

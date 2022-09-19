@@ -15,7 +15,7 @@ type LowerCasedLogLevel =
   | 'error' //     This is for non-fatal errors.
   | 'critical'; // This is for fatal errors.
 
-function toValidLogLevel(logLevel?: string) {
+function toValidLogLevel(logLevel: string | void) {
   if (!logLevel) {
     return null;
   }

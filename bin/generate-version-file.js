@@ -36,10 +36,6 @@ function getGitCommitHash() {
   const hash = execFileSync('git', ['rev-parse', 'HEAD'], {
     encoding: 'utf8',
   });
-  // Because execFileSync can return both a string or a buffer depending on the
-  // `encoding` option, Flow isn't happy about calling `trim` on it. But _we_
-  // know that it's a string.
-  // $FlowExpectedError[prop-missing]
   return hash.trim();
 }
 
@@ -51,10 +47,6 @@ function findLocalBranch() {
       encoding: 'utf8',
     }
   );
-  // Because execFileSync can return both a string or a buffer depending on the
-  // `encoding` option, Flow isn't happy about calling `trim` on it. But _we_
-  // know that it's a string.
-  // $FlowExpectedError[prop-missing]
   return branch.trim();
 }
 

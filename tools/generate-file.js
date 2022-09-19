@@ -30,13 +30,13 @@ function printUsageAndExit() {
  */
 function lengthFromArgs(aLength) {
   if (!aLength) {
-    throw printUsageAndExit(); // Throwing because Flow doesn't know that the function will exit.
+    throw printUsageAndExit(); // Throwing because Typescript doesn't know that the function will exit.
   }
 
   const lengthArgsRe = /^(\d+)(K|M)?$/i; // 5, 6, 10000, 10k, 10K, 10m, 10M
   const matchResult = lengthArgsRe.exec(aLength);
   if (!matchResult) {
-    throw printUsageAndExit(); // Throwing because Flow doesn't know that the function will exit.
+    throw printUsageAndExit(); // Throwing because Typescript doesn't know that the function will exit.
   }
 
   const [, strFaceValue, unit] = matchResult;

@@ -36,12 +36,6 @@ describe('DELETE /profile', () => {
         .send(BASIC_PAYLOAD)
         .expect(200);
 
-      if (!result.text) {
-        // Flow couldn't refine this on its own:
-        throw new Error(
-          'Could not find the text response from the post to compressed store.'
-        );
-      }
       const jwtToken = result.text;
 
       const profileToken: string = (decodeToken(jwtToken) as any).profileToken;
