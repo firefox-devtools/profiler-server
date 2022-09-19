@@ -47,7 +47,7 @@ workflows:
       - lint-js
       - build
       - yarn_lock
-      - ts
+      - typescript
       - license-check
       - shellcheck/check:
           name: "Shellcheck"
@@ -102,7 +102,7 @@ jobs:
       - run: yarn test-python
       - run: yarn lint-python
 
-  ts:
+  typescript:
     executor: node
     steps:
       - checkout-and-dependencies
