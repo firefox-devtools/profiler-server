@@ -63,9 +63,7 @@ RUN set -x \
 # Install the dependencies, including dev dependencies.
   && yarn install --frozen-lockfile \
 # Run tests
-# Note we don't use test-all because we don't want to start the flow server. So
-# we run all test commands separately.
-  && yarn flow:ci \
+  && yarn ts \
   && yarn lint \
   && yarn test-lockfile \
   && yarn test \
