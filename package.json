@@ -30,7 +30,7 @@
     "test-lockfile": "lockfile-lint --path yarn.lock --allowed-hosts yarn --validate-https",
     "test-all": "run-p ts lint test test-python test-lockfile license-check",
     "ts": "tsc",
-    "ts-generate-types": "dts-gen -m"
+    "ts-generate-types": "npx --yes dts-gen -m"
   },
   "devDependencies": {
     "@babel/cli": "^7.18.10",
@@ -55,7 +55,6 @@
     "@typescript-eslint/parser": "^5.36.2",
     "babel-jest": "^29.0.1",
     "devtools-license-check": "^0.9.0",
-    "dts-gen": "^0.6.1",
     "eslint": "^8.23.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
