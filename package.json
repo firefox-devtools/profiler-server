@@ -85,7 +85,7 @@
     "@koa/router": "^12.0.0",
     "content-type": "^1.0.4",
     "convict": "^6.2.3",
-    "dotenv": "^16.0.2",
+    "dotenv": "^16.0.3",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.4",
     "koa-helmet": "^6.1.0",
