@@ -133,8 +133,7 @@ jobs:
     steps:
       - checkout-and-dependencies
       # This sets up a remote environment that's necessary to run docker commands.
-      - setup_remote_docker:
-          version: 19.03.12
+      - setup_remote_docker
       - run:
           name: "Build the Docker image"
           command: yarn docker:build --pull --build-arg circle_build_url=$CIRCLE_BUILD_URL
