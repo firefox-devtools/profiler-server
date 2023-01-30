@@ -13,8 +13,7 @@
 # Setup a container and download the project in it
 # We set up a python 3 running in latest Debian stable called bullseye, in the
 # "slim" flavor because we don't need the big version.
-# We use version 3.9 because 3.10 is failing for now, see https://github.com/loads/molotov/issues/137
-FROM python:3.9-slim-bullseye
+FROM python:3-slim-bullseye
 
 # Create the user we'll run the build commands with. Its home is configured to
 # be the directory /app. It helps avoiding warnings when running tests and
@@ -51,5 +50,7 @@ RUN pip install -r requirements.txt --no-warn-script-location
 RUN ls -la
 
 # Lastly configure the command to be run in this docker.
-ENTRYPOINT ["/app/.local/bin/molotov"]
+# "-c" is to force the console output of molotov, as the default output doesn't
+# work in a docker container.
+ENTRYPOINT ["/app/.local/bin/molotov", "-c"]
 CMD ["--sizing", "publish.py"]

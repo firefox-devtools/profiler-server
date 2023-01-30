@@ -1,1 +1,1 @@
-molotov==2.4
+molotov==2.6
