@@ -1,4 +1,4 @@
-// @noflow
+// @ts-check
 
 const [origHead, head, flag] = process.env.HUSKY_GIT_PARAMS.split(' ');
 

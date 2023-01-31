@@ -147,7 +147,8 @@ def jwt_base64_decode(payload):
 
 
 def payload_from_raw_data(raw_data):
-    """Returns a data suitable to publish, that's accepted by the profiler server.
+    """
+    Returns a data suitable to publish, that's accepted by the profiler server.
 
     This concatenates separate pre-created gzip-compressed chunks, because we
     want that we do as less work as possible at runtime. Here at runtime we

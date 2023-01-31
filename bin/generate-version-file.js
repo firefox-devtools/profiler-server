@@ -1,7 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-// @flow
+// @ts-check
 
 /* This script generates the version file, as requested by the dockerflow
  * requirements described in
@@ -32,18 +32,14 @@ function checkEnvironment() {
   console.log('We are in the root directory, good!');
 }
 
-function getGitCommitHash() /*: string */ {
+function getGitCommitHash() {
   const hash = execFileSync('git', ['rev-parse', 'HEAD'], {
     encoding: 'utf8',
   });
-  // Because execFileSync can return both a string or a buffer depending on the
-  // `encoding` option, Flow isn't happy about calling `trim` on it. But _we_
-  // know that it's a string.
-  // $FlowExpectedError[prop-missing]
   return hash.trim();
 }
 
-function findLocalBranch() /*: string */ {
+function findLocalBranch() {
   const branch = execFileSync(
     'git',
     ['symbolic-ref', '--short', '-q', 'HEAD'],
@@ -51,10 +47,6 @@ function findLocalBranch() /*: string */ {
       encoding: 'utf8',
     }
   );
-  // Because execFileSync can return both a string or a buffer depending on the
-  // `encoding` option, Flow isn't happy about calling `trim` on it. But _we_
-  // know that it's a string.
-  // $FlowExpectedError[prop-missing]
   return branch.trim();
 }
 

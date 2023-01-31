@@ -1,6 +1,6 @@
-// @noflow
 // MIT © Sindre Sorhus - sindresorhus.com
 // via https://gist.github.com/sindresorhus/7996717
+// @ts-check
 
 const { execFile } = require('child_process');
 
