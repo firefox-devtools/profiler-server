@@ -102,7 +102,7 @@ docker build -t profiler-server-molotov:dev .
 ```
 
 ### Running the image
-By default the image will run `molotov --sizing publish.py`. There's no default
+By default the image will run `molotov -c --sizing publish.py`. There's no default
 endpoint so you need to provide one:
 ```
 docker run -e API_ENDPOINT=http://172.17.0.1:5252 profiler-server-molotov:dev
@@ -112,6 +112,7 @@ You can specify other parameters, eg:
 ```
 docker run -e API_ENDPOINT=http://172.17.0.1:5252 profiler-server-molotov:dev --sizing shorten.py
 ```
+Note that `-c` will be always added, to force the simple console output of molotov.
 
 And run bash, to debug the image:
 ```
