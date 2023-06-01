@@ -93,7 +93,7 @@
     "koa-jwt": "^4.0.4",
     "koa-logger": "^3.2.1",
     "mozlog": "^3.0.2",
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.11"
   },
   "optionalDependencies": {
     "fast-crc32c": "^2.0.0"
