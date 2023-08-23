@@ -6,9 +6,7 @@
     "strict": true,
     // Allow esnext syntax. Otherwise the default is ES5 only.
     "target": "esnext",
-    "lib": [
-      "esnext",
-    ],
+    "lib": ["esnext"],
     "noEmit": true,
     // Emit additional JavaScript to ease support for importing CommonJS modules.
     // This enables 'allowSyntheticDefaultImports' for type compatibility.
@@ -17,10 +15,6 @@
     "allowJs": true,
     "resolveJsonModule": true
   },
-  "include": [
-    "./**/*.ts",
-  ],
-  "exclude": [
-    "node_modules",
-  ]
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules"]
 }

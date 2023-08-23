@@ -19,6 +19,7 @@ the section below.
 
 Create a file in your project directory, called `.env`. Here is the
 content it should have:
+
 ```
 GCS_AUTHENTICATION_PATH="MOCKED"
 JWT_SECRET="<something you choose>"
@@ -42,7 +43,7 @@ Here we'll create a new project in the Google Cloud Platform ecosystem.
 
 ### Configure Google Storage
 
-In this part we'll create a socalled *bucket* to hold our uploaded data.
+In this part we'll create a socalled _bucket_ to hold our uploaded data.
 
 1. Select the option `Storage > Storage` in the menu at the left. Note: you can
    pin this option so that you can always find it at the top of this menu. [You
@@ -60,20 +61,20 @@ them in the future.
 1. Access the Role configuration through [IAM > Roles](https://console.cloud.google.com/iam-admin/roles).
 2. Click on `Create role` at the top of the page.
 3. You can name this role `profile publisher` and change the description if you
-   wish. You can also change the ID name to `profile.publisher`, and the *Role launch
-   stage* to `General Availability`.
+   wish. You can also change the ID name to `profile.publisher`, and the _Role launch
+   stage_ to `General Availability`.
 4. Then you can add some permissions. To search for the permissions, you can
    enter terms in the _Filter table_ input, **not** the _Filter permissions by role_
    input.
    You can search for `storage.objects`, and select the following permissions:
-   * `storage.objects.create`: allows to create objects
-   * `storage.objects.delete`: allows to overwrite existing objects
-   * `storage.buckets.get`: allows to check if the bucket exists
+   - `storage.objects.create`: allows to create objects
+   - `storage.objects.delete`: allows to overwrite existing objects
+   - `storage.buckets.get`: allows to check if the bucket exists
 5. Finally click on `Create` at the bottom.
 
 ### Create a Service Account
 
-In this part we'll create a service account with the *profile publisher*
+In this part we'll create a service account with the _profile publisher_
 role that can access the API. We prefer to have a different account for each
 developer rather than share the account.
 
@@ -103,11 +104,11 @@ previously created service account.
    if you stay below some threshold. Otherwise keep the other options at their
    default values.
 2. Now from the same browser you can select the newly created bucket by clicking
-   its checkbox. At the right panel you can click *Add member*.
-3. Copy the full service account email in the field, then press Enter. (*Don't
-   use the autocomplete box as sometimes it doesn't work properly.*)
+   its checkbox. At the right panel you can click _Add member_.
+3. Copy the full service account email in the field, then press Enter. (_Don't
+   use the autocomplete box as sometimes it doesn't work properly._)
 4. In the _Role_ part, look for `profile publisher` and add it.
-5. Finally *save* the form.
+5. Finally _save_ the form.
 
 ### You're a Mozilla employee
 
