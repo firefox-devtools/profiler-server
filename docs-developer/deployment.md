@@ -2,10 +2,10 @@
 
 ## Servers
 
-* The `master` branch deploys to https://dev.firefoxprofiler.nonprod.cloudops.mozgcp.net. The storage bucket for this deployment is `moz-fx-dev-firefoxprofiler-bucket`.
-* The `production` branch deploys to 2 servers:
-  * configured with a sandbox storage: https://stage.firefoxprofiler.nonprod.cloudops.mozgcp.net. The storage bucket for this deployment is `moz-fx-stage-firefoxprofiler-bucket`.
-  * configured with the production storage: https://api.profiler.firefox.com.  The storage bucket for this deployment is `profile-store`.
+- The `master` branch deploys to https://dev.firefoxprofiler.nonprod.cloudops.mozgcp.net. The storage bucket for this deployment is `moz-fx-dev-firefoxprofiler-bucket`.
+- The `production` branch deploys to 2 servers:
+  - configured with a sandbox storage: https://stage.firefoxprofiler.nonprod.cloudops.mozgcp.net. The storage bucket for this deployment is `moz-fx-stage-firefoxprofiler-bucket`.
+  - configured with the production storage: https://api.profiler.firefox.com. The storage bucket for this deployment is `profile-store`.
 
 The "stage" server is useful to run load testing runs and compare results with
 the current development server. The helper script
@@ -34,19 +34,21 @@ It would be nice to write down the main changes in the PR description.
 
 After the PR is created all checks should run. When it's ready the PR can be
 merged. Be careful to always use the **create a merge commit** functionality,
-not *squash* or *rebase*, to keep a better history.
+not _squash_ or _rebase_, to keep a better history.
 
 ## Checking the currently deployed version
 
 The server exposes the version information in its `/__version__` endpoint:
-* [for staging](https://dev.firefoxprofiler.nonprod.cloudops.mozgcp.net/__version__)
-* [for production](https://api.profiler.firefox.com/__version__)
+
+- [for staging](https://dev.firefoxprofiler.nonprod.cloudops.mozgcp.net/__version__)
+- [for production](https://api.profiler.firefox.com/__version__)
 
 ## Access to logs
 
 Only the team members can access to the logs.
 
 Here are the instructions to find them:
+
 1. Connect to [Google Cloud Platform](https://console.cloud.google.com/).
 2. Make sure you're using your mozilla account (using the top right button).
 3. You need to select a project from the dropdown at the top.
@@ -57,8 +59,8 @@ Here are the instructions to find them:
 4. Select `Logging` from the general menu, that you open with the top left
    button.
 5. From the left dropdown, choose:
-   * for prod: Kubernetes Container > firefoxprofiler-prod-v1 > prod-firefoxprofiler > firefoxprofiler or nginx
-   * for staging: Kubernetes Container > firefoxprofiler-nonprod-v1 > dev-firefoxprofiler > firefoxprofiler or nginx
+   - for prod: Kubernetes Container > firefoxprofiler-prod-v1 > prod-firefoxprofiler > firefoxprofiler or nginx
+   - for staging: Kubernetes Container > firefoxprofiler-nonprod-v1 > dev-firefoxprofiler > firefoxprofiler or nginx
 
 ![Screenshot of how to find the logs in GCP](./images/finding-logs-in-gcp.png)
 

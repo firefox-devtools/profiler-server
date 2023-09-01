@@ -1,13 +1,13 @@
 {
-  presets: [
-    ["@babel/preset-env", { targets: { node: true }}],
+  "presets": [
+    ["@babel/preset-env", { "targets": { "node": true } }],
     "@babel/preset-typescript"
   ],
-  plugins: [
+  "plugins": [
     // Without `loose`, the transformation uses `Object.defineProperty` which
     // obeys the spec more, but we get a bundle that's 8kB larger. That was the
     // default in babel v6.
-    ["@babel/plugin-transform-class-properties", { loose: true }],
+    ["@babel/plugin-transform-class-properties", { "loose": true }],
 
     // Like `plugin-transform-class-properties`, `loose` option is being used
     // inside of this plugin as well. These plugins must have the same value,
@@ -18,6 +18,6 @@
     // inside of this plugin as well. These plugins must have the same value,
     // therefore it's set to true here.
     ["@babel/plugin-transform-private-property-in-object", { "loose": true }],
-    ["@babel/plugin-transform-object-rest-spread", { useBuiltIns: true }]
+    ["@babel/plugin-transform-object-rest-spread", { "useBuiltIns": true }]
   ]
 }

@@ -4,12 +4,7 @@ module.exports = {
     node: true,
   },
   parser: '@babel/eslint-parser',
-  extends: [
-    'eslint:recommended',
-    // This works with the prettier plugin, this needs to be at the end always.
-    // Replace it with the "prettier" config if we remove the plugin.
-    'plugin:prettier/recommended',
-  ],
+  extends: ['eslint:recommended', 'prettier'],
   parserOptions: {
     ecmaVersion: '2017',
     ecmaFeatures: {
@@ -17,7 +12,7 @@ module.exports = {
     },
     sourceType: 'module',
   },
-  plugins: ['@babel', 'import', 'prettier'],
+  plugins: ['@babel', 'import'],
   settings: {
     'import/resolver': {
       node: {
