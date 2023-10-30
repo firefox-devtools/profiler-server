@@ -5,11 +5,12 @@ We use [mozlog](https://github.com/mozilla/mozlog) for logging in the server.
 ## Be careful with the API
 
 The API is a bit weird:
-* There are always 2 arguments.
-* The first argument must be a code without spaces. This is caught at runtime
+
+- There are always 2 arguments.
+- The first argument must be a code without spaces. This is caught at runtime
   when running in development, but because error cases aren't always tested it's
   easy to miss, so extra care needs to be used.
-* The second argument can be anything, but we usually use a string or a json
+- The second argument can be anything, but we usually use a string or a json
   object.
 
 ## General usage
@@ -30,10 +31,11 @@ the `name` that's used in the logged message.
 
 The names need to reflect where a log happens. In most cases we use a sequence
 containing:
-* the path to the file name, with periods as path separators;
-* the function where the log happens (can be skipped if there's only one
+
+- the path to the file name, with periods as path separators;
+- the function where the log happens (can be skipped if there's only one
   function in the file), or the route path + http verb;
-* a unique name reflecting this exact message.
+- a unique name reflecting this exact message.
 
 For example, for a log happening in the the function `expandUrl` from the file
 `logic/shorten-url.js` related to a problem with the access token, the name
@@ -57,15 +59,16 @@ Using the right log level will make it easier to track problems for the
 server in production.
 
 Here are the log levels we can use:
-* trace: this will gather a stack automatically. Note this is displayed only
+
+- trace: this will gather a stack automatically. Note this is displayed only
   when running the server with `LOG_LEVEL=trace`.
-* verbose: this is displayed only when runnint the server with `LOG_LEVEL=verbose` or `trace`.
-* debug: by default this is displayed in test and development environments.
-* info: this is displayed in production environment too.
-* warn: this is for messages more important than info but that aren't errors.
+- verbose: this is displayed only when runnint the server with `LOG_LEVEL=verbose` or `trace`.
+- debug: by default this is displayed in test and development environments.
+- info: this is displayed in production environment too.
+- warn: this is for messages more important than info but that aren't errors.
   Especially access control errors need to use this level according to #18.
-* error: this is for non-fatal errors.
-* critical: this is for fatal errors.
+- error: this is for non-fatal errors.
+- critical: this is for fatal errors.
 
 Note that all errors happening in a route will bubble up to a `app.server_error`
 log with the level `error`. Logging in in addition to the thrown error could be

@@ -3,11 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 module.exports = {
-  collectCoverageFrom: [
-    'src/**/*.js',
-    'src/**/*.ts',
-    '!**/node_modules/**',
-  ],
+  collectCoverageFrom: ['src/**/*.js', 'src/**/*.ts', '!**/node_modules/**'],
   setupFilesAfterEnv: ['./test/setup.ts'],
   verbose: false,
 };

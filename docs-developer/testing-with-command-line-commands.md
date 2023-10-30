@@ -4,9 +4,11 @@ It's possible to test the server using `curl` commands. This file can be used as
 a cheat sheet to find them easily.
 
 ## Upload a file
+
 The following command uploads a file through the server. Curl will automatically
 send a `Content-Length` header using the file size. Of course, don't forget to
 change the path to the file. Note that the character `@` is important!
+
 ```
 curl -i -X POST --data-binary @/path/to/file -H 'Accept: application/vnd.firefox-profiler+json;version=1.0' localhost:5252/compressed-store
 ```
@@ -34,9 +36,11 @@ the `Content-Length` header.
 
 You can use the utility [tools/generate-file.js](../tools/generate-file.js) to generate
 big files suitable to use with the server. For example:
+
 ```
 node tools/generate-file.js 52m /path/to/file
 ```
+
 will generate a file of 52 MiB that the server will accept. This is a JSON file
 filled in with random values.
 

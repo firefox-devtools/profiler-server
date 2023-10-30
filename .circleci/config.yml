@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node:
     docker:
-      - image: cimg/node:16.11
+      - image: cimg/node:18.14
     environment:
       IMAGE_NAME: mozilla/profiler-server
 
@@ -19,7 +19,7 @@ orbs:
 
 commands:
   checkout-and-dependencies:
-    description: "Checkout and install dependencies, managing a cache"
+    description: 'Checkout and install dependencies, managing a cache'
     steps:
       - checkout
       - restore_cache:
@@ -50,7 +50,7 @@ workflows:
       - typescript
       - license-check
       - shellcheck/check:
-          name: "Shellcheck"
+          name: 'Shellcheck'
       - docker
       - docker-publish:
           requires:
@@ -67,7 +67,7 @@ workflows:
   weekly:
     triggers:
       - schedule:
-          cron: "0 0 * * 4"
+          cron: '0 0 * * 4'
           filters:
             branches:
               only:
@@ -135,7 +135,7 @@ jobs:
       # This sets up a remote environment that's necessary to run docker commands.
       - setup_remote_docker
       - run:
-          name: "Build the Docker image"
+          name: 'Build the Docker image'
           command: yarn docker:build --pull --build-arg circle_build_url=$CIRCLE_BUILD_URL
       - run:
           name: "Start the docker image in a container and check it's running"
