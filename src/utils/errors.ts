@@ -27,9 +27,10 @@ export class PayloadTooLargeError extends Error {
   status = 413;
   expose = true;
 
-  constructor(maxPayloadSize: number) {
-    super(
-      `The length is bigger than the configured maximum ${maxPayloadSize}.`
-    );
+  constructor(maxPayloadSize: number, receivedPayloadSize?: number) {
+    const message = receivedPayloadSize
+      ? `The received length ${receivedPayloadSize} is bigger than the configured maximum ${maxPayloadSize}.`
+      : `The length is bigger than the configured maximum ${maxPayloadSize}.`;
+    super(message);
   }
 }

@@ -127,7 +127,10 @@ describe('publishing endpoints', () => {
     const req = getPreconfiguredRequest();
     await req
       .set('Content-Length', String(1024 * 1024 * 1024))
-      .expect(413, /The length is bigger than the configured maximum/);
+      .expect(
+        413,
+        /The received length \d+ is bigger than the configured maximum/
+      );
     expect(process.stdout.write).toHaveBeenCalledWith(
       expect.stringContaining('server_error')
     );
