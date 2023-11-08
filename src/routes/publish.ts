@@ -24,7 +24,7 @@ import {
 import { encode as toBase32 } from '../utils/base32';
 import { PayloadTooLargeError } from '../utils/errors';
 
-const MAX_BODY_LENGTH = 50 * 1024 * 1024; // 50MB
+const MAX_BODY_LENGTH = 150 * 1024 * 1024; // 150MB
 
 const randomBytes = promisify(crypto.randomBytes);
 
@@ -55,9 +55,9 @@ export function publishRoutes() {
     if (expectedLength !== undefined && expectedLength > MAX_BODY_LENGTH) {
       log.verbose(
         'length-header-check',
-        'The length specified in the header Content-Length is too big.'
+        `The length specified in the header Content-Length (${expectedLength}) is too big.`
       );
-      throw new PayloadTooLargeError(MAX_BODY_LENGTH);
+      throw new PayloadTooLargeError(MAX_BODY_LENGTH, expectedLength);
     }
 
     const profileToken = await generateTokenForProfile();
