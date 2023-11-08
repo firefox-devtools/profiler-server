@@ -109,6 +109,17 @@ describe('publishing endpoints', () => {
     expectBucketHasProfile(profileToken);
   });
 
+  it('also works for length between 50MB and 150MB', async () => {
+    const payload = gzipSync(`{"foo": "${'#'.repeat(55 * 1024 * 1024)}"}`, {
+      level: 0,
+    });
+    const req = getPreconfiguredRequest();
+    await req
+      .set('Content-Length', String(payload.length))
+      .send(payload)
+      .expect(200);
+  });
+
   it('returns an error when the length header is too big', async () => {
     jest
       .spyOn(process.stdout, 'write')
@@ -131,8 +142,8 @@ describe('publishing endpoints', () => {
     // When using the low-level API "write", Node generates a "chunked encoding"
     // request without a Content-Length. This is exactly what we want to check
     // here.
-    // We generate a Buffer of ~51MB, but our limit is 50MB.
-    const payload = gzipSync(`{"foo": "${'#'.repeat(51 * 1024 * 1024)}"}`, {
+    // We generate a Buffer of ~151MB, but our limit is 150MB.
+    const payload = gzipSync(`{"foo": "${'#'.repeat(151 * 1024 * 1024)}"}`, {
       level: 0,
     });
     await req.write(payload);

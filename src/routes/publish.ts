@@ -24,7 +24,7 @@ import {
 import { encode as toBase32 } from '../utils/base32';
 import { PayloadTooLargeError } from '../utils/errors';
 
-const MAX_BODY_LENGTH = 50 * 1024 * 1024; // 50MB
+const MAX_BODY_LENGTH = 150 * 1024 * 1024; // 150MB
 
 const randomBytes = promisify(crypto.randomBytes);
 
