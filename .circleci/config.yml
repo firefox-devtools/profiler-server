@@ -44,7 +44,7 @@ workflows:
     jobs:
       - tests
       - python
-      - lint-js
+      - lint
       - build
       - yarn_lock
       - typescript
@@ -80,11 +80,12 @@ workflows:
             - docker
 
 jobs:
-  lint-js:
+  lint:
     executor: node
     steps:
       - checkout-and-dependencies
       - run: yarn lint-js
+      - run: yarn prettier-run
 
   tests:
     executor: node
