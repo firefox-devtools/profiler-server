@@ -45,8 +45,8 @@ const logLevelFromEnvironment = toValidLogLevel(process.env.LOG_LEVEL);
 export const logLevel: LowerCasedLogLevel = logLevelFromEnvironment
   ? logLevelFromEnvironment
   : isProduction
-  ? 'info'
-  : 'debug';
+    ? 'info'
+    : 'debug';
 
 export const getLogger = mozlog({
   app: 'FirefoxProfiler',
