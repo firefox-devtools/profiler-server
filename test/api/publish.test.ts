@@ -190,18 +190,43 @@ describe('publishing endpoints', () => {
   });
 
   it('implements security headers', async () => {
-    const corsHeaderValue = 'http://example.org';
+    // It returns the cors header for profiler.firefox.com for all origins.
     let req = getPreconfiguredRequest()
-      .set('Origin', corsHeaderValue)
+      .set('Origin', 'https://profiler.firefox.com')
       .send(BASIC_PAYLOAD)
       .expect(200);
     req = checkSecurityHeaders(req);
-    req = checkCorsHeader(req, corsHeaderValue);
+    req = checkCorsHeader(req, 'https://profiler.firefox.com');
+    await req;
+
+    req = getPreconfiguredRequest()
+      // No origin
+      .send(BASIC_PAYLOAD)
+      .expect(200);
+    req = checkCorsHeader(req, 'https://profiler.firefox.com');
+    await req;
+
+    // Except localhost and deploy previews
+    req = getPreconfiguredRequest()
+      .set('Origin', 'http://localhost:4242')
+      .send(BASIC_PAYLOAD)
+      .expect(200);
+    req = checkCorsHeader(req, 'http://localhost:4242');
+    await req;
+
+    req = getPreconfiguredRequest()
+      .set('Origin', 'https://deploy-preview-4682--perf-html.netlify.app')
+      .send(BASIC_PAYLOAD)
+      .expect(200);
+    req = checkCorsHeader(
+      req,
+      'https://deploy-preview-4682--perf-html.netlify.app'
+    );
     await req;
   });
 
   it('implements preflight CORS requests', async () => {
-    const corsHeaderValue = 'http://example.org';
+    const corsHeaderValue = 'https://profiler.firefox.com';
 
     const agent = supertest(createApp().callback());
     let req = agent

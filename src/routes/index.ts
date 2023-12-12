@@ -43,7 +43,23 @@ export function configureRoutes(app: Koa) {
 
   // Note we use the default configuration for cors, that is we allow all
   // origins and all methods.
-  app.use(cors());
+  app.use(
+    cors({
+      origin: (ctx) => {
+        const origin = ctx.get('Origin');
+        if (
+          origin.endsWith('perf-html.netlify.app') ||
+          origin.endsWith('localhost:4242')
+        ) {
+          // Allow deploy previews and local development server.
+          return origin;
+        }
+        // Otherwise allow only the profiler UI
+        // Please file a bug if you'd like to upload from another origin.
+        return 'https://profiler.firefox.com';
+      },
+    })
+  );
   app.use(versioning(1));
 
   configureUserFacingRoutes(app);

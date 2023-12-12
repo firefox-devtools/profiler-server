@@ -205,7 +205,7 @@ describe('DELETE /profile', () => {
     const { agent, acceptHeader, postProfileToCompressedStore } = setup();
     const { profileToken, jwtToken } = await postProfileToCompressedStore();
 
-    const corsHeaderValue = 'http://example.org';
+    const corsHeaderValue = 'https://profiler.firefox.com';
 
     let request = agent
       .delete(`/profile/${profileToken}`)

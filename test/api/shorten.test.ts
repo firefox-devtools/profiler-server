@@ -131,7 +131,7 @@ describe('shorten url', () => {
   it('implements security headers', async () => {
     const longUrl = 'https://profiler.firefox.com/public/FAKEHASH/calltree';
     const shortUrl = 'https://share.firefox.dev/BITLYHASH';
-    const corsHeaderValue = 'http://example.org';
+    const corsHeaderValue = 'https://profiler.firefox.com';
 
     let { request } = setup({ longUrl, shortUrl });
     request
@@ -268,7 +268,7 @@ describe('expand url', () => {
   it('implements security headers', async () => {
     const longUrl = 'https://profiler.firefox.com/public/FAKEHASH/calltree';
     const shortUrl = 'https://share.firefox.dev/BITLYHASH';
-    const corsHeaderValue = 'http://example.org';
+    const corsHeaderValue = 'https://profiler.firefox.com';
 
     let { request } = setup({ longUrl, shortUrl });
     request
