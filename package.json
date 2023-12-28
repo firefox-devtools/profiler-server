@@ -59,7 +59,7 @@
     "devtools-license-check": "^0.9.0",
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-import": "^2.29.1",
     "husky": "^4.3.8",
     "jest": "^29.7.0",
     "lockfile-lint": "^4.12.1",
