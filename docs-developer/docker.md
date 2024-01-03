@@ -35,7 +35,8 @@ Especially the environment variable `JWT_SECRET` needs to be set.
 
 If the variable `GCS_AUTHENTICATION_PATH` is set the pointed file will be
 mounted to the docker instance as well, so that Google Storage authentication
-works.
+works. Make sure to change its group to "10001" so that the docker image can
+access it.
 
 The app should listen on port 8000. The container is named `profiler-server`.
 
