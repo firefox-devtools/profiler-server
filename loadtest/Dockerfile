@@ -11,9 +11,9 @@
 # runtime with the env variable API_ENDPOINT.
 
 # Setup a container and download the project in it
-# We set up a python 3 running in latest Debian stable called bullseye, in the
+# We set up a python 3 running in latest Debian stable called bookworm, in the
 # "slim" flavor because we don't need the big version.
-FROM python:3-slim-bullseye
+FROM python:3-slim-bookworm
 
 # Create the user we'll run the build commands with. Its home is configured to
 # be the directory /app. It helps avoiding warnings when running tests and
@@ -28,8 +28,9 @@ RUN mkdir /app \
 
 # Install various needed packages:
 # - git, as we'll need it to pull molotov
+# - build tools, as this is needed for some Python packages
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends git \
+  && apt-get install -y --no-install-recommends git build-essential \
 # and clean the downloaded lists so that they don't increase the layer size.
   && rm -rf /var/lib/apt/lists/*
 

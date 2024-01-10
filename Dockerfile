@@ -11,9 +11,10 @@
 # instead of the default. See docs-developer/docker.md for more information.
 
 # Setup a container and build the project in it
-# We set up a node 18 running in latest Debian stable called bullseye, in the
+# We set up a node 18 running in latest Debian stable called bookworm, in the
 # "slim" flavor because we don't need the big version.
-FROM node:18-bullseye-slim AS builder
+# NOTE: if you update the image here, don't forget to update it below as well.
+FROM node:18-bookworm-slim AS builder
 
 # Create the user we'll run the build commands with. Its home is configured to
 # be the directory /app. It helps avoiding warnings when running tests and
@@ -86,7 +87,7 @@ RUN du -khs node_modules
 RUN ls -la
 
 # ----- And now, let's build the runtime container -----
-FROM node:18-bullseye-slim
+FROM node:18-bookworm-slim
 ENV NODE_ENV="production"
 ENV PORT=8000
 
