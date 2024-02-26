@@ -13,8 +13,8 @@
     "esModuleInterop": true,
     // TypeScript will check JS files only if they have a @ts-check comment in them.
     "allowJs": true,
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
   },
   "include": ["./**/*.ts"],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules"]
 }
