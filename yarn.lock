@@ -1118,10 +1118,10 @@
   resolved "https://registry.yarnpkg.com/@google-cloud/promisify/-/promisify-4.0.0.tgz#a906e533ebdd0f754dca2509933334ce58b8c8b1"
   integrity sha512-Orxzlfb9c67A15cq2JQEyVc7wEsmFBmHjZWZYQMUyJ1qivXyMwdyNOs9odi79hze+2zqdTtu1E19IM/FtqZ10g==
 
-"@google-cloud/storage@^7.8.0":
-  version "7.8.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-7.8.0.tgz#78b41d575c05b35a6dae2dea0e5c2b09bc5ec532"
-  integrity sha512-4q8rKdLp35z8msAtrhr0pbos7BeD8T0tr6rMbBINewp9cfrwj7ROIElVwBluU8fZ596OvwQcjb6QCyBzTmkMRQ==
+"@google-cloud/storage@^7.9.0":
+  version "7.9.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-7.9.0.tgz#d9da66c1aae8d35b4cde67963c85a1bc671a391b"
+  integrity sha512-PlFl7g3r91NmXtZHXsSEfTZES5ysD3SSBWmX4iBdQ2TFH7tN/Vn/IhnVELCHtgh1vc+uYPZ7XvRYaqtDCdghIA==
   dependencies:
     "@google-cloud/paginator" "^5.0.0"
     "@google-cloud/projectify" "^4.0.0"
@@ -6238,10 +6238,10 @@ typed-array-length@^1.0.4:
     for-each "^0.3.3"
     is-typed-array "^1.1.9"
 
-typescript@^5.4.2:
-  version "5.4.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.4.2.tgz#0ae9cebcfae970718474fe0da2c090cad6577372"
-  integrity sha512-+2/g0Fds1ERlP6JsakQQDXjZdZMM+rqpamFZJEKh4kwTIn3iDkgKtby0CeNd5ATNZ4Ry1ax15TMx0W2V+miizQ==
+typescript@^5.4.3:
+  version "5.4.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.4.3.tgz#5c6fedd4c87bee01cd7a528a30145521f8e0feff"
+  integrity sha512-KrPd3PKaCLr78MalgiwJnA25Nm8HAmdwN3mYUYZgG/wizIo9EainNVQI9/yDavtVFRN2h3k8uf3GLHuhDMgEHg==
 
 unbox-primitive@^1.0.2:
   version "1.0.2"
