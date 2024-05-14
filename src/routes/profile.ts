@@ -92,13 +92,22 @@ export function profileRoutes() {
         if ('code' in error && 'message' in error) {
           const { code } = error as ErrorResponse;
           if (code === 404) {
+            log.info(
+              'gcs_deleteProfileNotFound',
+              'The profile data that we attempted to delete from Google Cloud Storage was not found.'
+            );
+
             throw new NotFoundError(
               'That profile was most likely already deleted.'
             );
           }
-          throw error;
         }
-        console.log(error);
+        log.warn(
+          'gcs_deleteProfileUnknownError',
+          'An unknown error occurred while deleting the profile from Google Cloud Storage: ' +
+            String(error)
+        );
+        throw error;
       }
 
       ctx.body = 'Profile successfully deleted.';
