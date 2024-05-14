@@ -96,6 +96,11 @@ class MockFile {
       delete this.bucket.files[this.name];
       return Promise.resolve();
     }
+
+    if (this.name === 'THROW_ERROR') {
+      throw new Error('Unexpected error!');
+    }
+
     // eslint-disable-next-line prefer-promise-reject-errors
     return Promise.reject({
       code: 404,

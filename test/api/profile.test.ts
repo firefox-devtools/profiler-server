@@ -46,7 +46,7 @@ describe('DELETE /profile', () => {
     return { acceptHeader, agent, postProfileToCompressedStore };
   }
 
-  it('gives a 200 response when successfully uploading a profile', async function () {
+  it('gives a 200 response when successfully deleting a profile', async function () {
     const { agent, acceptHeader, postProfileToCompressedStore } = setup();
 
     const { profileToken, jwtToken } = await postProfileToCompressedStore();
@@ -198,6 +198,38 @@ describe('DELETE /profile', () => {
 
     expect(process.stdout.write).toHaveBeenCalledWith(
       expect.stringMatching(/server_error.*NotFoundError/)
+    );
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringMatching(
+        'FirefoxProfiler.routes.profile.delete.gcs_deleteProfileNotFound'
+      )
+    );
+  });
+
+  it('logs appropriately for any error', async function () {
+    jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((_: string | Uint8Array) => true);
+    const { agent, acceptHeader } = setup();
+
+    // Generate a random token.
+    const profileToken = 'THROW_ERROR';
+    const jwtToken = generateToken({ profileToken });
+
+    await agent
+      .delete(`/profile/${profileToken}`)
+      .accept(acceptHeader)
+      .set('Authorization', `Bearer ${jwtToken}`)
+      .send()
+      .expect(500, 'Internal Server Error');
+
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringMatching(/server_error.*Unexpected error/)
+    );
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringMatching(
+        'FirefoxProfiler.routes.profile.delete.gcs_deleteProfileUnknownError'
+      )
     );
   });
 

@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node:
     docker:
-      - image: cimg/node:18.14
+      - image: cimg/node:18.19
     environment:
       IMAGE_NAME: mozilla/profiler-server
 
@@ -12,7 +12,7 @@ executors:
   # preinstalled, but otherwise the exact version for node isn't important.
   python:
     docker:
-      - image: cimg/python:3.10-node
+      - image: cimg/python:3.11-node
 
 orbs:
   shellcheck: circleci/shellcheck@3.0.0
@@ -166,8 +166,7 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       # This sets up a remote environment that's necessary to run docker commands.
-      - setup_remote_docker:
-          version: 19.03.12
+      - setup_remote_docker
       - run:
           name: Load archived Docker image
           command: docker load -i /tmp/workspace/image.tar
