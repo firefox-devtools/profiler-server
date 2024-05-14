@@ -15,7 +15,7 @@ import {
 } from '../utils/errors';
 import { config } from '../config';
 import { create as gcsStorageCreate } from '../logic/gcs';
-import { ErrorResponse } from '@google-cloud/storage';
+import { ApiError } from '@google-cloud/storage';
 
 export function profileRoutes() {
   const router = new Router();
@@ -90,7 +90,7 @@ export function profileRoutes() {
         await storage.deleteFile(profileToken);
       } catch (error: any) {
         if ('code' in error && 'message' in error) {
-          const { code } = error as ErrorResponse;
+          const { code } = error as ApiError;
           if (code === 404) {
             log.info(
               'gcs_deleteProfileNotFound',
