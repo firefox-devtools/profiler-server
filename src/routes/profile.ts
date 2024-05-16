@@ -15,7 +15,7 @@ import {
 } from '../utils/errors';
 import { config } from '../config';
 import { create as gcsStorageCreate } from '../logic/gcs';
-import { ErrorResponse } from '@google-cloud/storage';
+import { ApiError } from '@google-cloud/storage';
 
 export function profileRoutes() {
   const router = new Router();
@@ -90,15 +90,24 @@ export function profileRoutes() {
         await storage.deleteFile(profileToken);
       } catch (error: any) {
         if ('code' in error && 'message' in error) {
-          const { code } = error as ErrorResponse;
+          const { code } = error as ApiError;
           if (code === 404) {
+            log.info(
+              'gcs_deleteProfileNotFound',
+              'The profile data that we attempted to delete from Google Cloud Storage was not found.'
+            );
+
             throw new NotFoundError(
               'That profile was most likely already deleted.'
             );
           }
-          throw error;
         }
-        console.log(error);
+        log.warn(
+          'gcs_deleteProfileUnknownError',
+          'An unknown error occurred while deleting the profile from Google Cloud Storage: ' +
+            String(error)
+        );
+        throw error;
       }
 
       ctx.body = 'Profile successfully deleted.';
