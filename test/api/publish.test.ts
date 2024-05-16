@@ -68,7 +68,7 @@ describe('publishing endpoints', () => {
     expect(file).toHaveProperty(
       'metadata',
       expect.objectContaining({
-        cacheControl: 'max-age: 365000000, immutable',
+        cacheControl: 'max-age: 365000000, immutable, private',
         contentEncoding: 'gzip',
         contentType: 'text/plain',
       })

@@ -51,7 +51,7 @@ class RealGcsStorage implements GcsStorage {
       gzip: false, // Our content is already gzipped
       metadata: {
         contentType: 'text/plain',
-        cacheControl: 'max-age: 365000000, immutable',
+        cacheControl: 'max-age: 365000000, immutable, private',
         contentEncoding: 'gzip',
       },
     });
