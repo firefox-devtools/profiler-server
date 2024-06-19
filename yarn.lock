@@ -74,10 +74,10 @@
     eslint-visitor-keys "^2.1.0"
     semver "^6.3.1"
 
-"@babel/eslint-plugin@^7.24.6":
-  version "7.24.6"
-  resolved "https://registry.yarnpkg.com/@babel/eslint-plugin/-/eslint-plugin-7.24.6.tgz#6e9e59653b7fec1047cae3ab82223c50aa810df8"
-  integrity sha512-sUDNpeOID2Am4cBXEmyhRaSvwwXIHVaG7trk7HO1Ri5VrEIBPYXg4ulTvZm2Lo0Y7u7Tw8QLe6JygchdOOto6w==
+"@babel/eslint-plugin@^7.24.7":
+  version "7.24.7"
+  resolved "https://registry.yarnpkg.com/@babel/eslint-plugin/-/eslint-plugin-7.24.7.tgz#ebdab31638cdcc720f0c788813066e9b5c0b3e29"
+  integrity sha512-lODNPJnM+OfcxxBvdmI2YmUeC0fBK3k9yET5O+1Eukr8d5VpO19c6ARtNheE2t2i/8XNYTzp3HeGEAAGZH3nnQ==
   dependencies:
     eslint-rule-composer "^0.3.0"
 
@@ -1126,10 +1126,10 @@
   resolved "https://registry.yarnpkg.com/@google-cloud/promisify/-/promisify-4.0.0.tgz#a906e533ebdd0f754dca2509933334ce58b8c8b1"
   integrity sha512-Orxzlfb9c67A15cq2JQEyVc7wEsmFBmHjZWZYQMUyJ1qivXyMwdyNOs9odi79hze+2zqdTtu1E19IM/FtqZ10g==
 
-"@google-cloud/storage@^7.11.1":
-  version "7.11.1"
-  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-7.11.1.tgz#206b9d9205be032c646207514cf96b8baa5a4e0e"
-  integrity sha512-tibLSvgw7nDohMyIelt26kBpJ59YGWA2Rzep++DFNzEzKaSuCSp56Se9iM13ZlM3j5nLzR21IBkpRN58CmvCIw==
+"@google-cloud/storage@^7.11.2":
+  version "7.11.2"
+  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-7.11.2.tgz#a8942d9a4a75634186d262b82c5b41e90649f11c"
+  integrity sha512-jJOrKyOdujfrSF8EJODW9yY6hqO4jSTk6eVITEj2gsD43BSXuDlnMlLOaBUQhXL29VGnSkxDgYl5tlFhA6LKSA==
   dependencies:
     "@google-cloud/paginator" "^5.0.0"
     "@google-cloud/projectify" "^4.0.0"
@@ -1735,10 +1735,10 @@
     "@types/node" "*"
     form-data "^3.0.0"
 
-"@types/node@*", "@types/node@^20.12.12":
-  version "20.12.12"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.12.12.tgz#7cbecdf902085cec634fdb362172dfe12b8f2050"
-  integrity sha512-eWLDGF/FOSPtAvEqeRAQ4C8LSA7M1I7i0ky1I8U7kD1J5ITyW3AsRhQrKVoWf5pFKZ2kILsEGJhsI9r93PYnOw==
+"@types/node@*", "@types/node@^20.14.2":
+  version "20.14.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.14.2.tgz#a5f4d2bcb4b6a87bffcaa717718c5a0f208f4a18"
+  integrity sha512-xyu6WAMVwv6AKFLB+e/7ySZVr/0zLCzOa7rSpq6jNwpqOrUbcACDWC+53d4n2QHOnDou0fbIsg8wZu/sxrnI4Q==
   dependencies:
     undici-types "~5.26.4"
 
