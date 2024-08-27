@@ -26,7 +26,7 @@ export function createApp() {
     // environment variable LOG_LEVEL to "verbose".
     // In production we should be able to have the logs of requests from
     // the server frontend instead.
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     app.use(require('koa-logger')());
   }
 
