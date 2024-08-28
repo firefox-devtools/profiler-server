@@ -79,7 +79,7 @@ function validateConfigValues(config: Config) {
     // to find the authentication information from other means.
     try {
       fs.accessSync(googleAuthenticationFilePath, fs.constants.R_OK);
-    } catch (e) {
+    } catch {
       log.critical(
         'gcs_configuration_error',
         `The authentication file '${googleAuthenticationFilePath}' is missing or not readable.`
