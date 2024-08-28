@@ -50,7 +50,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/koa__cors": "^4.0.3",
     "@types/koa__router": "^12.0.4",
-    "@types/node": "^20.14.12",
+    "@types/node": "^22.5.0",
     "@types/node-fetch": "^2.6.2",
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^8.2.0",
