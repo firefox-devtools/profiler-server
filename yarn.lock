@@ -15,10 +15,10 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@babel/cli@^7.25.7":
-  version "7.25.7"
-  resolved "https://registry.yarnpkg.com/@babel/cli/-/cli-7.25.7.tgz#f76693c7cfb93c99844d3ed87ed4f291383ef1bf"
-  integrity sha512-vQw4QjrqjLSuL0Tt3gfVXbxEHOfsCcHN8tKyTclpSMYLq3Bp0BTzWYZfMKBs3PQ+to8q3BnumBIAsMdOqDJ6nw==
+"@babel/cli@^7.25.9":
+  version "7.25.9"
+  resolved "https://registry.yarnpkg.com/@babel/cli/-/cli-7.25.9.tgz#51036166fd0e9cfb26eee1b9ddc264a0d6d5f843"
+  integrity sha512-I+02IfrTiSanpxJBlZQYb18qCxB6c2Ih371cVpfgIrPQrjAYkf45XxomTJOG8JBWX5GY35/+TmhCMdJ4ZPkL8Q==
   dependencies:
     "@jridgewell/trace-mapping" "^0.3.25"
     commander "^6.2.0"
@@ -74,10 +74,10 @@
     eslint-visitor-keys "^2.1.0"
     semver "^6.3.1"
 
-"@babel/eslint-plugin@^7.25.7":
-  version "7.25.7"
-  resolved "https://registry.yarnpkg.com/@babel/eslint-plugin/-/eslint-plugin-7.25.7.tgz#0ccb07e9a71bfb0fc345100a929f9028d4660627"
-  integrity sha512-cwa16ALyUdac3n3VC3R+isKENyjLsJmFY6+cX0wuLsKlwB50Jv/xwqyH9tV8EEH0IUCAL5Y0Y1gP0HuCEDDDeQ==
+"@babel/eslint-plugin@^7.25.9":
+  version "7.25.9"
+  resolved "https://registry.yarnpkg.com/@babel/eslint-plugin/-/eslint-plugin-7.25.9.tgz#a5b6cc46085e0a7d45c5dae36055ce30c5125dab"
+  integrity sha512-MWg1lz+JiP9l1fXkE0qCUVo+1XwgNRPs6GTc88hmw6qN3AdgmfTSkyHt0e1xOTsKdXW5xlh2Lsk3wrFZbW5rzQ==
   dependencies:
     eslint-rule-composer "^0.3.0"
 
@@ -1633,10 +1633,10 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@^29.5.13":
-  version "29.5.13"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-29.5.13.tgz#8bc571659f401e6a719a7bf0dbcb8b78c71a8adc"
-  integrity sha512-wd+MVEZCHt23V0/L642O5APvspWply/rGY5BcW4SUETo2UzPU3Z26qr8jC2qxpimI2jjx9h7+2cj2FwIr01bXg==
+"@types/jest@^29.5.14":
+  version "29.5.14"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-29.5.14.tgz#2b910912fa1d6856cadcd0c1f95af7df1d6049e5"
+  integrity sha512-ZN+4sdnLUbo8EVvVc2ao0GFW6oVrQRPn4K2lglySj7APvSrgzxHiNNK99us4WDMi57xxA2yggblIAMNhXOotLQ==
   dependencies:
     expect "^29.0.0"
     pretty-format "^29.0.0"
