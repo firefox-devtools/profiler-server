@@ -87,6 +87,7 @@
     "content-type": "^1.0.5",
     "convict": "^6.2.4",
     "dotenv": "^16.4.5",
+    "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "koa": "^2.15.3",
     "koa-helmet": "^8.0.1",
