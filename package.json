@@ -7,6 +7,18 @@
   "author": "Mozilla",
   "license": "MPL-2.0",
   "private": true,
+  "engines": {
+    "node": ">= 22 < 23"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">= 22 < 23"
+    },
+    "packageManager": {
+      "name": "yarn"
+    }
+  },
   "scripts": {
     "license-check": "devtools-license-check",
     "lint": "run-p lint-js lint-python prettier-run",
