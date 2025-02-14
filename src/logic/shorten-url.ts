@@ -29,7 +29,7 @@ class BitlyResponseError extends Error {
       if (body.description) {
         message += `\nBitly error is: ${body.description} (${body.message})`;
       }
-    } catch (e) {
+    } catch {
       // Nothing is needed here.
     }
 

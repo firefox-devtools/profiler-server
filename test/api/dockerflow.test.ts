@@ -150,7 +150,7 @@ describe('dockerflow endpoints', () => {
     });
 
     it('answers to the version endpoint when the file is present', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const fixture = require('./fixtures/version.json');
       const fakeLastModifiedDate = new Date('Thu, 01 May 2020 10:20:15 GMT');
       jest.spyOn(fs.promises, 'readFile').mockResolvedValue(fixture);
@@ -171,7 +171,7 @@ describe('dockerflow endpoints', () => {
   });
 
   it('all endpoints uses security headers', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const fixture = require('./fixtures/version.json');
     jest.spyOn(fs.promises, 'readFile').mockResolvedValue(fixture);
     // @ts-expect-error Other fields are not included for this test.
