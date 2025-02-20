@@ -39,16 +39,16 @@ run_tests() (
 
   echo ">>> Ramp up"
   echo "Do not pay attention to the results for this run."
-  molotov -w 200 -d 300 --ramp-up 60 publish_short_requests.py
+  molotov -w 200 -d 150 --ramp-up 60 publish_short_requests.py
 
-  echo ">>> Run a load test operation: 200 clients during 5 minutes (1/3)"
-  molotov -w 200 -d 300 publish_short_requests.py
+  echo ">>> Run a load test operation: 200 clients during 2.5 minutes (1/3)"
+  molotov -w 200 -d 150 publish_short_requests.py
 
-  echo ">>> Run a load test operation: 200 clients during 5 minutes (2/3)"
-  molotov -w 200 -d 300 publish_short_requests.py
+  echo ">>> Run a load test operation: 200 clients during 2.5 minutes (2/3)"
+  molotov -w 200 -d 150 publish_short_requests.py
 
-  echo ">>> Run a load test operation: 200 clients during 5 minutes (3/3)"
-  molotov -w 200 -d 300 publish_short_requests.py
+  echo ">>> Run a load test operation: 200 clients during 2.5 minutes (3/3)"
+  molotov -w 200 -d 150 publish_short_requests.py
 )
 
 echo ">>>>>>>>>>> Stage Server (production code in a sandbox environment) <<<<<<<<<<<<<"
