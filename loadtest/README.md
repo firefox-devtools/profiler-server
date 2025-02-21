@@ -4,6 +4,9 @@ This documentation explains how to run the load tests for the profiler server.
 We'll see how to install the main dependency [molotov](https://molotov.readthedocs.io/en/latest/)
 and then how to use it to run the tests.
 
+See also the script in `tools/load-testing-before-deployment.sh` that runs this
+automatically.
+
 ## Install dependencies
 
 The library we use depends on Python 3.
