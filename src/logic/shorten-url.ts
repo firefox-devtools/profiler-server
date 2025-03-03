@@ -2,8 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import fetch, { Response } from 'node-fetch';
-
 import { config } from '../config';
 import { getLogger } from '../log';
 
@@ -12,6 +10,13 @@ class BitlyConfigurationError extends Error {
   status = 500;
   expose = true; // The message will be exposed to users
 }
+
+type BitlyJsonError = {
+  message: string;
+  description: string;
+  resource: string;
+  errors: Array<{ field: string; error_code: string; message: string }>;
+};
 
 class BitlyResponseError extends Error {
   name = 'BitlyResponseError';
@@ -25,7 +30,7 @@ class BitlyResponseError extends Error {
     let message = `${baseMessage}: ${response.statusText} (${response.status}).`;
 
     try {
-      const body = await response.json();
+      const body = (await response.json()) as BitlyJsonError;
       if (body.description) {
         message += `\nBitly error is: ${body.description} (${body.message})`;
       }
@@ -66,7 +71,7 @@ export async function shortenUrl(longUrl: string): Promise<string> {
     throw await BitlyResponseError.forResponse(baseMessage, response);
   }
 
-  const json = await response.json();
+  const json = (await response.json()) as { link: string };
   return json.link;
 }
 
@@ -100,7 +105,7 @@ export async function expandUrl(urlToExpand: string): Promise<string> {
     throw await BitlyResponseError.forResponse(baseMessage, response);
   }
 
-  const json = await response.json();
+  const json = (await response.json()) as { long_url: string };
   return json.long_url;
 }
 
@@ -144,6 +149,6 @@ export async function retrieveCurrentUser(): Promise<UserInfo> {
     throw await BitlyResponseError.forResponse(baseMessage, response);
   }
 
-  const result = await response.json();
+  const result = (await response.json()) as UserInfo;
   return result;
 }
