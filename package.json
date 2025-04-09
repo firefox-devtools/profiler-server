@@ -100,7 +100,7 @@
     "dotenv": "^16.4.7",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "koa": "^2.16.0",
+    "koa": "^2.16.1",
     "koa-helmet": "^8.0.1",
     "koa-json-body": "^5.3.0",
     "koa-jwt": "^4.0.4",
