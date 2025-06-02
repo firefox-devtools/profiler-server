@@ -60,6 +60,12 @@ workflows:
               only:
                 - master
                 - production
+  build:
+    jobs:
+      - deploy_gar:
+          name: Deploy Profiler to GAR
+          context:
+            - gcpv2-workload-identity    
 
   # This is a weekly workflow, just to deploy new versions of the docker images,
   # so that updates to the underlying images are used and deployed.
@@ -187,3 +193,40 @@ jobs:
             echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
             docker push $IMAGE_NAME:$IMAGE_LATEST_TAG
             docker push $IMAGE_NAME:$IMAGE_VERSION_TAG
+  deploy_gar:
+    machine:
+      image: ubuntu-2004:2023.10.1
+      docker_layer_caching: true
+    steps:
+      - checkout         
+      - run:
+          name: Prepare environment variables for OIDC authentication
+          command: |
+            echo 'export GOOGLE_PROJECT_ID="moz-fx-profiler-prod"' >> "$BASH_ENV"
+            echo "export OIDC_WIP_ID=$GCPV2_WORKLOAD_IDENTITY_POOL_ID" >> "$BASH_ENV"
+            echo "export OIDC_WIP_PROVIDER_ID=$GCPV2_CIRCLECI_WORKLOAD_IDENTITY_PROVIDER" >> "$BASH_ENV"
+            echo "export GOOGLE_PROJECT_NUMBER=$GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER" >> "$BASH_ENV"
+            echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_EMAIL" >> "$BASH_ENV"
+      - gcp-cli/setup:
+          use_oidc: true
+      - run:
+          name: Deploy to Google Artifact Registry
+          command: |
+            ./scripts/store_git_info.sh
+            make build_prod
+            gcloud auth configure-docker us-docker.pkg.dev --quiet
+
+            DOCKER_IMAGE="us-docker.pkg.dev/moz-fx-profiler-prod/profiler-prod/firefoxprofiler"          
+            IMAGE_VERSION_TAG="0.0.${CIRCLE_BUILD_NUM}"
+            IMAGE_LATEST_TAG="${CIRCLE_BRANCH}-latest"    
+
+            docker tag profiler-server:dev ${DOCKER_IMAGE}:$IMAGE_LATEST_TAG
+            docker tag profiler-server:deploy ${DOCKER_IMAGE}:$IMAGE_VERSION_TAG
+
+            docker push "${DOCKER_IMAGE}:IMAGE_LATEST_TAG"
+            docker push "${DOCKER_IMAGE}:IMAGE_VERSION_TAG"
+
+
+            GIT_SHA=$(git rev-parse --short HEAD)
+            docker tag  profiler-server:deploy ${DOCKER_IMAGE}:sha-${GIT_SHA}
+            docker push ${DOCKER_IMAGE}:sha-${GIT_SHA}
