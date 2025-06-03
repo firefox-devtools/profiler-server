@@ -69,9 +69,6 @@ workflows:
               only:
                 - master
                 - production          
-          context:
-            - gcpv2-workload-identity    
-
   # This is a weekly workflow, just to deploy new versions of the docker images,
   # so that updates to the underlying images are used and deployed.
   # This is configured to run on Thursdays (4th day in the week, Sunday is 0).
@@ -201,40 +198,57 @@ jobs:
   deploy-gar:
     executor: gcp-gcr/default
     parameters:
+      build_tag:
+        type: string
+        default: build
       image:
         type: string
-        default: us-docker.pkg.dev/moz-fx-profiler-prod/profiler-prod/firefoxprofiler
-      tag:
+        default: firefoxprofiler
+      registry-url:
         type: string
-        default: latest
+        default: us-docker.pkg.dev
     steps:
-      - checkout         
-      - run:
-          name: Prepare environment variables for OIDC authentication
-          command: |
-            echo 'export GOOGLE_PROJECT_ID="moz-fx-profiler-prod"' >> "$BASH_ENV"
-            echo "export OIDC_WIP_ID=$GCPV2_WORKLOAD_IDENTITY_POOL_ID" >> "$BASH_ENV"
-            echo "export OIDC_WIP_PROVIDER_ID=$GCPV2_CIRCLECI_WORKLOAD_IDENTITY_PROVIDER" >> "$BASH_ENV"
-            echo "export GOOGLE_PROJECT_NUMBER=$GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER" >> "$BASH_ENV"
-            echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_EMAIL" >> "$BASH_ENV"
-      - gcp-cli/setup:
+      # gcr-auth parameters:
+      # https://circleci.com/developer/orbs/orb/circleci/gcp-gcr#commands-gcr-auth
+      - gcp-gcr/gcr-auth:
+          gcp_cred_config_file_path: ~/gcp_cred_config.json
+          google-project-id: GCP_GAR_PROJECT_ID
+          google_project_number: GCP_OIDC_PROJECT_NUMBER
+          registry-url: <<parameters.registry-url>>
+          service_account_email: GCP_OIDC_SERVICE_ACCOUNT_EMAIL
           use_oidc: true
+          workload_identity_pool_id: GCP_OIDC_WIP_ID
+          workload_identity_pool_provider_id: GCP_OIDC_WIP_PROVIDER_ID
+      - attach_workspace:
+          at: /tmp/cache
       - run:
-          name: Deploy to Google Artifact Registry
+          name: Restore Docker image cache
+          command: docker load -i /tmp/cache/<<parameters.image>>.tar
+      # This is the easiest way to tag multiple images using different
+      # conditions for the GAR_TAG variable in the smallest amount of code.
+      #
+      # You can find other jobs and commands you can use with this orb that
+      # include tagging here:
+      # https://circleci.com/developer/orbs/orb/circleci/gcp-gcr
+      - run:
+          name: Tag image
           command: |
-            gcloud auth configure-docker us-docker.pkg.dev --quiet
+            if [ ! -z "${CIRCLE_TAG}" ]; then
+              echo "export GAR_TAG=${CIRCLE_TAG}" >> $BASH_ENV
+            else
+              echo "export GAR_TAG=${CIRCLE_BRANCH}" >> $BASH_ENV
+            fi
+              echo "export GAR_IMAGE=\"<<parameters.registry-url>>/${GCP_GAR_PROJECT_ID}/${GCP_GAR_REPO}/<<parameters.image>>\"" >> $BASH_ENV
+              source $BASH_ENV
+              IMAGE_VERSION_TAG="0.0.${CIRCLE_BUILD_NUM}"
+              IMAGE_LATEST_TAG="${CIRCLE_BRANCH}-latest"   
 
-            DOCKER_IMAGE="us-docker.pkg.dev/moz-fx-profiler-prod/profiler-prod/firefoxprofiler"          
-            IMAGE_VERSION_TAG="0.0.${CIRCLE_BUILD_NUM}"
-            IMAGE_LATEST_TAG="${CIRCLE_BRANCH}-latest"    
-
-            docker tag profiler-server:dev ${DOCKER_IMAGE}:$IMAGE_LATEST_TAG
-            docker tag profiler-server:deploy ${DOCKER_IMAGE}:$IMAGE_VERSION_TAG
-
-            docker push "${DOCKER_IMAGE}:IMAGE_LATEST_TAG"
-            docker push "${DOCKER_IMAGE}:IMAGE_VERSION_TAG"
-
-
-            GIT_SHA=$(git rev-parse --short HEAD)
-            docker tag  profiler-server:deploy ${DOCKER_IMAGE}:sha-${GIT_SHA}
-            docker push ${DOCKER_IMAGE}:sha-${GIT_SHA}
+              docker tag <<parameters.image>> $GAR_IMAGE:$IMAGE_VERSION_TAG
+              docker tag <<parameters.image>> $GAR_IMAGE:$IMAGE_LATEST_TAG
+      # push-image parameters:
+      # https://circleci.com/developer/orbs/orb/circleci/gcp-gcr#commands-push-image
+      - gcp-gcr/push-image:
+          image: "${GCP_GAR_REPO}/<<parameters.image>>"
+          google-project-id: GCP_GAR_PROJECT_ID
+          registry-url: <<parameters.registry-url>>
+          tag: $IMAGE_VERSION_TAG,$IMAGE_VERSION_TAG            
