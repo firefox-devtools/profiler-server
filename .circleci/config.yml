@@ -199,9 +199,14 @@ jobs:
             docker push $IMAGE_NAME:$IMAGE_LATEST_TAG
             docker push $IMAGE_NAME:$IMAGE_VERSION_TAG
   deploy-gar:
-    machine:
-      image: ubuntu-2004:2023.10.1
-      docker_layer_caching: true
+    executor: gcp-gcr/default
+    parameters:
+      image:
+        type: string
+        default: us-docker.pkg.dev/moz-fx-profiler-prod/profiler-prod/firefoxprofiler
+      tag:
+        type: string
+        default: latest
     steps:
       - checkout         
       - run:
@@ -217,8 +222,6 @@ jobs:
       - run:
           name: Deploy to Google Artifact Registry
           command: |
-            ./scripts/store_git_info.sh
-            make build_prod
             gcloud auth configure-docker us-docker.pkg.dev --quiet
 
             DOCKER_IMAGE="us-docker.pkg.dev/moz-fx-profiler-prod/profiler-prod/firefoxprofiler"          
