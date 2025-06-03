@@ -62,8 +62,7 @@ workflows:
               only:
                 - master
                 - production
-      - deploy-gar:  
-          name: Deploy to GAR
+      - deploy-gar:            
           requires:
             - docker
           filters:
