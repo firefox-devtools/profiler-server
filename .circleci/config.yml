@@ -60,10 +60,15 @@ workflows:
               only:
                 - master
                 - production
-  build:
-    jobs:
-      - deploy_gar:
-          name: Deploy Profiler to GAR
+      - deploy-gar:  
+          name: Deploy to GAR
+          requires:
+            - docker
+          filters:
+            branches:
+              only:
+                - master
+                - production          
           context:
             - gcpv2-workload-identity    
 
@@ -193,7 +198,7 @@ jobs:
             echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
             docker push $IMAGE_NAME:$IMAGE_LATEST_TAG
             docker push $IMAGE_NAME:$IMAGE_VERSION_TAG
-  deploy_gar:
+  deploy-gar:
     machine:
       image: ubuntu-2004:2023.10.1
       docker_layer_caching: true
