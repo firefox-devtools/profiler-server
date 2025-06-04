@@ -65,8 +65,6 @@ workflows:
       - deploy-gar:
           context:
             - gcpv2-workload-identity                  
-          requires:
-            - docker
           filters:
             branches:
               only:
