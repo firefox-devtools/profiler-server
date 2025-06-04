@@ -17,6 +17,7 @@ executors:
 orbs:
   shellcheck: circleci/shellcheck@3.0.0
   gcp-cli: circleci/gcp-cli@3.3.0
+  gcp-gcr: circleci/gcp-gcr@0.16.3
 
 commands:
   checkout-and-dependencies:
