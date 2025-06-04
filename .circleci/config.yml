@@ -64,12 +64,12 @@ workflows:
                 - production
       - deploy-gar:
           context:
-            - gcpv2-workload-identity
+            - gcpv2-workload-identity                  
           filters:
             branches:
               only:
                 - master
-                - production
+                - production          
   # This is a weekly workflow, just to deploy new versions of the docker images,
   # so that updates to the underlying images are used and deployed.
   # This is configured to run on Thursdays (4th day in the week, Sunday is 0).
@@ -230,9 +230,9 @@ jobs:
             source $BASH_ENV
             IMAGE_VERSION_TAG="0.0.${CIRCLE_BUILD_NUM}"
             IMAGE_LATEST_TAG="${CIRCLE_BRANCH}-latest"             
-
+            
             docker tag <<parameters.image>> $GAR_IMAGE:$IMAGE_VERSION_TAG
             docker tag <<parameters.image>> $GAR_IMAGE:$IMAGE_LATEST_TAG
-
+           
             docker push $GAR_IMAGE:$IMAGE_VERSION_TAG                        
             docker push $GAR_IMAGE:$IMAGE_LATEST_TAG
