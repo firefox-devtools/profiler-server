@@ -63,13 +63,15 @@ workflows:
                 - master
                 - production
       - deploy-gar:
+          requires:
+            - docker
           context:
             - gcpv2-workload-identity
-          filters:
-            branches:
-              only:
-                - master
-                - production
+          # filters:
+          #   branches:
+          #     only:
+          #       - master
+          #       - production
   # This is a weekly workflow, just to deploy new versions of the docker images,
   # so that updates to the underlying images are used and deployed.
   # This is configured to run on Thursdays (4th day in the week, Sunday is 0).
@@ -210,8 +212,10 @@ jobs:
         default: us-docker.pkg.dev
     steps:
       - checkout
+      - gcp-cli/setup:
+          use_oidc: true
       - run:
-          name: Prepare environment variables for OIDC authentication
+          name: Prepare environment variables for OIDC authentication and Deploy to Google Artifact Registry
           command: |
             echo 'export GOOGLE_PROJECT_ID="moz-fx-profiler-prod"' >> "$BASH_ENV"
             echo "export OIDC_WIP_ID=$GCPV2_WORKLOAD_IDENTITY_POOL_ID" >> "$BASH_ENV"
@@ -220,14 +224,9 @@ jobs:
             echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_EMAIL" >> "$BASH_ENV"
             echo 'export GCP_GAR_REPO="profiler-prod"' >> "$BASH_ENV"
             echo "export GAR_IMAGE=\"<<parameters.registry-url>>/${GOOGLE_PROJECT_ID}/${GCP_GAR_REPO}/<<parameters.image>>\"" >> $BASH_ENV
-      - gcp-cli/setup:
-          use_oidc: true
-      - run:
-          name: Deploy to Google Artifact Registry
-          command: |
+
             gcloud auth configure-docker us-docker.pkg.dev --quiet
                     
-            source $BASH_ENV
             IMAGE_VERSION_TAG="0.0.${CIRCLE_BUILD_NUM}"
             IMAGE_LATEST_TAG="${CIRCLE_BRANCH}-latest"             
 
