@@ -1,0 +1,3 @@
+# Automatically request reviews for the dependency updates
+/package.json @canova
+/yarn.lock @canova
