@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.27.2",
-    "@babel/core": "^7.27.4",
+    "@babel/core": "^7.28.0",
     "@babel/eslint-parser": "^7.27.5",
     "@babel/eslint-plugin": "^7.27.1",
     "@babel/node": "^7.27.1",
@@ -78,7 +78,7 @@
     "nock": "^14.0.1",
     "nodemon": "^3.1.10",
     "npm-run-all2": "^8.0.4",
-    "prettier": "^3.5.3",
+    "prettier": "^3.6.2",
     "rimraf": "^5.0.10",
     "supertest": "^7.1.1",
     "typescript": "^5.8.3"
@@ -94,10 +94,10 @@
   "dependencies": {
     "@google-cloud/storage": "^7.16.0",
     "@koa/cors": "^4.0.0",
-    "@koa/router": "^13.1.0",
+    "@koa/router": "^13.1.1",
     "content-type": "^1.0.5",
     "convict": "^6.2.4",
-    "dotenv": "^16.5.0",
+    "dotenv": "^16.6.1",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "koa": "^3.0.0",
