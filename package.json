@@ -83,7 +83,7 @@
     "prettier": "^3.6.2",
     "rimraf": "^5.0.10",
     "supertest": "^7.1.4",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   },
   "husky": {
     "hooks": {
