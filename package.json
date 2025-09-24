@@ -94,7 +94,7 @@
     }
   },
   "dependencies": {
-    "@google-cloud/storage": "^7.17.0",
+    "@google-cloud/storage": "^7.17.1",
     "@koa/cors": "^4.0.0",
     "@koa/router": "^14.0.0",
     "content-type": "^1.0.5",
