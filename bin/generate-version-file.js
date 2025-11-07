@@ -6,7 +6,7 @@
 /* This script generates the version file, as requested by the dockerflow
  * requirements described in
  * https://github.com/mozilla-services/Dockerflow/blob/master/docs/version_object.md.
- * It uses the environment variables set by CircleCI.
+ * It uses the environment variables set by GitHub Actions.
  */
 
 const fs = require('fs');
@@ -16,9 +16,9 @@ const packageJson = require('../package.json');
 
 function checkEnvironment() {
   // Let's check that we have our needed environment variable.
-  if (!process.env.CIRCLE_BUILD_URL) {
+  if (!process.env.BUILD_URL) {
     throw new Error(
-      'The environment variable CIRCLE_BUILD_URL is missing. Are we running in CircleCI?'
+      'The environment variable BUILD_URL is missing. Are we running in GitHub Actions?'
     );
   }
 
@@ -55,19 +55,19 @@ function writeVersionFile() {
 
   const commitHash = getGitCommitHash();
   const branch = findLocalBranch();
-  const buildUrl = process.env.CIRCLE_BUILD_URL || '';
+  const buildUrl = process.env.BUILD_URL || '';
   // Currently we generate the version from the build url. We're confident this
   // is always increasing, but for sure this isn't monotonic. In the future we
   // might want to use a tag instead.
-  const circleBuildNumResult = /\d+$/.exec(buildUrl);
-  if (!circleBuildNumResult) {
+  const buildNumResult = /\d+$/.exec(buildUrl);
+  if (!buildNumResult) {
     throw new Error(
       `We couldn't extract a build num from the build URL, this shouldn't happen. The full build url is: ${buildUrl}.`
     );
   }
   // Please keep it in sync with the version used for the docker image in
-  // .circleci/config.yml.
-  const version = `0.0.${circleBuildNumResult[0]}`;
+  // .github/workflows/weekly-docker.yml.
+  const version = `0.1.${buildNumResult[0]}`;
   const distDir = 'dist';
   const targetName = path.join(distDir, 'version.json');
 

@@ -120,15 +120,15 @@ function checkYarn(agents) {
 }
 
 function parseExpectedNodeVersion() {
-  // Let's fetch our minimal version from circleci's file
+  // Let's fetch our minimal version from GitHub Actions workflow file.
   const fs = require('fs');
-  const circleConfig = fs.readFileSync('.circleci/config.yml', {
+  const workflowConfig = fs.readFileSync('.github/workflows/ci.yml', {
     encoding: 'utf8',
   });
-  const expectedNodeVersion = /image: cimg\/node:([\d.]+)/.exec(circleConfig);
+  const expectedNodeVersion = /node-version: '([\d.]+)'/.exec(workflowConfig);
   if (!expectedNodeVersion) {
     throw new Error(
-      `Couldn't extract the node version from .circleci/config.yml.`
+      `Couldn't extract the node version from .github/workflows/ci.yml.`
     );
   }
   return expectedNodeVersion[1];
