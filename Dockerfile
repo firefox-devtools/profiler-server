@@ -50,10 +50,12 @@ WORKDIR /app
 RUN node -v
 RUN yarn -v
 
-# This environment variable from CircleCI is needed when generating the
-# version file. We pass it using the "arguments" mechanism from docker.
-ARG circle_build_url
-ENV CIRCLE_BUILD_URL=${circle_build_url}
+# These environment variables from GitHub Actions are needed when generating the
+# version file. We pass them using the "arguments" mechanism from docker.
+ARG build_url
+ARG github_ref_name
+ENV BUILD_URL=${build_url}
+ENV GITHUB_REF_NAME=${github_ref_name}
 
 # We run all these commands in one RUN command. The reason is that we don't save
 # the development dependencies in a layer, and we can also keep yarn's cache
@@ -71,8 +73,8 @@ RUN set -x \
 # Actually build the project.
   && yarn build:clean \
   && NODE_ENV=production yarn build \
-# This script doesn't work outside of CircleCI
-  && if [ -n "$CIRCLE_BUILD_URL" ] ; then yarn generate-version-file ; fi \
+# This script doesn't work outside of GitHub Actions.
+  && if [ -n "$BUILD_URL" ] ; then yarn generate-version-file ; fi \
 # Then keep only prod dependencies, that we'll copy over to the runtime
 # container in the next phase.
   && yarn install --frozen-lockfile --prod \
