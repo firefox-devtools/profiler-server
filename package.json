@@ -80,7 +80,7 @@
     "nock": "^14.0.1",
     "nodemon": "^3.1.11",
     "npm-run-all2": "^8.0.4",
-    "prettier": "^3.6.2",
+    "prettier": "^3.7.4",
     "rimraf": "^6.1.2",
     "supertest": "^7.1.4",
     "typescript": "^5.9.3"
@@ -94,7 +94,7 @@
     }
   },
   "dependencies": {
-    "@google-cloud/storage": "^7.17.3",
+    "@google-cloud/storage": "^7.18.0",
     "@koa/cors": "^4.0.0",
     "@koa/router": "^14.0.0",
     "content-type": "^1.0.5",
