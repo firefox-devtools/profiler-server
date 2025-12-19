@@ -13,6 +13,8 @@ executors:
   python:
     docker:
       - image: cimg/python:3.13-node
+    environment:
+      YARN_IGNORE_ENGINES: 1
 
 orbs:
   shellcheck: circleci/shellcheck@3.0.0
