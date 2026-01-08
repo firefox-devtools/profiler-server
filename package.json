@@ -63,7 +63,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/koa__cors": "^5.0.1",
     "@types/koa__router": "^12.0.5",
-    "@types/node": "^24.10.4",
+    "@types/node": "^25.0.3",
     "@types/supertest": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^8.51.0",
     "@typescript-eslint/parser": "^8.51.0",
