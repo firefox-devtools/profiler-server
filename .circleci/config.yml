@@ -18,6 +18,8 @@ executors:
 
 orbs:
   shellcheck: circleci/shellcheck@3.0.0
+  gcp-cli: circleci/gcp-cli@3.3.0
+  gcp-gcr: circleci/gcp-gcr@0.16.3
 
 commands:
   checkout-and-dependencies:
@@ -62,7 +64,16 @@ workflows:
               only:
                 - master
                 - production
-
+      - deploy-gar:
+          requires:
+            - docker
+          context:
+            - gcpv2-workload-identity
+          # filters:
+          #   branches:
+          #     only:
+          #       - master
+          #       - production
   # This is a weekly workflow, just to deploy new versions of the docker images,
   # so that updates to the underlying images are used and deployed.
   # This is configured to run on Thursdays (4th day in the week, Sunday is 0).
@@ -189,3 +200,40 @@ jobs:
             echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
             docker push $IMAGE_NAME:$IMAGE_LATEST_TAG
             docker push $IMAGE_NAME:$IMAGE_VERSION_TAG
+  deploy-gar:
+    executor: gcp-gcr/default
+    parameters:
+      build_tag:
+        type: string
+        default: build
+      image:
+        type: string
+        default: firefoxprofiler
+      registry-url:
+        type: string
+        default: us-docker.pkg.dev
+    steps:
+      - checkout
+      - gcp-cli/setup:
+          use_oidc: true
+      - run:
+          name: Prepare environment variables for OIDC authentication and Deploy to Google Artifact Registry
+          command: |
+            echo 'export GOOGLE_PROJECT_ID="moz-fx-profiler-prod"' >> "$BASH_ENV"
+            echo "export OIDC_WIP_ID=$GCPV2_WORKLOAD_IDENTITY_POOL_ID" >> "$BASH_ENV"
+            echo "export OIDC_WIP_PROVIDER_ID=$GCPV2_CIRCLECI_WORKLOAD_IDENTITY_PROVIDER" >> "$BASH_ENV"
+            echo "export GOOGLE_PROJECT_NUMBER=$GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER" >> "$BASH_ENV"
+            echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_EMAIL" >> "$BASH_ENV"
+            echo 'export GCP_GAR_REPO="profiler-prod"' >> "$BASH_ENV"
+            echo "export GAR_IMAGE=\"<<parameters.registry-url>>/${GOOGLE_PROJECT_ID}/${GCP_GAR_REPO}/<<parameters.image>>\"" >> $BASH_ENV
+
+            gcloud auth configure-docker us-docker.pkg.dev --quiet
+                    
+            IMAGE_VERSION_TAG="0.0.${CIRCLE_BUILD_NUM}"
+            IMAGE_LATEST_TAG="${CIRCLE_BRANCH}-latest"             
+
+            docker tag <<parameters.image>> $GAR_IMAGE:$IMAGE_VERSION_TAG
+            docker tag <<parameters.image>> $GAR_IMAGE:$IMAGE_LATEST_TAG
+
+            docker push $GAR_IMAGE:$IMAGE_VERSION_TAG                        
+            docker push $GAR_IMAGE:$IMAGE_LATEST_TAG
