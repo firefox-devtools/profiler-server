@@ -63,7 +63,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/koa__cors": "^5.0.1",
     "@types/koa__router": "^12.0.5",
-    "@types/node": "^25.0.9",
+    "@types/node": "^25.2.3",
     "@types/supertest": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
@@ -94,7 +94,7 @@
     }
   },
   "dependencies": {
-    "@google-cloud/storage": "^7.18.0",
+    "@google-cloud/storage": "^7.19.0",
     "@koa/cors": "^4.0.0",
     "@koa/router": "^15.3.0",
     "content-type": "^1.0.5",
