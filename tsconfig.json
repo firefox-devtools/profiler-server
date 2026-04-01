@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
-    "module": "commonjs",
+    "moduleResolution": "node16",
+    "module": "node16",
     // Make the type checking as strict as possible.
     "strict": true,
     // Allow esnext syntax. Otherwise the default is ES5 only.
@@ -13,7 +13,8 @@
     "esModuleInterop": true,
     // TypeScript will check JS files only if they have a @ts-check comment in them.
     "allowJs": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["jest", "node"]
   },
   "include": ["./**/*.ts"],
   "exclude": ["node_modules"]
