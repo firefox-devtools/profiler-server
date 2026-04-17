@@ -69,7 +69,7 @@
     "@typescript-eslint/parser": "^8.57.2",
     "babel-jest": "^30.3.0",
     "devtools-license-check": "^0.9.0",
-    "eslint": "^9.39.4",
+    "eslint": "^10.2.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "globals": "^17.4.0",
