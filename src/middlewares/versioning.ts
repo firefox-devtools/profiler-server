@@ -8,7 +8,7 @@
 
 import { Context } from 'koa';
 
-import contentType from 'content-type';
+import * as contentType from 'content-type';
 
 // This mime-type is a vendor mime-type (because this starts with `vnd.`). It
 // also uses the 'json' suffix to outline that the content, if any, is in JSON form.
