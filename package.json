@@ -97,7 +97,7 @@
     "@google-cloud/storage": "^7.19.0",
     "@koa/cors": "^4.0.0",
     "@koa/router": "^15.5.0",
-    "content-type": "^1.0.5",
+    "content-type": "^2.0.0",
     "convict": "^6.2.5",
     "dotenv": "^17.4.2",
     "helmet": "^8.1.0",
