@@ -57,7 +57,7 @@
     "@babel/preset-env": "^7.29.5",
     "@babel/preset-typescript": "^7.28.5",
     "@eslint/js": "^9.39.4",
-    "@types/content-type": "^1.1.9",
+    "@types/content-type": "^2.0.0",
     "@types/convict": "^6.1.6",
     "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
