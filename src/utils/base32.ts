@@ -94,7 +94,7 @@ export class Encoder {
    * returns: a string of characters representing 'input' in base32
    */
   update(input: Buffer, flush: boolean) {
-    for (let i = 0; i < input.length; ) {
+    for (let i = 0; i < input.length;) {
       i += this.readByte(input[i]);
     }
     // consume all output
