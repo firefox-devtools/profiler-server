@@ -1825,10 +1825,10 @@
   resolved "https://registry.yarnpkg.com/@types/ms/-/ms-2.1.0.tgz#052aa67a48eccc4309d7f0191b7e41434b90bb78"
   integrity sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==
 
-"@types/node@*", "@types/node@^25.9.3":
-  version "25.9.3"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-25.9.3.tgz#11dfe7a33e68fa5c560f0aa76cc5595621ef26b9"
-  integrity sha512-603BddQMv3pUcr4U2dhujk83N2tTDVr/34wII2B6bJy6g+8WD6yUb11jszNs0gdi4PesVWl7ABt8nYMVpnLUcg==
+"@types/node@*", "@types/node@^25.9.5":
+  version "25.9.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-25.9.5.tgz#0fefc09e6e82e94cde291bacf43522e989eb01a4"
+  integrity sha512-OScDchr2fwuUmWdf4kZ9h7PcJiYDVInhJizG/biAq3cAvqwYktuy/TYGGdZNMtNTFUP7rnb0NU4TUdm82kt4Rg==
   dependencies:
     undici-types ">=7.24.0 <7.24.7"
 
@@ -1879,10 +1879,10 @@
     "@types/methods" "^1.1.4"
     "@types/node" "*"
 
-"@types/supertest@^7.2.0":
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/@types/supertest/-/supertest-7.2.0.tgz#9620bc998d3e26bcbedba7d31da8fe4c82fc1620"
-  integrity sha512-uh2Lv57xvggst6lCqNdFAmDSvoMG7M/HDtX4iUCquxQ5EGPtaPM5PL5Hmi7LCvOG8db7YaCPNJEeoI8s/WzIQw==
+"@types/supertest@^7.2.1":
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/@types/supertest/-/supertest-7.2.1.tgz#165e99f10fd652027cf1eaa74b55081b6daa0965"
+  integrity sha512-4CbBvoYVLHL7+yhbYrZET0vsvuyXTC05aRe7dNQkwMzm56auceoy6Yu3K50uZmwfHna1os3CMSgM/3QVkUtPTw==
   dependencies:
     "@types/methods" "^1.1.4"
     "@types/superagent" "^8.1.0"
@@ -3853,10 +3853,10 @@ hasown@^2.0.2:
   dependencies:
     function-bind "^1.1.2"
 
-helmet@^8.2.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/helmet/-/helmet-8.2.0.tgz#61cb43244de24255a288c2fddb36086074eb1812"
-  integrity sha512-DRgTIUgnWcJ62KyarxxziuqYxKGnR6Rgg19BlbucN/dpmJbl1XOit6qvoOX0ZT+HhWe5OUVhU/a1zpGyc1xA0Q==
+helmet@^8.3.0:
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/helmet/-/helmet-8.3.0.tgz#3842eea921e7c7015d11f217910c710c434efb26"
+  integrity sha512-Qgpiaws3Sm30Av8Eah6sjMCZZwjlBu+E68rhpCWBshY1lb09HtLwj5GviX0OyQIn+ulUS0iX0AxN5n3tLZzz1w==
 
 homedir-polyfill@^1.0.1:
   version "1.0.3"
