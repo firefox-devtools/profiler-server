@@ -13,7 +13,7 @@ the current development server. The helper script
 
 Note that the two "non production" servers run on the same cluster and are
 configured to not auto-scale, so be careful to test them separately. Using the
-script, typical results are between 110000 and 130000 successful requests at the
+script, typical results are around 60000 successful requests at the
 full throughput for these non prod environments.
 
 ## Environment

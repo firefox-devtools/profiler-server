@@ -6,5 +6,5 @@ import dotenv from 'dotenv';
 if (process.env.NODE_ENV !== 'test') {
   // We don't want to run a local configuration file for tests so that we
   // ensure that they'll always run the same in all environments.
-  dotenv.config();
+  dotenv.config({ quiet: true });
 }
