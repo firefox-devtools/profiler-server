@@ -71,7 +71,7 @@
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
-    "globals": "^17.7.0",
+    "globals": "^17.9.0",
     "husky": "^4.3.8",
     "jest": "^30.4.2",
     "lockfile-lint": "^5.0.0",
