@@ -58,6 +58,6 @@ API_ENDPOINT=$DEV_SERVER run_tests
 
 echo ">>>>>>>>>>> Load testing ended <<<<<<<<<<<<<"
 echo "Do not forget to clean up the buckets with commands:"
-echo "gsutil -m rm gs://moz-fx-stage-firefoxprofiler-bucket/*"
-echo "gsutil -m rm gs://moz-fx-dev-firefoxprofiler-bucket/*"
-echo "You need to run 'gcloud auth login' to log in first, if that's not done. See https://cloud.google.com/storage/docs/quickstart-gsutil for more information"
+echo "gcloud storage rm 'gs://moz-fx-stage-firefoxprofiler-bucket/**'"
+echo "gcloud storage rm 'gs://moz-fx-dev-firefoxprofiler-bucket/**'"
+echo "You need to run 'gcloud auth login' to log in first, if that's not done. See https://docs.cloud.google.com/storage/docs/discover-object-storage-gcloud for more information"

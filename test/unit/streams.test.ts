@@ -6,10 +6,11 @@ import util from 'util';
 import Stream, { PassThrough } from 'stream';
 import { gzipSync } from 'zlib';
 import { once } from 'events';
+import { Builder } from 'json-slabs';
 
 import {
   Concatenator,
-  CheapJsonChecker,
+  CheapContentChecker,
   GunzipWrapper,
 } from '../../src/utils/streams';
 
@@ -19,70 +20,90 @@ const pipeline = util.promisify(Stream.pipeline);
 const nextTick = util.promisify(process.nextTick);
 const END_EVENT_NAME = 'profiler:checkEnded';
 
-describe('CheapJsonChecker', () => {
+function makeJslbFile(): Buffer {
+  const builder = new Builder();
+  const slab = builder.addSlab(new Uint32Array([1, 2, 3]));
+  return Buffer.from(builder.toBuffer(JSON.stringify({ data: slab })));
+}
+
+describe('CheapContentChecker', () => {
   it('accepts normal content', async () => {
     const fixture = '{ "foo": "bar" }';
-    const checker = new CheapJsonChecker();
+    const checker = new CheapContentChecker();
     const input = new PassThrough();
     const endPromise = once(checker, END_EVENT_NAME);
     input.write(fixture.slice(0, 3));
     input.end(fixture.slice(3));
     await expect(pipeline(input, checker)).resolves.toBe(undefined);
-    expect(endPromise).resolves.toEqual([]);
+    await expect(endPromise).resolves.toEqual([]);
   });
 
   it('accepts content with some space at the start', async () => {
     const fixture = '                               { "foo": "bar" }';
-    const checker = new CheapJsonChecker();
+    const checker = new CheapContentChecker();
     const input = new PassThrough();
     const endPromise = once(checker, END_EVENT_NAME);
     input.write(fixture.slice(0, 3));
     input.end(fixture.slice(3));
     await expect(pipeline(input, checker)).resolves.toBe(undefined);
-    expect(endPromise).resolves.toEqual([]);
+    await expect(endPromise).resolves.toEqual([]);
+  });
+
+  it('accepts a JSON payload shorter than the JSLB magic length', async () => {
+    const fixture = '{}';
+    const checker = new CheapContentChecker();
+    const input = new PassThrough();
+    const endPromise = once(checker, END_EVENT_NAME);
+    input.end(fixture);
+    await expect(pipeline(input, checker)).resolves.toBe(undefined);
+    await expect(endPromise).resolves.toEqual([]);
   });
 
   it(`rejects if there's only space in the content`, async () => {
     const fixture = '                           ';
-    const checker = new CheapJsonChecker();
+    const checker = new CheapContentChecker();
     const input = new PassThrough();
     const endPromise = once(checker, END_EVENT_NAME);
     input.write(fixture);
     input.end();
     await expect(pipeline(input, checker)).rejects.toThrow(
-      "The payload isn't a JSON object."
+      "The payload isn't a JSON object or a JSLB file."
     );
-    expect(endPromise).rejects.toThrow("The payload isn't a JSON object.");
+    await expect(endPromise).rejects.toThrow(
+      "The payload isn't a JSON object or a JSLB file."
+    );
   });
 
   it('rejects if required content is missing', async () => {
     const fixture = 'bad content';
-    const checker = new CheapJsonChecker();
+    const checker = new CheapContentChecker();
     const endPromise = once(checker, END_EVENT_NAME);
     const input = new PassThrough();
     input.write(fixture);
     // Note: we don't call .end() so that we test that we can find a bad content
     // before reaching the end of the stream.
     await expect(pipeline(input, checker)).rejects.toThrow(
-      "The payload isn't a JSON object."
+      "The payload isn't a JSON object or a JSLB file."
     );
-    expect(endPromise).rejects.toThrow("The payload isn't a JSON object.");
+    await expect(endPromise).rejects.toThrow(
+      "The payload isn't a JSON object or a JSLB file."
+    );
   });
 
   it('supports unicode characters too', async () => {
     const fixture = '{ "éàçâ": "bar" }';
-    const checker = new CheapJsonChecker();
+    const checker = new CheapContentChecker();
     const input = new PassThrough();
     const endPromise = once(checker, END_EVENT_NAME);
     input.write(fixture.slice(0, 3)); // This should cut in the middle of a unicode character
     input.end(fixture.slice(3));
     await expect(pipeline(input, checker)).resolves.toBe(undefined);
-    expect(endPromise).resolves.toEqual([]);
+    await expect(endPromise).resolves.toEqual([]);
   });
 
   it('supports long-running operations', async () => {
     const fixture = '{ "foo": "bar" }';
-    const checker = new CheapJsonChecker();
+    const checker = new CheapContentChecker();
     const input = new PassThrough();
     const endPromise = once(checker, END_EVENT_NAME);
     const pipelinePromise = pipeline(input, checker);
@@ -90,7 +111,46 @@ describe('CheapJsonChecker', () => {
     await nextTick();
     input.end(fixture.slice(3));
     await expect(pipelinePromise).resolves.toBe(undefined);
-    expect(endPromise).resolves.toEqual([]);
+    await expect(endPromise).resolves.toEqual([]);
+  });
+
+  it('accepts a JSLB file', async () => {
+    const fixture = makeJslbFile();
+    const checker = new CheapContentChecker();
+    const input = new PassThrough();
+    const endPromise = once(checker, END_EVENT_NAME);
+    input.end(fixture);
+    await expect(pipeline(input, checker)).resolves.toBe(undefined);
+    await expect(endPromise).resolves.toEqual([]);
+  });
+
+  it('accepts a JSLB file when the magic is split across chunks', async () => {
+    const fixture = makeJslbFile();
+    const checker = new CheapContentChecker();
+    const input = new PassThrough();
+    const endPromise = once(checker, END_EVENT_NAME);
+    // Split inside the magic bytes.
+    input.write(fixture.subarray(0, 3));
+    input.end(fixture.subarray(3));
+    await expect(pipeline(input, checker)).resolves.toBe(undefined);
+    await expect(endPromise).resolves.toEqual([]);
+  });
+
+  it('rejects a payload that starts like JSLB but has wrong magic bytes', async () => {
+    // Starts with 0xDC (JSLB magic byte 0) but the rest does not match.
+    const fixture = Buffer.from([
+      0xdc, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    ]);
+    const checker = new CheapContentChecker();
+    const input = new PassThrough();
+    const endPromise = once(checker, END_EVENT_NAME);
+    input.end(fixture);
+    await expect(pipeline(input, checker)).rejects.toThrow(
+      "The payload isn't a JSON object or a JSLB file."
+    );
+    await expect(endPromise).rejects.toThrow(
+      "The payload isn't a JSON object or a JSLB file."
+    );
   });
 });
 

@@ -170,7 +170,9 @@ describe('publishing endpoints', () => {
     const req = getPreconfiguredRequest();
 
     const payload = gzipSync('aaaa');
-    await req.send(payload).expect(400, /The payload isn't a JSON object/);
+    await req
+      .send(payload)
+      .expect(400, /The payload isn't a JSON object or a JSLB file/);
 
     expect(process.stdout.write).toHaveBeenCalledWith(
       expect.stringContaining('server_error')

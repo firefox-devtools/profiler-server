@@ -5,11 +5,10 @@
 // This file holds various utilities about streams.
 
 import { Transform, Writable, Readable } from 'stream';
-import { StringDecoder } from 'string_decoder';
 import { createGunzip, Gunzip } from 'zlib';
+import { isJsonSlabsFile, MAGIC_LENGTH as JSLB_MAGIC_LENGTH } from 'json-slabs';
 
 import { getLogger, Logger } from '../log';
-import { assertExhaustiveCheck } from '../utils/typescript';
 import { BadRequestError, PayloadTooLargeError } from './errors';
 
 /**
@@ -111,31 +110,48 @@ export class Concatenator extends Writable {
   }
 }
 
-// This Transform cheaply checks that a gzipped stream looks like a json.
-export class CheapJsonChecker extends Writable {
-  log: Logger = getLogger('CheapJsonChecker');
-  stringDecoder = new StringDecoder('utf8');
-  // We allow either only spaces, or only spaces followed by a bracket, or just a bracket.
-  onlySpacesRe = /^\s+$/;
-  spacesAndBracketRe = /^\s*{/;
+// This Transform cheaply checks that a gzipped stream looks like a JSON object
+// or a JSLB (JsonSlabs binary container) file. See https://www.npmjs.com/package/json-slabs.
+export class CheapContentChecker extends Writable {
+  log: Logger = getLogger('CheapContentChecker');
+  // Buffer of leading bytes collected for the initial JSLB magic sniff. Once
+  // it reaches JSLB_MAGIC_LENGTH bytes we decide, and either accept as JSLB or
+  // fall through to a JSON check.
+  headerBuffer: Buffer = Buffer.alloc(0);
+  // Set once we know the stream isn't a JSLB file; from that point on we only
+  // scan subsequent chunks for the JSON opening.
+  jslbRuledOut = false;
   checkEnded = false;
 
-  errorMessage = `The payload isn't a JSON object.`;
+  errorMessage = `The payload isn't a JSON object or a JSLB file.`;
 
-  checkIsContentAllowed(content: string): 'notfound' | 'found' | 'error' {
-    const gotOnlySpaces = this.onlySpacesRe.test(content);
-    if (gotOnlySpaces) {
-      return 'notfound';
+  // Returns true if this chunk finished the check (with success or error), so
+  // the caller shouldn't do further processing.
+  private _scanForJsonOpening(
+    bytes: Buffer,
+    callback: (error?: Error) => void
+  ): boolean {
+    for (let i = 0; i < bytes.length; i++) {
+      const byte = bytes[i];
+      // ASCII whitespace allowed by JSON (space, tab, LF, CR).
+      if (byte === 0x20 || byte === 0x09 || byte === 0x0a || byte === 0x0d) {
+        continue;
+      }
+      if (byte === 0x7b /* `{` */) {
+        this.log.verbose('content-found', 'This stream looks like a JSON.');
+        this.checkEnded = true;
+        this.emit('profiler:checkEnded');
+        callback();
+        return true;
+      }
+      this.log.verbose(
+        'content-error',
+        'This stream does not look like JSON or JSLB.'
+      );
+      callback(new BadRequestError(this.errorMessage));
+      return true;
     }
-
-    const gotBracket = this.spacesAndBracketRe.test(content);
-    if (gotBracket) {
-      return 'found';
-    }
-
-    // Else this means we got something that doesn't look like the start of a
-    // JSON object.
-    return 'error';
+    return false;
   }
 
   _write(
@@ -148,40 +164,62 @@ export class CheapJsonChecker extends Writable {
       return;
     }
 
-    if (this.checkEnded) {
+    if (this.checkEnded || chunk.length === 0) {
       callback();
       return;
     }
 
-    const stringedChunk = this.stringDecoder.write(chunk);
-    if (stringedChunk) {
-      const checkResult = this.checkIsContentAllowed(stringedChunk);
-      switch (checkResult) {
-        case 'notfound':
-          this.log.verbose(
-            'json-not-found',
-            'We still do not know if this is a json.'
-          );
-          callback();
-          return;
-        case 'found':
-          this.log.verbose('json-found', 'This stream looks like a JSON.');
-          this.checkEnded = true;
-          // This stream did what it's for. Let's emit an event to specify it.
-          this.emit('profiler:checkEnded');
-          callback();
-          return;
-        case 'error':
-          this.log.verbose(
-            'json-error',
-            'This stream does not look like a JSON.'
-          );
-          callback(new BadRequestError(this.errorMessage));
-          return;
-        default:
-          throw assertExhaustiveCheck(checkResult);
+    if (!this.jslbRuledOut) {
+      // Accumulate the first JSLB_MAGIC_LENGTH bytes so we can call
+      // isJsonSlabsFile with the required minimum.
+      const need = JSLB_MAGIC_LENGTH - this.headerBuffer.length;
+      const take = Math.min(need, chunk.length);
+      this.headerBuffer = Buffer.concat([
+        this.headerBuffer,
+        chunk.subarray(0, take),
+      ]);
+
+      if (this.headerBuffer.length < JSLB_MAGIC_LENGTH) {
+        this.log.verbose(
+          'content-not-found',
+          'Still accumulating bytes to sniff the content type.'
+        );
+        callback();
+        return;
       }
+
+      if (isJsonSlabsFile(this.headerBuffer)) {
+        this.log.verbose('content-found', 'This stream looks like a JSLB.');
+        this.checkEnded = true;
+        this.emit('profiler:checkEnded');
+        callback();
+        return;
+      }
+
+      // Not JSLB. Scan the accumulated header bytes for a JSON opening; if
+      // they're all whitespace, keep scanning subsequent chunks.
+      this.jslbRuledOut = true;
+      if (this._scanForJsonOpening(this.headerBuffer, callback)) {
+        return;
+      }
+
+      // headerBuffer was all whitespace; scan the rest of the current chunk.
+      const rest = chunk.subarray(take);
+      if (rest.length > 0 && this._scanForJsonOpening(rest, callback)) {
+        return;
+      }
+      callback();
+      return;
     }
+
+    if (this._scanForJsonOpening(chunk, callback)) {
+      return;
+    }
+    this.log.verbose(
+      'content-not-found',
+      'We still do not know if this is a JSON.'
+    );
+    callback();
   }
 
   // This is called when all the data has been given to _write and the
@@ -191,6 +229,16 @@ export class CheapJsonChecker extends Writable {
     if (this.checkEnded) {
       callback();
       return;
+    }
+
+    // The stream ended before we could accumulate JSLB_MAGIC_LENGTH bytes, so
+    // we can't be sure it's not JSLB. But since a JSLB file needs at least
+    // FIXED_HEADER_SIZE bytes (>= MAGIC_LENGTH), a shorter payload can only be
+    // valid as JSON. Try to find a JSON opening in the bytes we have.
+    if (!this.jslbRuledOut && this.headerBuffer.length > 0) {
+      if (this._scanForJsonOpening(this.headerBuffer, callback)) {
+        return;
+      }
     }
 
     // If we're coming here, this means we never finished checking. Let's

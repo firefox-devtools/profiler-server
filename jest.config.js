@@ -6,4 +6,7 @@ module.exports = {
   collectCoverageFrom: ['src/**/*.js', 'src/**/*.ts', '!**/node_modules/**'],
   setupFilesAfterEnv: ['./test/setup.ts'],
   verbose: false,
+  // `json-slabs` ships as native ESM; run it through the babel transform so
+  // Jest's CJS require can load it.
+  transformIgnorePatterns: ['node_modules/(?!(json-slabs)/)'],
 };

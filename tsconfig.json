@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "moduleResolution": "node16",
-    "module": "node16",
+    "module": "node20",
     // Make the type checking as strict as possible.
     "strict": true,
     // Allow esnext syntax. Otherwise the default is ES5 only.
