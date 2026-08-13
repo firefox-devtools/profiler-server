@@ -11,27 +11,70 @@ automatically.
 
 The library we use depends on Python 3.
 
-This tool uses [pip](https://pypi.org/project/pip/) to manage its python dependencies.
-This is usually already installed with Python.
+We strongly suggest using a virtual environment to encapsulate this project's
+dependencies. There are two ways to set this up: [uv](https://docs.astral.sh/uv/)
+(option A, recommended), or the standard library `venv` module (option B). Both
+create a `venv` directory that is entered the same way afterwards.
 
-We also strongly suggest to use virtualenv to encapsulate this project's
-dependencies.
+### Option A: Using uv (recommended)
 
-### Create a virtualenv for this project
+uv manages both the Python interpreter and the dependencies, so this works even
+if you don't have a matching Python 3 installed system-wide.
+
+Create the virtual environment. Any recent Python 3 works; we ask for a specific
+version explicitly so that uv downloads it when it's missing:
 
 ```
-virtualenv --python python3 venv
+uv venv --python 3.13 venv
 ```
 
-### Enter the virtualenv
+Enter it:
 
 ```
 source venv/bin/activate
 ```
 
-Note: to exit the virtualenv, just run `deactivate`.
+Note: to exit the virtual environment, just run `deactivate`.
 
-### Install molotov
+Install molotov. Note that uv virtual environments are seedless (they don't
+include `pip`), so we use `uv pip` instead of plain `pip`:
+
+```
+uv pip install -r requirements.txt
+```
+
+Upgrading later, when `requirements.txt` changes, is done like this:
+
+```
+uv pip install -U -r requirements.txt
+```
+
+### Option B: Using the standard library `venv`
+
+This option uses [pip](https://pypi.org/project/pip/) to manage the python
+dependencies. This is usually already installed with Python.
+
+Create the virtual environment:
+
+```
+python3 -m venv venv
+```
+
+Note: if your `python3` is itself a uv-managed standalone build, the resulting
+environment links back to uv's managed interpreter, so it breaks whenever uv
+updates or removes that interpreter. You'll then see an error like
+`No such file or directory: '.../venv/bin/python3'`. Use option A instead, or
+re-create the environment when this happens.
+
+Enter it:
+
+```
+source venv/bin/activate
+```
+
+Note: to exit the virtual environment, just run `deactivate`.
+
+Install molotov:
 
 ```
 pip install -r requirements.txt
@@ -45,14 +88,14 @@ pip install -U -r requirements.txt
 
 ## Running
 
-Enable the virtualenv if that's not done yet:
+Enter the virtual environment if that's not done yet:
 
 ```
 source venv/bin/activate
 ```
 
-Enabling the virtualenv isn't strictly necessary but makes things easier. It's
-also possible to run the molotov executable directly.
+Entering the virtual environment isn't strictly necessary but makes things
+easier. It's also possible to run the molotov executable directly.
 
 You'll need to decide what endpoint you want to run the tests against. The
 simplest way is to uncomment the right line in the file. But you can also use
