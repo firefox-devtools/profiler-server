@@ -1774,13 +1774,6 @@
   dependencies:
     "@types/koa" "*"
 
-"@types/koa__router@^12.0.5":
-  version "12.0.5"
-  resolved "https://registry.yarnpkg.com/@types/koa__router/-/koa__router-12.0.5.tgz#4eaab7cf650bea292ae02787d9e1e6b77a31f191"
-  integrity sha512-1HeLxuDn4n5it1yZYCSyOYXo++73zT0ffoviXnPxbwbxLbvDFEvWD9ZzpRiIpK4oKR0pi+K+Mk/ZjyROjW3HSw==
-  dependencies:
-    "@types/koa" "*"
-
 "@types/methods@^1.1.4":
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/@types/methods/-/methods-1.1.4.tgz#d3b7ac30ac47c91054ea951ce9eed07b1051e547"
