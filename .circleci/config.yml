@@ -31,7 +31,10 @@ commands:
             - v1-dependencies-
       # With --frozen-lockfile, the installation will fail if the lockfile is
       # outdated compared to package.json.
-      - run: yarn install --frozen-lockfile
+      # --check-files is needed because the fallback cache keys above can
+      # restore a node_modules built from a different yarn.lock, and yarn's
+      # integrity check alone doesn't always detect that.
+      - run: yarn install --frozen-lockfile --check-files
       - save_cache:
           paths:
             - node_modules
