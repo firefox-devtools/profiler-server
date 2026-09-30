@@ -4,7 +4,17 @@
 //
 // Shamelessly stolen from Firefox Send.
 
+import util from 'util';
 import mozlog from 'mozlog';
+
+// mozlog depends on intel, which calls util.isError when creating log records.
+// util.isError was removed in Node 23, so we polyfill it here.
+const utilWithIsError = util as typeof util & {
+  isError?: (value: unknown) => boolean;
+};
+if (!utilWithIsError.isError) {
+  utilWithIsError.isError = (value) => value instanceof Error;
+}
 
 type LowerCasedLogLevel =
   | 'trace' //     This will gather a stack automatically.

@@ -3,7 +3,8 @@ version: 2.1
 executors:
   node:
     docker:
-      - image: cimg/node:22.14
+      # Keep the version in sync with .nvmrc.
+      - image: cimg/node:24.21
     environment:
       IMAGE_NAME: mozilla/profiler-server
 
