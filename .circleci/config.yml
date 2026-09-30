@@ -24,21 +24,22 @@ commands:
     description: 'Checkout and install dependencies, managing a cache'
     steps:
       - checkout
+      # Only restore a cache built from this exact yarn.lock. Yarn's integrity
+      # check (even with --check-files) can't detect a node_modules hoisted from
+      # a different lockfile that resolves to the same packages, so a fallback
+      # cache could silently leave a broken layout in place.
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
+            - v2-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
       # With --frozen-lockfile, the installation will fail if the lockfile is
       # outdated compared to package.json.
-      # --check-files is needed because the fallback cache keys above can
-      # restore a node_modules built from a different yarn.lock, and yarn's
-      # integrity check alone doesn't always detect that.
+      # --check-files makes yarn reinstall if files are missing from the
+      # restored node_modules.
       - run: yarn install --frozen-lockfile --check-files
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+          key: v2-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
 
 workflows:
   version: 2
