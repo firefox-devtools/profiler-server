@@ -1,4 +1,4 @@
-import babelParser from '@babel/eslint-parser';
+import { fixupPluginRules } from '@eslint/compat';
 import typescriptParser from '@typescript-eslint/parser';
 import babelPlugin from '@babel/eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
@@ -11,18 +11,11 @@ export default [
   {
     files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
     languageOptions: {
-      ecmaVersion: 2017,
       sourceType: 'module',
       globals: { ...globals.node },
-      parser: babelParser,
-      parserOptions: {
-        requireConfigFile: false,
-        babelOptions: { presets: ['@babel/preset-env'] },
-        ecmaFeatures: { experimentalObjectRestSpread: true },
-      },
     },
     plugins: {
-      import: importPlugin,
+      import: fixupPluginRules(importPlugin),
       '@babel': babelPlugin,
     },
     settings: {
