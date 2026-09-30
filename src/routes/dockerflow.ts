@@ -38,7 +38,8 @@ export function dockerFlowRoutes() {
       if (e.code === 'ENOENT') {
         // ENOENT means "No such file or directory"
         throw new Error(
-          `The version file (${versionFilePath}) could not be found.`
+          `The version file (${versionFilePath}) could not be found.`,
+          { cause: e }
         );
       }
 
