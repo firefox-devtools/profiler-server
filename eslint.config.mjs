@@ -1,6 +1,5 @@
 import { fixupPluginRules } from '@eslint/compat';
 import typescriptParser from '@typescript-eslint/parser';
-import babelPlugin from '@babel/eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
 import typescriptPlugin from '@typescript-eslint/eslint-plugin';
 import js from '@eslint/js';
@@ -16,7 +15,6 @@ export default [
     },
     plugins: {
       import: fixupPluginRules(importPlugin),
-      '@babel': babelPlugin,
     },
     settings: {
       'import/resolver': {
@@ -48,9 +46,7 @@ export default [
       'no-extra-bind': 'error',
       'no-extra-label': 'error',
       'no-implied-eval': 'error',
-      // We use the version from the babel plugin so that `this` in a function
-      // class property doesn't give a false positive.
-      '@babel/no-invalid-this': 'error',
+      'no-invalid-this': 'error',
       'no-return-await': 'error',
       'no-self-compare': 'error',
       'no-throw-literal': 'error',
@@ -70,7 +66,6 @@ export default [
       'prefer-spread': 'error',
       'no-else-return': 'error',
       'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      '@babel/no-invalid-this': 'error',
     },
   },
   // TypeScript files
