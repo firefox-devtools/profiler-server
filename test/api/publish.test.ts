@@ -5,6 +5,7 @@
 import supertest, { Response } from 'supertest';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
+import http from 'http';
 import { gzipSync } from 'zlib';
 
 import { Storage as MockStorage } from '../../__mocks__/@google-cloud/storage';
@@ -45,9 +46,21 @@ function verifyAndDecodeJwtToken(res: Response): string {
 const BASIC_PAYLOAD = gzipSync('{"foo": "aaaa"}');
 
 describe('publishing endpoints', () => {
+  // supertest only learns the port of a server it starts itself in `end()`, but
+  // the chunked encoding tests below call `write()` before that. Using a server
+  // that is already listening makes the port known upfront.
+  let server: http.Server;
+  beforeAll((done) => {
+    server = http.createServer(createApp().callback());
+    server.listen(0, '127.0.0.1', done);
+  });
+  afterAll((done) => {
+    server.close(done);
+  });
+
   function getPreconfiguredRequest() {
     const acceptHeader = ACCEPT_VALUE_MIME + ';version=1';
-    const agent = supertest(createApp().callback());
+    const agent = supertest(server);
     return agent.post('/compressed-store').accept(acceptHeader).type('text');
   }
 
